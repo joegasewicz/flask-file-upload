@@ -1,10 +1,37 @@
 import pytest
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_file_upload.file_uploads import FileUploads
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 db = SQLAlchemy()
+
+
+@app.route("/blog", methods=["GET", "POST"])
+def blog():
+    from .models import MockBlogModel
+    if request.method == "GET":
+        pass
+    if request.method == "POST":
+        my_video = request.files["my_video"]
+        placeholder_img = request.files["placeholder_img"]
+        blog_post = MockBlogModel(name="My Blog Post")
+
+        files_upload = FileUploads()
+
+        blog = files_upload.save_files(blog_post, files=[my_video, placeholder_img])
+
+        db.session.add(blog)
+        db.session.commit()
+
+        blog_post = MockBlogModel()
+        blog_data = blog_post.get_blog()
+
+        return {
+            "blog": f"{blog_data}"
+        }, 200
 
 
 @pytest.fixture
