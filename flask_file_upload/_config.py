@@ -14,12 +14,11 @@ class Config:
         try:
             self.upload_folder = app.config["UPLOAD_FOLDER"]
         except KeyError as _:
-            raise("Flask-File-Uploads: UPLOAD_FOLDER must be set")
+            raise KeyError("Flask-File-Uploads: UPLOAD_FOLDER must be set")
         try:
             self.allowed_extensions = app.config["ALLOWED_EXTENSIONS"]
         except KeyError as _:
             self.allowed_extensions = ["jpg", "png", "mov", "mp4", "mpg"]
             warn("Flask-File-Uploads: ALLOWED_EXTENSIONS is not set."
-                 "Defaulting to: ['jpg', 'png', 'mov', 'mp4', 'mpg']")
+                 f"Defaulting to: {self.allowed_extensions}")
         self.max_content_length = app.config.get("MAX_CONTENT_LENGTH")
-
