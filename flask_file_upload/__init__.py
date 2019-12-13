@@ -40,7 +40,7 @@
         file_upload.stream_file(blog_post, filename=["my_video"])
 
         # File Url paths
-        file_upload.get_file_url("placeholder_img")
+        file_upload.get_file_url(blog_post, filename="placeholder_img")
 
 
 
@@ -117,6 +117,6 @@ class FileUploads:
         """
         pass
 
-    def get_file_url(self, filename):
+    def get_file_url(self, model, **kwargs):
         """returns file url"""
         pass
