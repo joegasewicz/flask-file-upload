@@ -24,13 +24,30 @@
         placeholder_img = request.files["placeholder_img"]
 
         # Get main form data and pass to yoour SqlAlchemy Model
-        blog_post = blogPostModel(title="Hello World Today")
+        blog_post = BlogPostModel(title="Hello World Today")
 
-        file_uploads.create_uploads(blog_post, files=[my_video, placeholder_img])
+        file_uploads.create_files(blog_post, files=[my_video, placeholder_img])
+
+        # Update files
+        file_uploads.update_files(BlogPostModel, files=[my_video])
+
+        # Update file name
+        file_uploads.update_file_name(BlogPostModel, my_video, new_filename="new_name")
+
+        # Stream a file
+        # First get your entity
+        my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
+        file_upload.stream_file(blog_post, filename=["my_video"])
+
+        # File Url paths
+        file_upload.get_file_url("placeholder_img")
+
+
 
 """
 import os
 from warnings import warn
+from flask import send_from_directory
 from werkzeug.utils import secure_filename
 
 
@@ -39,11 +56,13 @@ from app import ALLOWED_EXTENSIONS
 
 class FileUploads:
 
+    config = {}
+
     def allowed_file(self, filename):
         return "." in filename and \
             filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-    def create_uploads(self, **kwargs):
+    def create_files(self, **kwargs):
         file_data = []
         for f in kwargs.get("files"):
             file_data.append(self.create_file_dict(f))
@@ -78,3 +97,26 @@ class FileUploads:
 
     def save_file(self, file, config):
         file.save(os.path.join(config["UPLOAD_FOLDER"]))
+
+    def stream_file(self, model, **kwargs):
+        """TODO """
+        return send_from_directory(
+            self.config["UPLOAD_FOLDER"],
+            f"{model.id}"
+            f"{self.get_file_ext(kwargs.get('filename'))}"
+            f".{model['file_type']}",
+            conditional=True,
+        )
+
+    def get_file_ext(self, filename):
+        """
+        This checks which file in the table we need to stream
+        and returns the extension name
+        :param filename:
+        :return:
+        """
+        pass
+
+    def get_file_url(self, filename):
+        """returns file url"""
+        pass
