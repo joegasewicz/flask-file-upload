@@ -1,4 +1,5 @@
 from typing import List
+from warnings import warn
 
 
 class Config:
@@ -10,7 +11,15 @@ class Config:
     max_content_length: int
 
     def init_config(self, app):
-        self.upload_folder = app.config.get("UPLOAD_FOLDER")
-        self.allowed_extensions = app.config.get("ALLOWED_EXTENSIONS")
+        try:
+            self.upload_folder = app.config["UPLOAD_FOLDER"]
+        except KeyError as _:
+            raise("Flask-File-Uploads: UPLOAD_FOLDER must be set")
+        try:
+            self.allowed_extensions = app.config["ALLOWED_EXTENSIONS"]
+        except KeyError as _:
+            self.allowed_extensions = ["jpg", "png", "mov", "mp4", "mpg"]
+            warn("Flask-File-Uploads: ALLOWED_EXTENSIONS is not set."
+                 "Defaulting to: ['jpg', 'png', 'mov', 'mp4', 'mpg']")
         self.max_content_length = app.config.get("MAX_CONTENT_LENGTH")
 
