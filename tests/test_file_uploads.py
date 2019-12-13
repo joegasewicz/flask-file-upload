@@ -2,16 +2,16 @@ from flask import Flask
 
 from flask_file_upload.file_uploads import FileUploads
 from tests.fixtures.models import mock_blog_model
-from tests.fixtures.app import create_app, app
+from tests.fixtures.app import create_app, flask_app
 
 
 class TestFileUploads:
 
 
-    def test_init_app(self, create_app, mock_blog_model):
+    def test_init_app(self, create_app, mock_blog_model, flask_app):
 
         file_uploads = FileUploads()
-        file_uploads.init_app(app)
+        file_uploads.init_app(flask_app)
         assert isinstance(file_uploads.app, Flask)
 
 
