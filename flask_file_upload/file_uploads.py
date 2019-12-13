@@ -17,6 +17,16 @@
         ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
         MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
 
+        # Setup
+
+        db = SQLAlchemy()
+        file_uploads = FileUploads()
+
+        # FlaskFileUploads needs to do some work with your SqlAlchemy model
+        # Pass in an instance after Flask-SqlAlchemy's `db instance
+        class MyModel(db, file_uploads):
+           ...
+`
         # define files to be upload:
         # (This is an example of a video with placeholder image attached):
 
