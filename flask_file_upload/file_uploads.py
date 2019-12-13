@@ -47,7 +47,7 @@
 """
 import os
 from warnings import warn
-from flask import send_from_directory
+from flask import send_from_directory, Flask
 from werkzeug.utils import secure_filename
 
 from ._config import Config
@@ -55,13 +55,16 @@ from ._config import Config
 
 class FileUploads:
 
+    app: Flask
+
     config: Config = Config()
 
-    def __init__(self, app):
+    def __init__(self, app=None):
         if app:
             self.init_app(app)
 
     def init_app(self, app):
+        self.app = app
         self.config.init_config(app)
 
     # def allowed_file(self, filename):
