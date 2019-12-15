@@ -52,7 +52,7 @@
         # Stream a file
         # First get your entity
         my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
-        file_upload.stream_file(blog_post, filename=["my_video"])
+        file_upload.stream_file(blog_post, filename="my_video")
 
         # File Url paths
         file_upload.get_file_url(blog_post, filename="placeholder_img")
