@@ -20,13 +20,13 @@
         # Setup
 
         db = SQLAlchemy()
-        file = FileUploads()
+        file_uploads = FileUploads()
 
         # FlaskFileUploads needs to do some work with your SqlAlchemy model
         # Pass in an instance after Flask-SqlAlchemy's `db instance
         class MyModel(db, uploads):
-           my_video = file.Column()
-           placeholder_img = file.Column()
+           my_video = file_uploads.Column()
+           placeholder_img = file_uploads.Column()
 
         # define files to be upload:
         # (This is an example of a video with placeholder image attached):
@@ -38,7 +38,10 @@
         # Get main form data and pass to your SqlAlchemy Model
         blog_post = BlogPostModel(title="Hello World Today")
 
-        file_uploads.save_files(blog_post, files=[my_video, placeholder_img])
+        file_uploads.save_files(blog_post, files={
+            "my_video": my_video,
+            "placeholder_img": placeholder_img,
+        })
 
         # Update files
         file_uploads.update_files(BlogPostModel, files=[my_video])
