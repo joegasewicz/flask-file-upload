@@ -20,13 +20,14 @@
         # Setup
 
         db = SQLAlchemy()
-        file_uploads = FileUploads()
+        file = FileUploads()
 
         # FlaskFileUploads needs to do some work with your SqlAlchemy model
         # Pass in an instance after Flask-SqlAlchemy's `db instance
-        class MyModel(db, file_uploads):
-           ...
-`
+        class MyModel(db, uploads):
+           my_video = file.Column()
+           placeholder_img = file.Column()
+
         # define files to be upload:
         # (This is an example of a video with placeholder image attached):
 
