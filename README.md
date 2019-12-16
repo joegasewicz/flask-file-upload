@@ -32,10 +32,12 @@ Decorate your SqlAlchemy model with file_upload's Model class:
  ````python
     @file_upload.Model
     class ModelTest(db.Model):
-        __tablename__ = "tests"\
+        __tablename__ = "tests"
         id = db.Column(db.Integer, primary_key=True)
+        
         # Your files -  Notice how we pass in the SqlAlchemy instance
         # or `db` to the `file_uploads.Column` class:
+        
         my_placeholder = file_upload.Column(db)
         my_video = file_upload.Column(db)
 ````
