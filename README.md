@@ -1,4 +1,4 @@
-# Flask File Upload
+![FlaskFileUpload](assets/ffu_logo.png?raw=true "Title")
 
 Library that works with Flask & SqlAlchemy to store
 files in your database
