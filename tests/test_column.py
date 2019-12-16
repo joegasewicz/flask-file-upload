@@ -1,4 +1,5 @@
 from flask_file_upload.file_uploads import FileUploads
+from tests.fixtures.app import db
 
 
 class TestColumn:
@@ -7,11 +8,13 @@ class TestColumn:
 
         file_uploads = FileUploads()
 
-        @file_uploads.Column("test")
+        @file_uploads.Column("test", db=db)
         class ModelTest:
             pass
 
         model_test = ModelTest()
 
-        assert model_test.file_name == "test"
+        assert hasattr(model_test, "file_name")
+        assert hasattr(model_test, "test_mime_type")
+        assert hasattr(model_test, "test_file_type")
 
