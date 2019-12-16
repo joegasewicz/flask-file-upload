@@ -30,7 +30,7 @@ class Column:
                 :return: ItemsView[str, str]
                 """
                 col_dict = {
-                    f"file_name": self.db.Column(self.db.String),
+                    f"{self.file_name}_file_name": self.db.Column(self.db.String),
                     f"{self.file_name}_mime_type": self.db.Column(self.db.String),
                     f"{self.file_name}_file_type": self.db.Column(self.db.String),
                 }

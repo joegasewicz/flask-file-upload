@@ -14,7 +14,7 @@ class TestColumn:
 
         model_test = ModelTest()
 
-        assert hasattr(model_test, "file_name")
+        assert hasattr(model_test, "test_file_name")
         assert hasattr(model_test, "test_mime_type")
         assert hasattr(model_test, "test_file_type")
 
