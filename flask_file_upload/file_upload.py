@@ -3,7 +3,7 @@ Flask File Upload
 
     # Public api:
 
-        file_uploads = FileUploads(app)
+        file_uploads = FileUpload(app)
 
     ##### General Flask config options
     ````python
@@ -16,7 +16,7 @@ Flask File Upload
     ##### Setup
     ````python
         db = SQLAlchemy()
-        file_uploads = FileUploads()
+        file_uploads = FileUpload()
     ````
 
 
@@ -85,7 +85,7 @@ from .model import Model
 from .column import Column
 
 
-class FileUploads:
+class FileUpload:
 
     app: Flask
 

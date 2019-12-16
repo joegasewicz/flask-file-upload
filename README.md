@@ -26,21 +26,21 @@ Flask File Upload
 ##### Setup
 ````python
     db = SQLAlchemy()
-    file_uploads = FileUploads()
+    file_upload = FileUpload()
 ````
 
 
 ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
-Decorate your SqlAlchemy model with file_uploads's Model class:
+Decorate your SqlAlchemy model with file_upload's Model class:
  ````python
-    @file_uploads.Model
+    @file_upload.Model
     class ModelTest(db.Model):
         __tablename__ = "tests"
         id = db.Column(db.Integer, primary_key=True)
         # Your files -  Notice how we pass in the SqlAlchemy instance
         # (in this case we named it `db`) to the `file_uploads.Column` class:
-        my_placeholder = file_uploads.Column(db)
-        my_video = file_uploads.Column(db)
+        my_placeholder = file_upload.Column(db)
+        my_video = file_upload.Column(db)
 ````
 
 ##### define files to be upload:
@@ -55,7 +55,7 @@ Decorate your SqlAlchemy model with file_uploads's Model class:
 ````python
     blog_post = BlogPostModel(title="Hello World Today")
     
-    file_uploads.save_files(blog_post, files={
+    file_upload.save_files(blog_post, files={
         "my_video": my_video,
         "placeholder_img": placeholder_img,
     })
@@ -63,13 +63,13 @@ Decorate your SqlAlchemy model with file_uploads's Model class:
 
 ##### Update files
 ````python
-    file_uploads.update_files(BlogPostModel, files=[my_video])
+    file_upload.update_files(BlogPostModel, files=[my_video])
 ````
 
 
 ##### Update file name
 ````python
-    file_uploads.update_file_name(BlogPostModel, my_video, new_filename="new_name")
+    file_upload.update_file_name(BlogPostModel, my_video, new_filename="new_name")
 ````
 
 

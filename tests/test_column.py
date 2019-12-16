@@ -1,4 +1,4 @@
-from flask_file_upload.file_uploads import FileUploads
+from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.app import db
 
 
@@ -6,14 +6,14 @@ class TestColumn:
 
     def test_column(self):
 
-        file_uploads = FileUploads()
+        file_upload = FileUpload()
 
-        @file_uploads.Model
+        @file_upload.Model
         class ModelTest(db.Model):
             __tablename__ = "tests"
             id = db.Column(db.Integer, primary_key=True)
-            my_placeholder = file_uploads.Column(db)
-            my_video = file_uploads.Column(db)
+            my_placeholder = file_upload.Column(db)
+            my_video = file_upload.Column(db)
 
         model_test = ModelTest()
 

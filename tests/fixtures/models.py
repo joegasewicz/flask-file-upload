@@ -3,9 +3,9 @@ import pytest
 import sqlalchemy
 
 from .app import db
-from flask_file_upload.file_uploads import FileUploads
+from flask_file_upload.file_upload import FileUpload
 
-file_uploads = FileUploads()
+file_uploads = FileUpload()
 
 
 # @file_uploads.Model("my_video")

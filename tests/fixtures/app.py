@@ -2,7 +2,7 @@ import pytest
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
-from flask_file_upload.file_uploads import FileUploads
+from flask_file_upload.file_upload import FileUpload
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
@@ -19,7 +19,7 @@ def blog():
         placeholder_img = request.files["placeholder_img"]
         blog_post = MockBlogModel(name="My Blog Post")
 
-        files_upload = FileUploads()
+        files_upload = FileUpload()
 
         blog = files_upload.save_files(blog_post, files=[my_video, placeholder_img])
 
