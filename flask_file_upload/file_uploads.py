@@ -81,6 +81,7 @@ from werkzeug.utils import secure_filename
 from typing import Any, List, Tuple, Dict
 
 from ._config import Config
+from .column import Column
 
 
 class FileUploads:
@@ -92,6 +93,7 @@ class FileUploads:
     model: Tuple = None
 
     def __init__(self, app=None):
+        self.Column = Column
         if app:
             self.init_app(app)
 

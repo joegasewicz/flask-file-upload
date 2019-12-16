@@ -7,4 +7,11 @@ class TestColumn:
 
         file_uploads = FileUploads()
 
-        
+        @file_uploads.Column("test")
+        class ModelTest:
+            pass
+
+        model_test = ModelTest()
+
+        assert model_test.file_name == "test"
+
