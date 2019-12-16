@@ -8,7 +8,7 @@ from flask_file_upload.file_uploads import FileUploads
 file_uploads = FileUploads()
 
 
-# @file_uploads.Column("my_video")
+# @file_uploads.Model("my_video")
 class MockBlogModel(db.Model):
     __tablename__ = "blogs"
     id = db.Column(db.Integer(), primary_key=True)

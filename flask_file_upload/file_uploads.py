@@ -23,10 +23,10 @@ Flask File Upload
     ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
     Decorate your SqlAlchemy model with your files
      ````python
-        @file_uploads.Column("my_video")
-        @file_uploads.Column("placeholder_img")
+        @file_uploads.Model("my_video")
+        @file_uploads.Model("placeholder_img")
         class MyModel(db, uploads):
-           id = Column(Integer, primary_key=True)
+           id = Model(Integer, primary_key=True)
     ````
 
     ##### define files to be upload:
@@ -81,6 +81,7 @@ from werkzeug.utils import secure_filename
 from typing import Any, List, Tuple, Dict
 
 from ._config import Config
+from .model import Model
 from .column import Column
 
 
@@ -90,9 +91,8 @@ class FileUploads:
 
     config: Config = Config()
 
-    model: Tuple = None
-
     def __init__(self, app=None):
+        self.Model = Model
         self.Column = Column
         if app:
             self.init_app(app)
