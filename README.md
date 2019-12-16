@@ -22,14 +22,29 @@ Flask File Upload
 
 ##### Setup
 ````python
+    # my_app.py
+    
+    app = Flask(__name__)
+
     db = SQLAlchemy()
     file_upload = FileUpload()
+    
+    def create_app():
+        db.init_app(app)
+        file_upload.init_app(app)
+        
+    # Or we can pass directly:
+    db = SQLAlchemy(app)
+    file_upload = FileUpload(app)
 ````
 
 
 ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
 Decorate your SqlAlchemy model with file_upload's Model class:
  ````python
+    from my_app import db, file_upload
+    
+    
     @file_upload.Model
     class ModelTest(db.Model):
         __tablename__ = "tests"
