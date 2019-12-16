@@ -1,71 +1,84 @@
 # Flask File Upload
 
-Flask File Upload is a Python library that makes uploading files easy.
+Library that works with Flask & SqlAlchemy to store
+files in your database
 
 ## Installation
 
 ```bash
 pip install flask-file-upload
 ```
-```python
-    Flask File Upload
 
-    Library that works with Flask & SqlAlchemy to store
-    files in your database
+Flask File Upload
 
-    orig_name
-    mime_type
-    file_type
+# Public api:
 
-    # Public api:
+    file_uploads = FileUploads(app)
 
-        file_uploads = FileUploads(app)
-
-        # General Flask config options
-        UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/lessons")
-        ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
-        MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
-
-        # Setup
-
-        db = SQLAlchemy()
-        file_uploads = FileUploads()
-
-        # FlaskFileUploads needs to do some work with your SqlAlchemy model
-        # Pass in an instance after Flask-SqlAlchemy's `db instance
-        
-        @file_uploads.column("my_video")
-        @file_uploads.column("placeholder_img")
-        class MyModel(db, uploads):
-           id = Column(Integer, primary_key=True)
-
-        # define files to be upload:
-        # (This is an example of a video with placeholder image attached):
-
-        my_video = request.files["my_video"]
-        placeholder_img = request.files["placeholder_img"]
+##### General Flask config options
+````python
+    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/lessons")
+    ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
+    MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
+````
 
 
-        # Get main form data and pass to your SqlAlchemy Model
-        blog_post = BlogPostModel(title="Hello World Today")
+##### Setup
+````python
+    db = SQLAlchemy()
+    file_uploads = FileUploads()
+````
 
-        file_uploads.save_files(blog_post, files={
-            "my_video": my_video,
-            "placeholder_img": placeholder_img,
-        })
 
-        # Update files
-        file_uploads.update_files(BlogPostModel, files=[my_video])
+##### FlaskFileUploads needs to do some work with your SqlAlchemy model
+Pass in an instance after Flask-SqlAlchemy's `db instance
+ ````python
+    @file_uploads.column("my_video")
+    @file_uploads.column("placeholder_img")
+    class MyModel(db, uploads):
+       id = Column(Integer, primary_key=True)
+````
 
-        # Update file name
-        file_uploads.update_file_name(BlogPostModel, my_video, new_filename="new_name")
+##### define files to be upload:
+    (This is an example of a video with placeholder image attached):
+````python
+    my_video = request.files["my_video"]
+    placeholder_img = request.files["placeholder_img"]
+````
 
-        # Stream a file
-        # First get your entity
-        my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
-        file_upload.stream_file(blog_post, filename="my_video")
 
-        # File Url paths
-        file_upload.get_file_url(blog_post, filename="placeholder_img")
+##### Get main form data and pass to your SqlAlchemy Model
+````python
+    blog_post = BlogPostModel(title="Hello World Today")
+    
+    file_uploads.save_files(blog_post, files={
+        "my_video": my_video,
+        "placeholder_img": placeholder_img,
+    })
+````
 
-```
+##### Update files
+````python
+    file_uploads.update_files(BlogPostModel, files=[my_video])
+````
+
+
+##### Update file name
+````python
+    file_uploads.update_file_name(BlogPostModel, my_video, new_filename="new_name")
+````
+
+
+##### Stream a file
+````python
+    First get your entity
+    my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
+    file_upload.stream_file(blog_post, filename="my_video")
+````
+
+
+##### File Url paths
+````python
+    file_upload.get_file_url(blog_post, filename="placeholder_img")
+````
+
