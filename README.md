@@ -31,7 +31,7 @@ Flask File Upload
 
 
 ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
-Decorate your SqlAlchemy model with the file_uploads's Model class:
+Decorate your SqlAlchemy model with file_uploads's Model class:
  ````python
     @file_uploads.Model
     class ModelTest(db.Model):
