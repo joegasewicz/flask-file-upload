@@ -33,10 +33,14 @@ Flask File Upload
 ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
 Decorate your SqlAlchemy model with your files
  ````python
-    @file_uploads.Column("my_video")
-    @file_uploads.Column("placeholder_img")
-    class MyModel(db, uploads):
-       id = Column(Integer, primary_key=True)
+    @file_uploads.Model
+    class ModelTest(db.Model):
+        __tablename__ = "tests"
+        id = db.Column(db.Integer, primary_key=True)
+        # Your files -  Notice how we pass in the SqlAlchemy instance
+        # (in this case we named it `db`) to the `file_uploads.Column` class:
+        my_placeholder = file_uploads.Column(db)
+        my_video = file_uploads.Column(db)
 ````
 
 ##### define files to be upload:
