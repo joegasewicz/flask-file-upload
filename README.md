@@ -11,9 +11,6 @@ pip install flask-file-upload
 
 Flask File Upload
 
-# Public api:
-
-    file_uploads = FileUploads(app)
 
 ##### General Flask config options
 ````python
