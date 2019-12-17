@@ -117,11 +117,15 @@ class FileUpload:
         """
         self.model = model
         file_data = []
-        for k in kwargs.get("files").keys():
-            file_data.append(self.create_file_dict(k))
+        for k, v in kwargs.get("files").items():
+            file_data.append(self.create_file_dict(v))
         return file_data
 
     def create_file_dict(self, file):
+        """
+        :param file:
+        :return:
+        """
         if file.filename != "" and file and self.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             mime_type = file.content_type
