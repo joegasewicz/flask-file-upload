@@ -83,6 +83,7 @@ from typing import Any, List, Tuple, Dict
 from ._config import Config
 from .model import Model
 from .column import Column
+from .file_utils import FileUtils
 
 
 class FileUpload:
@@ -92,6 +93,8 @@ class FileUpload:
     config: Config = Config()
 
     file_data: List[Any]
+
+    file_utils: FileUtils
 
     def __init__(self, app=None):
         self.Model = Model
@@ -149,6 +152,7 @@ class FileUpload:
         """
         Save in dir based on __tablename__ / id / filename.mp4
         """
+        self.file_utils = FileUtils(model, self.config)
         self.set_file_data(**kwargs)
         self.set_model_attrs(model)
 
@@ -176,9 +180,6 @@ class FileUpload:
         :return:
         """
         pass
-
-    def save_file(self, file, config):
-        file.save(os.path.join(config["UPLOAD_FOLDER"]))
 
     def stream_file(self, model, **kwargs):
         """TODO """
