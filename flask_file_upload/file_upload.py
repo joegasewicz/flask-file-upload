@@ -107,14 +107,18 @@ class FileUpload:
 
     def save_files(self, model: Tuple, **kwargs) -> List[Dict[str, Any]]:
         """
+        1. Get files from request
+        2. Check that files exist in model
+        3. Create list of dicts
+        4.
         :param model: Sets the model attribute
         :param kwargs: files: List - request.files
         :return:
         """
         self.model = model
         file_data = []
-        for f in kwargs.get("files"):
-            file_data.append(self.create_file_dict(f))
+        for k in kwargs.get("files").keys():
+            file_data.append(self.create_file_dict(k))
         return file_data
 
     def create_file_dict(self, file):
@@ -123,40 +127,14 @@ class FileUpload:
             mime_type = file.content_type
             file_type = filename.split(".")[1]
             return {
-                f"_filename": filename,
-                f"_mime_type": mime_type,
-                f"_file_type": file_type,
+                f"{filename}_file_name": filename,
+                f"{filename}_mime_type": mime_type,
+                f"{filename}_file_type": file_type,
             }
         else:
             warn("Flask-File-Upload: No files were saved")
             return {}
 
-    def filename_index(self, attr):
-        """Gets the filename index"""
-        class_attrs = dir(self.model)
-        for a in class_attrs:
-            if attr == a:
-                return f"{self.int_from_str(attr)}"
-        return attr
-
-    def int_from_str(self, name: str):
-        """
-        Check to see if a number exists at the
-        end of a string & add 1
-        :param name:
-        :return:
-        """
-        nums = []
-        name_str = []
-        for s in name:
-            try:
-                nums.append(int(s))
-            except ValueError:
-                name_str.append(s)
-        if len(nums) > 0:
-            return f'{"".join(name_str)}{(int("".join(map(str, nums)))+1)}'
-        else:
-            return f'{name}_1'
 
     def update_model_attr(self):
         """

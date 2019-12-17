@@ -14,6 +14,8 @@ class Model:
 
     new_cols: List[Dict[str, str]] = []
 
+    keys: List[str] = ["file_name", "mime_type", "file_type"]
+
     def __init__(self, _class):
         update_wrapper(self, super)
         super(Model, self).__init__()
@@ -55,13 +57,15 @@ class Model:
         for col_name in self.file_names:
             delattr(self._class, col_name)
 
-    def columns_dict(self, file_name: str, db) -> Dict[str, str]:
+    def columns_dict(self, file_name: str, db) -> Dict[str, Any]:
         """
-        :return: ItemsView[str, str]
+        :return: Dict[str, Any]
         """
-        return {
-            f"{file_name}_file_name": db.Column(db.String),
-            f"{file_name}_mime_type": db.Column(db.String),
-            f"{file_name}_file_type": db.Column(db.String),
-        }
+        return Model.create_keys(self.keys, file_name, db.Column(db.String))
 
+    @staticmethod
+    def create_keys(keys: List[str], filename: str, value: Any = None) -> Dict[str, None]:
+        col_dict = {}
+        for k in keys:
+            col_dict[f"{filename}__{k}"] = value
+        return col_dict

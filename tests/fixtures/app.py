@@ -19,9 +19,12 @@ def blog():
         placeholder_img = request.files["placeholder_img"]
         blog_post = MockBlogModel(name="My Blog Post")
 
-        files_upload = FileUpload()
+        file_upload = FileUpload()
 
-        blog = files_upload.save_files(blog_post, files=[my_video, placeholder_img])
+        blog = file_upload.save_files(blog_post, files={
+            "my_video": my_video,
+            "placeholder_img": placeholder_img,
+        })
 
         db.session.add(blog)
         db.session.commit()
