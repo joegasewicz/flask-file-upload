@@ -91,37 +91,19 @@ class FileUpload:
 
     config: Config = Config()
 
+    file_data: List[Any]
+
     def __init__(self, app=None):
         self.Model = Model
         self.Column = Column
         if app:
             self.init_app(app)
 
-    def init_app(self, app):
-        self.app = app
-        self.config.init_config(app)
-
     def allowed_file(self, filename):
         return "." in filename and \
             filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
 
-    def save_files(self, model: Tuple, **kwargs) -> List[Dict[str, Any]]:
-        """
-        1. Get files from request
-        2. Check that files exist in model
-        3. Create list of dicts
-        4.
-        :param model: Sets the model attribute
-        :param kwargs: files: List - request.files
-        :return:
-        """
-        self.model = model
-        file_data = []
-        for k, v in kwargs.get("files").items():
-            file_data.append(self.create_file_dict(v))
-        return file_data
-
-    def create_file_dict(self, file):
+    def create_file_dict(self, filename: str, file):
         """
         :param file:
         :return:
@@ -139,6 +121,41 @@ class FileUpload:
             warn("Flask-File-Upload: No files were saved")
             return {}
 
+    def get_store_name(self, model):
+        """TODO Attach to model"""
+        model.store_name = f"{model.id}.{model.file_type}"
+
+    def init_app(self, app):
+        self.app = app
+        self.config.init_config(app)
+
+    def save_files(self, model: Tuple, **kwargs) -> None:
+        """
+        1. Get files from request ->
+        1.5 Add to list
+        2. Check that files exist in model
+        2.5
+        3. Create list of dicts
+        4. Save in dir based on __tablename__ / id / filename.mp4
+        """
+        self.set_file_data(**kwargs)
+        self.set_model_attrs(model)
+
+    def set_file_data(self, **file_data):
+        for k, v in file_data.get("files").items():
+            self.file_data.append(self.create_file_dict(k, v))
+        return self.file_data
+
+    def set_model_attrs(self, model: Any) -> None:
+        """
+        Iterate over our file_data & set each attribute with the
+        correct file meta data
+        :param model:
+        :return:
+        """
+        for d in self.file_data:
+            for k, v in d.items():
+                setattr(model, k, v)
 
     def update_model_attr(self):
         """
@@ -149,10 +166,6 @@ class FileUpload:
         :return:
         """
         pass
-
-    def get_store_name(self, model):
-        """TODO Attach to model"""
-        model.store_name = f"{model.id}.{model.file_type}"
 
     def save_file(self, file, config):
         file.save(os.path.join(config["UPLOAD_FOLDER"]))

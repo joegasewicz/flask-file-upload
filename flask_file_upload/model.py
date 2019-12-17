@@ -1,7 +1,10 @@
 """
    Public SqlAlchemy class decorator
+
+    meta:
+        -
 """
-from typing import Any, List, Tuple, Dict, ItemsView
+from typing import Any, List, Tuple, Dict, ItemsView, Set
 from functools import update_wrapper
 from copy import deepcopy
 
@@ -14,7 +17,7 @@ class Model:
 
     new_cols: List[Dict[str, str]] = []
 
-    keys: List[str] = ["file_name", "mime_type", "file_type"]
+    keys: Tuple[str] = ("file_name", "file_type", "mime_type")
 
     def __init__(self, _class):
         update_wrapper(self, super)
@@ -64,7 +67,7 @@ class Model:
         return Model.create_keys(self.keys, file_name, db.Column(db.String))
 
     @staticmethod
-    def create_keys(keys: List[str], filename: str, value: Any = None) -> Dict[str, None]:
+    def create_keys(keys: Tuple[str], filename: str, value: Any = None) -> Dict[str, None]:
         col_dict = {}
         for k in keys:
             col_dict[f"{filename}__{k}"] = value
