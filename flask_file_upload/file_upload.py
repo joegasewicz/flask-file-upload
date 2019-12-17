@@ -112,8 +112,6 @@ class FileUpload:
         :param attr:
         :return:
         """
-        print(f"here------{attr}")
-        print(f"here------{dir(model)}")
         if not hasattr(model, attr):
             raise AttributeError("Flask-File-Upload: Attribute does not exist on your model, "
                                  "please check your files has been declared correctly on your model. "
