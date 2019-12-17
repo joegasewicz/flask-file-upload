@@ -103,6 +103,22 @@ class FileUpload:
         return "." in filename and \
             filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
 
+    def check_attrs(self, model: Any, attr: str):
+        """
+        Before we can set the attribute on the Model we check
+        that this attributes exists so it matches with the
+        db's table columns.
+        :param model:
+        :param attr:
+        :return:
+        """
+        print(f"here------{attr}")
+        print(f"here------{dir(model)}")
+        if not hasattr(model, attr):
+            raise AttributeError("Flask-File-Upload: Attribute does not exist on your model, "
+                                 "please check your files has been declared correctly on your model. "
+                                 "See https://github.com/joegasewicz/Flask-File-Upload")
+
     def create_file_dict(self, filename: str, file):
         """
         :param file:
@@ -131,12 +147,7 @@ class FileUpload:
 
     def save_files(self, model: Tuple, **kwargs) -> None:
         """
-        1. Get files from request ->
-        1.5 Add to list
-        2. Check that files exist in model
-        2.5
-        3. Create list of dicts
-        4. Save in dir based on __tablename__ / id / filename.mp4
+        Save in dir based on __tablename__ / id / filename.mp4
         """
         self.set_file_data(**kwargs)
         self.set_model_attrs(model)
@@ -148,13 +159,12 @@ class FileUpload:
 
     def set_model_attrs(self, model: Any) -> None:
         """
-        Iterate over our file_data & set each attribute with the
-        correct file meta data
         :param model:
-        :return:
+        :return: None
         """
         for d in self.file_data:
             for k, v in d.items():
+                self.check_attrs(model, k)
                 setattr(model, k, v)
 
     def update_model_attr(self):
