@@ -14,21 +14,17 @@ class FileUtils:
 
     config: Config
 
-    def __init__(self, model, config):
+    id: int
+
+    def __init__(self, model, config, **kwargs):
         self.config = config
         self.model = model
-        self.set_table_name()
+        self.id = kwargs.get("id")
+        self.table_name = kwargs.get("table_name")
 
     def allowed_file(self, filename):
         return "." in filename and \
             filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
-
-    def set_table_name(self) -> None:
-        """
-        Set on class initiation
-        :return: None
-        """
-        self.table_name = self.model.__tablename__
 
     def get_file_root_path(self):
         return f'{os.path.join(self.config.upload_folder)}'

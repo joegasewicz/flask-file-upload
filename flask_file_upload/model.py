@@ -19,6 +19,8 @@ class Model:
 
     keys: Tuple[str] = ("file_name", "file_type", "mime_type")
 
+    primary_key: str
+
     def __init__(self, _class):
         update_wrapper(self, super)
         super(Model, self).__init__()
@@ -72,3 +74,22 @@ class Model:
         for k in keys:
             col_dict[f"{filename}__{k}"] = value
         return col_dict
+
+    @staticmethod
+    def get_primary_key(model):
+        """
+        This will always target the first primary key in
+        the list (in case there are multiple being used)
+        :param model:
+        :return:
+        """
+        if hasattr(model, "__mapper__"):
+            return model.__mapper__.primary_key[0].name
+
+    @staticmethod
+    def set_table_name(model: Any) -> str:
+        """
+        Set on class initiation
+        :return: None
+        """
+        return model.__tablename__

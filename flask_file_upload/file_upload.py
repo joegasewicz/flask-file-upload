@@ -144,11 +144,16 @@ class FileUpload:
         self.app = app
         self.config.init_config(app)
 
-    def save_files(self, model: Tuple, **kwargs) -> None:
+    def save_files(self, model, **kwargs) -> None:
         """
         Save in dir based on __tablename__ / id / filename.mp4
         """
-        self.file_utils = FileUtils(model, self.config)
+        self.file_utils = FileUtils(
+            model,
+            self.config,
+            id=self.Model.get_primary_key(model),
+            table_name=self.Model.get_table_name(model)
+        )
         self.set_file_data(**kwargs)
         self.set_model_attrs(model)
 
