@@ -102,10 +102,6 @@ class FileUpload:
         if app:
             self.init_app(app)
 
-    def allowed_file(self, filename):
-        return "." in filename and \
-            filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
-
     def check_attrs(self, model: Any, attr: str):
         """
         Before we can set the attribute on the Model we check
@@ -127,7 +123,7 @@ class FileUpload:
         :param file:
         :return:
         """
-        if file.filename != "" and file and self.allowed_file(file.filename):
+        if file.filename != "" and file and self.file_utils.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             mime_type = file.content_type
             file_type = filename.split(".")[1]
