@@ -113,9 +113,11 @@ class FileUpload:
         :return:
         """
         if not hasattr(model, attr):
-            raise AttributeError("Flask-File-Upload: Attribute does not exist on your model, "
-                                 "please check your files has been declared correctly on your model. "
-                                 "See https://github.com/joegasewicz/Flask-File-Upload")
+            raise AttributeError(
+                "Flask-File-Upload: Attribute does not exist on your model, "
+                "please check your files has been declared correctly on your model. "
+                "See https://github.com/joegasewicz/Flask-File-Upload"
+            )
 
     def create_file_dict(self, filename: str, file):
         """
