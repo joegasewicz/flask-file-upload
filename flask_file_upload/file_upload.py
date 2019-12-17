@@ -127,9 +127,9 @@ class FileUpload:
             mime_type = file.content_type
             file_type = filename.split(".")[1]
             return {
-                f"{filename}_file_name": filename,
-                f"{filename}_mime_type": mime_type,
-                f"{filename}_file_type": file_type,
+                f"{filename}__{self.Model.keys[0]}": filename,
+                f"{filename}__{self.Model.keys[1]}": mime_type,
+                f"{filename}__{self.Model.keys[2]}": file_type,
             }
         else:
             warn("Flask-File-Upload: No files were saved")
