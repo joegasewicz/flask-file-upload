@@ -32,8 +32,10 @@ class FileUtils:
     def postfix_file_path(self, id: int, filename: str):
         return f"/{self.table_name}/{id}/{filename}"
 
-    def get_file_path(self, id: int, filename: str, file_type: str):
-        return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(id, filename)}.{file_type}")
+    def get_file_path(self, id: int, filename: str):
+        return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(id, filename)}")
 
-    def save_file(self, file, id: int, file_type: str):
-        file.save(self.get_file_path(id, file.filename, file_type))
+    def save_file(self, file, id: int):
+        print(f"now --> {file.filename}")
+        print(f"her-----> {self.get_file_path(id, file.filename)}")
+        file.save(self.get_file_path(id, file.filename))

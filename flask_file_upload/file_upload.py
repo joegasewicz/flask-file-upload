@@ -120,11 +120,7 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
-    @staticmethod
-    def get_file_type(file):
-        return file.filename.split(".")[1]
-
-    def create_file_dict(self, filename: str, file):
+    def create_file_dict(self, file):
         """
         :param file:
         :return:
@@ -132,7 +128,7 @@ class FileUpload:
         if file.filename != "" and file and self.file_utils.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             mime_type = file.content_type
-            file_type = FileUpload.get_file_type(file)
+            file_type = file.filename.split(".")[1]
             return {
                 f"{filename}__{self.Model.keys[0]}": filename,
                 f"{filename}__{self.Model.keys[1]}": mime_type,
@@ -164,14 +160,20 @@ class FileUpload:
         self.file_utils = FileUtils(
             model,
             self.config,
-            id=self.Model.get_primary_key(model),  # TODO
+            id=self.Model.get_primary_key(model),
             table_name=self.Model.get_table_name(model)
         )
         # Save files to dirs
-        for a in self.files:
-            file_type = FileUpload.get_file_type(a)
+        self._save_files_to_dir(model)
+
+    def _save_files_to_dir(self, model):
+        """
+        :param model:
+        :return:
+        """
+        for f in self.files:
             id_val = self.Model.get_id_value(model)
-            self.file_utils.save_file(a, id_val, file_type)
+            self.file_utils.save_file(f, id_val)
 
     def _set_file_data(self, **file_data):
         """
@@ -181,7 +183,7 @@ class FileUpload:
         """
         for k, v in file_data.get("files").items():
             self.files.append(v)
-            self.file_data.append(self.create_file_dict(k, v))
+            self.file_data.append(self.create_file_dict(v))
         return self.file_data
 
     def _set_model_attrs(self, model: Any) -> None:

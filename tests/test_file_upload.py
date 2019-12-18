@@ -29,7 +29,7 @@ class TestFileUploads:
     def test_set_model_attrs(self, mock_model):
         file_upload = FileUpload()
         file_upload.file_data = self.file_data
-        file_upload.set_model_attrs(mock_model)
+        file_upload._set_model_attrs(mock_model)
         
         assert hasattr(mock_model, "my_video__file_name")
         assert hasattr(mock_model, "my_video__mime_type")
@@ -47,7 +47,7 @@ class TestFileUploads:
 
         with pytest.raises(AttributeError):
             file_upload.file_data[0]["bananas"] = "bananas"
-            file_upload.set_model_attrs(mock_model)
+            file_upload._set_model_attrs(mock_model)
 
     # def test_save_files(self, create_app):
     #     rv = create_app.post("/blog")

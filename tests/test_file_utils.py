@@ -13,6 +13,6 @@ class TestFileUtils:
 
     def test_save_file(self, create_app):
 
-        rv = create_app.post("/config_test", data={"file": (self.file, "tests/my_video.mp4")}, content_type='multipart/form-data')
+        rv = create_app.post("/config_test", data={"file": (self.file, "my_video.mp4")}, content_type='multipart/form-data')
 
         assert "200" in str(rv.status)

@@ -25,8 +25,7 @@ def config_test():
     config.init_config(app)
 
     file_util = FileUtils(mock_blog_model, config, table_name="blogs")
-    print("here----> !!!!", file)
-    file_util.save_file(file, 1, "my_video")
+    file_util.save_file(file, 1)
 
     return {
         "data": "hello"
