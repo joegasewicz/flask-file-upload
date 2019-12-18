@@ -3,10 +3,34 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
 from flask_file_upload.file_upload import FileUpload
+from flask_file_upload.file_utils import FileUtils
+from flask_file_upload._config import Config
 
 app = Flask(__name__)
+app.config["SERVERNAME"] = "127.0.0.1:5000"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+app.config["UPLOAD_FOLDER"] = "tests/test_path"
+app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
+app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024
 db = SQLAlchemy()
+
+
+@app.route("/config_test", methods=["POST"])
+def config_test():
+    from ..fixtures.models import mock_blog_model
+
+    file = request.files["file"]
+
+    config = Config()
+    config.init_config(app)
+
+    file_util = FileUtils(mock_blog_model, config, table_name="blogs")
+    print("here----> !!!!", file)
+    file_util.save_file(file, 1, "my_video")
+
+    return {
+        "data": "hello"
+    }, 200
 
 
 @app.route("/blog", methods=["GET", "POST"])
@@ -39,9 +63,6 @@ def blog():
 
 @pytest.fixture
 def flask_app():
-    app.config["UPLOAD_FOLDER"] = "/test_path"
-    app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
-    app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024
     db.init_app(app)
     return app
 

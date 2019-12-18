@@ -6,7 +6,6 @@
 """
 from typing import Any, List, Tuple, Dict, ItemsView, Set
 from functools import update_wrapper
-from copy import deepcopy
 
 from .column import Column
 
@@ -87,9 +86,26 @@ class Model:
             return model.__mapper__.primary_key[0].name
 
     @staticmethod
-    def set_table_name(model: Any) -> str:
+    def get_table_name(model: Any) -> str:
         """
         Set on class initiation
         :return: None
         """
         return model.__tablename__
+
+    def get_file_type(self, model: Any, filename: str) -> str:
+        """
+        :param model:
+        :param filename:
+        :return: str
+        """
+        return getattr(model, filename, None)
+
+    @staticmethod
+    def get_id_value(model) -> int:
+        """
+        :param model:
+        :return:
+        """
+        return getattr(model, Model.get_primary_key(model), None)
+

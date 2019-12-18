@@ -94,6 +94,8 @@ class FileUpload:
 
     file_data: List[Any]
 
+    files: Any
+
     file_utils: FileUtils
 
     def __init__(self, app=None):
@@ -118,6 +120,10 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
+    @staticmethod
+    def get_file_type(file):
+        return file.filename.split(".")[1]
+
     def create_file_dict(self, filename: str, file):
         """
         :param file:
@@ -126,7 +132,7 @@ class FileUpload:
         if file.filename != "" and file and self.file_utils.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             mime_type = file.content_type
-            file_type = filename.split(".")[1]
+            file_type = FileUpload.get_file_type(file)
             return {
                 f"{filename}__{self.Model.keys[0]}": filename,
                 f"{filename}__{self.Model.keys[1]}": mime_type,
@@ -146,23 +152,39 @@ class FileUpload:
 
     def save_files(self, model, **kwargs) -> None:
         """
-        Save in dir based on __tablename__ / id / filename.mp4
+        :param model:
+        :param kwargs:
+        :return:
         """
+        # Warning: These methods need to set members on the Model class
+        # before we instantiate FileUtils()
+        self._set_file_data(**kwargs)
+        self._set_model_attrs(model)
+
         self.file_utils = FileUtils(
             model,
             self.config,
-            id=self.Model.get_primary_key(model),
+            id=self.Model.get_primary_key(model),  # TODO
             table_name=self.Model.get_table_name(model)
         )
-        self.set_file_data(**kwargs)
-        self.set_model_attrs(model)
+        # Save files to dirs
+        for a in self.files:
+            file_type = FileUpload.get_file_type(a)
+            id_val = self.Model.get_id_value(model)
+            self.file_utils.save_file(a, id_val, file_type)
 
-    def set_file_data(self, **file_data):
+    def _set_file_data(self, **file_data):
+        """
+        Adds items to files & file_data
+        :param file_data:
+        :return:
+        """
         for k, v in file_data.get("files").items():
+            self.files.append(v)
             self.file_data.append(self.create_file_dict(k, v))
         return self.file_data
 
-    def set_model_attrs(self, model: Any) -> None:
+    def _set_model_attrs(self, model: Any) -> None:
         """
         :param model:
         :return: None
