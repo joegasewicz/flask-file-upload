@@ -54,6 +54,7 @@ class TestFileUploads:
             file_upload.file_data[0]["bananas"] = "bananas"
             file_upload._set_model_attrs(mock_model)
 
+    @pytest.mark.j
     def test_save_files(self, create_app):
         data = {
             "my_video": (self.my_video, "my_video.mp4"),

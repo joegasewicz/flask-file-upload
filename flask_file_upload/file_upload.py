@@ -88,15 +88,15 @@ from .file_utils import FileUtils
 
 class FileUpload:
 
-    app: Flask
+    app: Flask = None
 
     config: Config = Config()
 
-    file_data: List[Any]
+    file_data: List[Any] = []
 
-    files: Any
+    files: Any = []
 
-    file_utils: FileUtils
+    file_utils: FileUtils = None
 
     def __init__(self, app=None):
         self.Model = Model
@@ -125,7 +125,7 @@ class FileUpload:
         :param file:
         :return:
         """
-        if file.filename != "" and file and self.file_utils.allowed_file(file.filename):
+        if file.filename != "" and file and FileUtils.allowed_file(file.filename, self.config):
             filename = secure_filename(file.filename)
             mime_type = file.content_type
             file_type = file.filename.split(".")[1]

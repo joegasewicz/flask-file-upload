@@ -93,14 +93,6 @@ class Model:
         """
         return model.__tablename__
 
-    def get_file_type(self, model: Any, filename: str) -> str:
-        """
-        :param model:
-        :param filename:
-        :return: str
-        """
-        return getattr(model, filename, None)
-
     @staticmethod
     def get_id_value(model) -> int:
         """

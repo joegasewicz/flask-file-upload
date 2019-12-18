@@ -56,10 +56,3 @@ class TestModel:
 
         file_upload = FileUpload()
         assert result == file_upload.Model.create_keys(file_upload.Model.keys, "my_video")
-
-    # def test_get_file_type(self):
-    #     class MockClass:
-    #         my_placeholder__file_type = "jpg"
-    #
-    #     model = Model(MockClass)
-    #     assert model.get_file_type(MockClass, "my_placeholder__file_type") == "jpg"

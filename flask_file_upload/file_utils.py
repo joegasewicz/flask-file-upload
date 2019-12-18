@@ -22,9 +22,10 @@ class FileUtils:
         self.id = kwargs.get("id") or "id"
         self.table_name = kwargs.get("table_name")
 
-    def allowed_file(self, filename):
+    @staticmethod
+    def allowed_file(filename, config: Config) -> bool:
         return "." in filename and \
-           filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
+           filename.rsplit(".", 1)[1].lower() in config.allowed_extensions
 
     def postfix_file_path(self, id: int, filename: str):
         return f"/{self.table_name}/{id}/{filename}"

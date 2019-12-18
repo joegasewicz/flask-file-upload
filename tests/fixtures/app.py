@@ -38,8 +38,10 @@ def blog():
     if request.method == "GET":
         pass
     if request.method == "POST":
+
         my_video = request.files["my_video"]
-        placeholder_img = request.files["placeholder_img"]
+        placeholder_img = request.files["my_placeholder"]
+        print("arrived here ------>? ")
         blog_post = MockBlogModel(name="My Blog Post")
 
         file_upload = FileUpload()
