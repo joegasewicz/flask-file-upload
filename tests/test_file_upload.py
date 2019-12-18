@@ -1,5 +1,6 @@
-from flask import Flask
+import os
 import pytest
+from flask import Flask
 
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
@@ -7,6 +8,10 @@ from tests.fixtures.app import create_app, flask_app
 
 
 class TestFileUploads:
+
+    my_video = os.path.join("tests/assets/my_video.mp4")
+    my_placeholder = os.path.join("tests/assets/my_placeholder.png")
+
     file_data = [
         {
             "my_video__file_name": "video1",
@@ -49,7 +54,11 @@ class TestFileUploads:
             file_upload.file_data[0]["bananas"] = "bananas"
             file_upload._set_model_attrs(mock_model)
 
-    # def test_save_files(self, create_app):
-    #     rv = create_app.post("/blog")
-    #     assert "200" in rv.status
+    def test_save_files(self, create_app):
+        data = {
+            "my_video": (self.my_video, "my_video.mp4"),
+            "my_placeholder": (self.my_placeholder, "my_placeholder.png")
+        }
+        rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
+        assert "200" in rv.status
 

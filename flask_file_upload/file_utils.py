@@ -26,9 +26,6 @@ class FileUtils:
         return "." in filename and \
            filename.rsplit(".", 1)[1].lower() in self.config.allowed_extensions
 
-    def get_file_root_path(self):
-        return os.path.join(self.config.upload_folder)
-
     def postfix_file_path(self, id: int, filename: str):
         return f"/{self.table_name}/{id}/{filename}"
 
@@ -36,6 +33,9 @@ class FileUtils:
         return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(id, filename)}")
 
     def save_file(self, file, id: int):
-        print(f"now --> {file.filename}")
-        print(f"her-----> {self.get_file_path(id, file.filename)}")
+        """
+        :param file:
+        :param id:
+        :return:
+        """
         file.save(self.get_file_path(id, file.filename))
