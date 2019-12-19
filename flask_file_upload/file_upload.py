@@ -128,12 +128,13 @@ class FileUpload:
         """
         if file.filename != "" and file and FileUtils.allowed_file(file.filename, self.config):
             filename = secure_filename(file.filename)
+            filename_key = filename.split('.')[0]
             mime_type = file.content_type
             file_type = file.filename.split(".")[1]
             return {
-                f"{filename.split('.')[0]}__{self.Model.keys[0]}": filename,
-                f"{filename.split('.')[0]}__{self.Model.keys[1]}": mime_type,
-                f"{filename.split('.')[0]}__{self.Model.keys[2]}": file_type,
+                f"{filename_key}__{_ModelUtils.keys[0]}": filename,
+                f"{filename_key}__{_ModelUtils.keys[1]}": mime_type,
+                f"{filename_key}__{_ModelUtils.keys[2]}": file_type,
             }
         else:
             warn("Flask-File-Upload: No files were saved")
@@ -210,12 +211,13 @@ class FileUpload:
         pass
 
     def stream_file(self, model, **kwargs):
-        """TODO """
+        filename = kwargs.get('filename')
+        file_type = model['file_type']
         return send_from_directory(
-            self.config["UPLOAD_FOLDER"],
+            self.config.upload_folder,
             f"{model.id}"
-            f"{self.get_file_ext(kwargs.get('filename'))}"
-            f".{model['file_type']}",
+            f"{self.get_file_ext(filename)}"
+            f".{file_type}",
             conditional=True,
         )
 

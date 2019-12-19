@@ -11,5 +11,4 @@ class Test_FileUtils:
             "my_video__file_type": None,
         }
 
-        file_upload = FileUpload()
-        assert result == _ModelUtils.create_keys(file_upload.Model.keys, "my_video")
+        assert result == _ModelUtils.create_keys(_ModelUtils.keys, "my_video")
