@@ -35,7 +35,7 @@ def config_test():
 
 @app.route("/blog", methods=["GET", "POST"])
 def blog():
-    print("request -------->>>>>")
+
     from tests.fixtures.models import MockBlogModel
     if request.method == "GET":
         pass
@@ -53,7 +53,6 @@ def blog():
             "my_placeholder": my_placeholder,
         })
 
-        # print(f"blog ------> {dir(blog)}")
         db.session.add(blog)
         db.session.commit()
 
@@ -74,8 +73,6 @@ def flask_app():
 @pytest.fixture
 def create_app():
     from tests.fixtures.models import MockBlogModel
-
-    print(f"init db ----> {dir(MockBlogModel)}")
 
     file_upload.init_app(app)
 

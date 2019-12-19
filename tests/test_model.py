@@ -18,10 +18,7 @@ class TestModel:
         "id": 1,
     }
 
-    @pytest.mark.l
     def test_model(self):
-
-        file_upload = FileUpload()
 
         model_test = MockBlogModel(**self.test_results)
 
