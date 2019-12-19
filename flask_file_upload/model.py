@@ -26,9 +26,11 @@ class Model:
         filenames = []
 
         new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(self._class, new_cols, filenames)
-        """Here we set the model's attributes"""
+
+        # Add new attributes to the SqlAlchemy model
         _ModelUtils.set_columns(self._class, new_cols_list)
-        """The original model's attributes set by the user get removed here"""
+
+        # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
 
         super(Model, self).__init__()
