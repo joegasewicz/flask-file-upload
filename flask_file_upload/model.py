@@ -23,12 +23,12 @@ class Model:
         update_wrapper(self, super)
         self._class = _class
 
-        _new_cols = []
-        _file_names = []
+        new_cols = []
+        filenames = []
 
-        new_cols, file_names = _ModelUtils.get_attr_from_model(self._class, _new_cols, _file_names)
-        _ModelUtils.set_columns(self._class, new_cols)
-        _ModelUtils.remove_unused_cols(self._class, file_names)
+        new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(self._class, new_cols, filenames)
+        _ModelUtils.set_columns(self._class, new_cols_list)
+        _ModelUtils.remove_unused_cols(self._class, filenames_list)
         super(Model, self).__init__()
 
     def __call__(self, *args, **kwargs):
