@@ -62,4 +62,3 @@ class TestFileUploads:
         }
         rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
         assert "200" in rv.status
-

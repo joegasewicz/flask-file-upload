@@ -24,7 +24,7 @@ Flask File Upload
     Decorate your SqlAlchemy model with your files
      ````python
         @file_uploads.Model("my_video")
-        @file_uploads.Model("placeholder_img")
+        @file_uploads.Model("my_placeholder")
         class MyModel(db, uploads):
            id = Model(Integer, primary_key=True)
     ````
@@ -33,7 +33,7 @@ Flask File Upload
         (This is an example of a video with placeholder image attached):
     ````python
         my_video = request.files["my_video"]
-        placeholder_img = request.files["placeholder_img"]
+        my_placeholder = request.files["my_placeholder"]
     ````
 
 
@@ -43,7 +43,7 @@ Flask File Upload
 
         file_uploads.save_files(blog_post, files={
             "my_video": my_video,
-            "placeholder_img": placeholder_img,
+            "my_placeholder": my_placeholder,
         })
     ````
 
@@ -69,7 +69,7 @@ Flask File Upload
 
     ##### File Url paths
     ````python
-        file_upload.get_file_url(blog_post, filename="placeholder_img")
+        file_upload.get_file_url(blog_post, filename="my_placeholder")
     ````
 
 
@@ -84,6 +84,7 @@ from ._config import Config
 from .model import Model
 from .column import Column
 from .file_utils import FileUtils
+from ._model_utils import _ModelUtils
 
 
 class FileUpload:
@@ -92,7 +93,7 @@ class FileUpload:
 
     config: Config = Config()
 
-    file_data: List[Any] = []
+    file_data: List[Dict[str, str]] = []
 
     files: Any = []
 
@@ -115,7 +116,7 @@ class FileUpload:
         """
         if not hasattr(model, attr):
             raise AttributeError(
-                "Flask-File-Upload: Attribute does not exist on your model, "
+                f"Flask-File-Upload: Attribute {attr} does not exist on your model, "
                 "please check your files has been declared correctly on your model. "
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
@@ -130,9 +131,9 @@ class FileUpload:
             mime_type = file.content_type
             file_type = file.filename.split(".")[1]
             return {
-                f"{filename}__{self.Model.keys[0]}": filename,
-                f"{filename}__{self.Model.keys[1]}": mime_type,
-                f"{filename}__{self.Model.keys[2]}": file_type,
+                f"{filename.split('.')[0]}__{self.Model.keys[0]}": filename,
+                f"{filename.split('.')[0]}__{self.Model.keys[1]}": mime_type,
+                f"{filename.split('.')[0]}__{self.Model.keys[2]}": file_type,
             }
         else:
             warn("Flask-File-Upload: No files were saved")
@@ -146,11 +147,11 @@ class FileUpload:
         self.app = app
         self.config.init_config(app)
 
-    def save_files(self, model, **kwargs) -> None:
+    def save_files(self, model, **kwargs) -> Any:
         """
         :param model:
         :param kwargs:
-        :return:
+        :return Any:
         """
         # Warning: These methods need to set members on the Model class
         # before we instantiate FileUtils()
@@ -160,26 +161,28 @@ class FileUpload:
         self.file_utils = FileUtils(
             model,
             self.config,
-            id=self.Model.get_primary_key(model),
+            id=_ModelUtils.get_primary_key(model),
             table_name=self.Model.get_table_name(model)
         )
         # Save files to dirs
         self._save_files_to_dir(model)
 
-    def _save_files_to_dir(self, model):
+        return model
+
+    def _save_files_to_dir(self, model: Any) -> None:
         """
         :param model:
-        :return:
+        :return None:
         """
         for f in self.files:
-            id_val = self.Model.get_id_value(model)
+            id_val = _ModelUtils.get_id_value(model)
             self.file_utils.save_file(f, id_val)
 
-    def _set_file_data(self, **file_data):
+    def _set_file_data(self, **file_data) -> List[Dict[str, str]]:
         """
         Adds items to files & file_data
         :param file_data:
-        :return:
+        :return List[Dict[str, str]]:
         """
         for k, v in file_data.get("files").items():
             self.files.append(v)

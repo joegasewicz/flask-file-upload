@@ -4,11 +4,11 @@ from warnings import warn
 
 class Config:
 
-    upload_folder: str
+    upload_folder: str = ""
 
-    allowed_extensions: List
+    allowed_extensions: List = []
 
-    max_content_length: int
+    max_content_length: int = 0
 
     def init_config(self, app):
         try:

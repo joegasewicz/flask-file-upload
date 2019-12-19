@@ -8,6 +8,7 @@ from typing import Any, List, Tuple, Dict, ItemsView, Set
 from functools import update_wrapper
 
 from .column import Column
+from ._model_utils import _ModelUtils
 
 
 class Model:
@@ -22,8 +23,9 @@ class Model:
 
     def __init__(self, _class):
         update_wrapper(self, super)
+        print("CALLED ________________")
         super(Model, self).__init__()
-        self._class = _class
+        self._class = _class()
 
     def __call__(self, *args, **kwargs):
         self.get_attr_from_model()
@@ -65,39 +67,4 @@ class Model:
         """
         :return: Dict[str, Any]
         """
-        return Model.create_keys(self.keys, file_name, db.Column(db.String))
-
-    @staticmethod
-    def create_keys(keys: Tuple[str], filename: str, value: Any = None) -> Dict[str, None]:
-        col_dict = {}
-        for k in keys:
-            col_dict[f"{filename}__{k}"] = value
-        return col_dict
-
-    @staticmethod
-    def get_primary_key(model):
-        """
-        This will always target the first primary key in
-        the list (in case there are multiple being used)
-        :param model:
-        :return:
-        """
-        if hasattr(model, "__mapper__"):
-            return model.__mapper__.primary_key[0].name
-
-    @staticmethod
-    def get_table_name(model: Any) -> str:
-        """
-        Set on class initiation
-        :return: None
-        """
-        return model.__tablename__
-
-    @staticmethod
-    def get_id_value(model) -> int:
-        """
-        :param model:
-        :return:
-        """
-        return getattr(model, Model.get_primary_key(model), None)
-
+        return _ModelUtils.create_keys(self.keys, file_name, db.Column(db.String))

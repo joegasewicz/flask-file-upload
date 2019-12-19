@@ -12,7 +12,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 app.config["UPLOAD_FOLDER"] = "tests/test_path"
 app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
 app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024
-db = SQLAlchemy()
+db = SQLAlchemy(app)
+file_upload = FileUpload()
 
 
 @app.route("/config_test", methods=["POST"])
@@ -34,23 +35,25 @@ def config_test():
 
 @app.route("/blog", methods=["GET", "POST"])
 def blog():
-    from .models import MockBlogModel
+    print("request -------->>>>>")
+    from tests.fixtures.models import MockBlogModel
     if request.method == "GET":
         pass
     if request.method == "POST":
 
         my_video = request.files["my_video"]
-        placeholder_img = request.files["my_placeholder"]
-        print("arrived here ------>? ")
-        blog_post = MockBlogModel(name="My Blog Post")
+        my_placeholder = request.files["my_placeholder"]
+
+        blog_post = MockBlogModel(id=1, name="My Blog Post")
 
         file_upload = FileUpload()
 
         blog = file_upload.save_files(blog_post, files={
             "my_video": my_video,
-            "placeholder_img": placeholder_img,
+            "my_placeholder": my_placeholder,
         })
 
+        # print(f"blog ------> {dir(blog)}")
         db.session.add(blog)
         db.session.commit()
 
@@ -70,12 +73,23 @@ def flask_app():
 
 @pytest.fixture
 def create_app():
-    db.init_app(app)
+    from tests.fixtures.models import MockBlogModel
+
+    print(f"init db ----> {dir(MockBlogModel)}")
+
+    file_upload.init_app(app)
+
+    with app.app_context():
+        db.create_all()
     testing_client = app.test_client()
 
     ctx = app.app_context()
     ctx.push()
 
     yield testing_client
+
+    with app.app_context():
+        db.session.remove()
+        db.drop_all()
 
     ctx.pop()

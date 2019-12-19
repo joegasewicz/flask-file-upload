@@ -24,19 +24,34 @@ class FileUtils:
 
     @staticmethod
     def allowed_file(filename, config: Config) -> bool:
+        """
+        :param filename:
+        :param config:
+        :return bool:
+        """
         return "." in filename and \
            filename.rsplit(".", 1)[1].lower() in config.allowed_extensions
 
-    def postfix_file_path(self, id: int, filename: str):
+    def postfix_file_path(self, id: int, filename: str) -> str:
+        """
+        :param id:
+        :param filename:
+        :return str:
+        """
         return f"/{self.table_name}/{id}/{filename}"
 
-    def get_file_path(self, id: int, filename: str):
+    def get_file_path(self, id: int, filename: str) -> str:
+        """
+        :param id:
+        :param filename:
+        :return str:
+        """
         return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(id, filename)}")
 
-    def save_file(self, file, id: int):
+    def save_file(self, file, model_id: int) -> None:
         """
         :param file:
-        :param id:
-        :return:
+        :param model_id:
+        :return None:
         """
-        file.save(self.get_file_path(id, file.filename))
+        file.save(self.get_file_path(model_id, file.filename))

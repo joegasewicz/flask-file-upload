@@ -2,15 +2,12 @@ import pytest
 
 import sqlalchemy
 
-from .app import db
-from flask_file_upload.file_upload import FileUpload
-
-file_upload = FileUpload()
-
+from .app import db, file_upload
 
 @file_upload.Model
 class MockBlogModel(db.Model):
     __tablename__ = "blogs"
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100))
     my_placeholder = file_upload.Column(db)
