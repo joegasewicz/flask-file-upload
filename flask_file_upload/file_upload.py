@@ -210,7 +210,15 @@ class FileUpload:
         """
         pass
 
-    def stream_file(self, model, **kwargs):
+    def stream_file(self, model, **kwargs) -> Any:
+        """
+        Streams a file from the directory defined by
+        the Flask's UPLOAD_FOLDER your Flask app's
+        configuration settings.
+        :param model:
+        :param kwargs:
+        :return Any:
+        """
         filename = kwargs.get('filename')
         file_type = _ModelUtils.get_by_postfix(filename, _ModelUtils.keys[1])
         return send_from_directory(

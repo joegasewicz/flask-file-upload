@@ -54,7 +54,6 @@ class TestFileUploads:
             file_upload.file_data[0]["bananas"] = "bananas"
             file_upload._set_model_attrs(mock_model)
 
-    @pytest.mark.t
     def test_save_files(self, create_app):
         data = {
             "my_video": (self.my_video, "my_video.mp4"),
@@ -62,3 +61,7 @@ class TestFileUploads:
         }
         rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
         assert "200" in rv.status
+
+    @pytest.mark.t
+    def test_stream_file(self):
+        pass
