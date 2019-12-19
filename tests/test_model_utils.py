@@ -1,5 +1,5 @@
 from flask_file_upload._model_utils import _ModelUtils
-from flask_file_upload.file_upload import FileUpload
+from tests.fixtures.models import MockBlogModel
 
 
 class Test_FileUtils:
@@ -12,3 +12,7 @@ class Test_FileUtils:
         }
 
         assert result == _ModelUtils.create_keys(_ModelUtils.keys, "my_video")
+
+    def test_get_by_postfix(self):
+        test_model = MockBlogModel()
+        assert hasattr(test_model, _ModelUtils.get_by_postfix("my_video", _ModelUtils.keys[1]))

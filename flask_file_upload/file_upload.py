@@ -212,7 +212,7 @@ class FileUpload:
 
     def stream_file(self, model, **kwargs):
         filename = kwargs.get('filename')
-        file_type = model['file_type']
+        file_type = _ModelUtils.get_by_postfix(filename, _ModelUtils.keys[1])
         return send_from_directory(
             self.config.upload_folder,
             f"{model.id}"

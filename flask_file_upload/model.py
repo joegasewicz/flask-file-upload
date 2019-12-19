@@ -1,8 +1,5 @@
 """
-   Public SqlAlchemy class decorator
-
-    meta:
-        -
+   Public SqlAlchemy class decorator.
 """
 from functools import update_wrapper
 

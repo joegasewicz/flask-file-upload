@@ -85,3 +85,7 @@ class _ModelUtils:
                 new_cols.append(_ModelUtils.columns_dict(attr, value.db))
                 file_names.append(str(attr))
         return new_cols, file_names
+
+    @staticmethod
+    def get_by_postfix(filename: str, file_type: str):
+        return f"{filename}__{file_type}"

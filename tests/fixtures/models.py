@@ -4,6 +4,7 @@ import sqlalchemy
 
 from .app import db, file_upload
 
+
 @file_upload.Model
 class MockBlogModel(db.Model):
     __tablename__ = "blogs"
