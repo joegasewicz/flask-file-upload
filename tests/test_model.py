@@ -1,6 +1,8 @@
+import pytest
 
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.app import db
+from tests.fixtures.models import MockBlogModel
 from flask_file_upload.model import Model
 
 
@@ -16,18 +18,12 @@ class TestModel:
         "id": 1,
     }
 
+    @pytest.mark.l
     def test_model(self):
 
         file_upload = FileUpload()
 
-        @file_upload.Model
-        class ModelTest(db.Model):
-            __tablename__ = "tests"
-            id = db.Column(db.Integer, primary_key=True)
-            my_placeholder = file_upload.Column(db)
-            my_video = file_upload.Column(db)
-
-        model_test = ModelTest(**self.test_results)
+        model_test = MockBlogModel(**self.test_results)
 
         assert hasattr(model_test, "my_video__file_name")
         assert hasattr(model_test, "my_video__mime_type")
@@ -46,13 +42,3 @@ class TestModel:
         assert model_test.my_placeholder__mime_type == "image/jpeg"
         assert model_test.my_placeholder__file_type == "jpg"
         assert model_test.id == 1
-
-    def test_create_keys(self):
-        result = {
-            "my_video__file_name": None,
-            "my_video__mime_type": None,
-            "my_video__file_type": None,
-        }
-
-        file_upload = FileUpload()
-        assert result == file_upload.Model.create_keys(file_upload.Model.keys, "my_video")

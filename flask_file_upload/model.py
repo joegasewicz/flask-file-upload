@@ -23,14 +23,13 @@ class Model:
 
     def __init__(self, _class):
         update_wrapper(self, super)
-        print("CALLED ________________")
-        super(Model, self).__init__()
-        self._class = _class()
-
-    def __call__(self, *args, **kwargs):
+        self._class = _class
         self.get_attr_from_model()
         self.set_columns()
         self.remove_unused_cols()
+        super(Model, self).__init__()
+
+    def __call__(self, *args, **kwargs):
         return self._class(*args, **kwargs)
 
     def get_attr_from_model(self):

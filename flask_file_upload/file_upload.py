@@ -162,7 +162,7 @@ class FileUpload:
             model,
             self.config,
             id=_ModelUtils.get_primary_key(model),
-            table_name=self.Model.get_table_name(model)
+            table_name=_ModelUtils.get_table_name(model)
         )
         # Save files to dirs
         self._save_files_to_dir(model)
