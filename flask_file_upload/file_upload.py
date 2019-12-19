@@ -159,12 +159,8 @@ class FileUpload:
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
 
-        self.file_utils = FileUtils(
-            model,
-            self.config,
-            id=_ModelUtils.get_primary_key(model),
-            table_name=_ModelUtils.get_table_name(model)
-        )
+        self.file_utils = FileUtils(model, self.config)
+
         # Save files to dirs
         self._save_files_to_dir(model)
 
@@ -220,12 +216,13 @@ class FileUpload:
         :return Any:
         """
         filename = kwargs.get('filename')
-        file_type = _ModelUtils.get_by_postfix(filename, _ModelUtils.keys[1])
+        file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[1])
+
+        self.file_utils = FileUtils(model, self.config)
+
         return send_from_directory(
-            self.config.upload_folder,
-            f"{model.id}"
-            f"{self.get_file_ext(filename)}"
-            f".{file_type}",
+            self.file_utils.get_stream_path(model.id),
+            f"{filename}.{file_type}",
             conditional=True,
         )
 

@@ -4,6 +4,7 @@
 import os
 
 from ._config import Config
+from ._model_utils import _ModelUtils
 
 
 class FileUtils:
@@ -16,11 +17,11 @@ class FileUtils:
 
     id: int
 
-    def __init__(self, model, config: Config, **kwargs):
+    def __init__(self, model, config: Config):
         self.config = config
         self.model = model
-        self.id = kwargs.get("id") or "id"
-        self.table_name = kwargs.get("table_name")
+        self.id = _ModelUtils.get_primary_key(model)
+        self.table_name = _ModelUtils.get_table_name(model)
 
     @staticmethod
     def allowed_file(filename, config: Config) -> bool:
@@ -40,13 +41,13 @@ class FileUtils:
         """
         return f"/{self.table_name}/{id}/{filename}"
 
-    def get_file_path(self, id: int, filename: str) -> str:
+    def get_file_path(self, model_id: int, filename: str) -> str:
         """
-        :param id:
+        :param model_id:
         :param filename:
         :return str:
         """
-        return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(id, filename)}")
+        return os.path.join(f"{self.config.upload_folder}{self.postfix_file_path(model_id, filename)}")
 
     def save_file(self, file, model_id: int) -> None:
         """
@@ -55,3 +56,6 @@ class FileUtils:
         :return None:
         """
         file.save(self.get_file_path(model_id, file.filename))
+
+    def get_stream_path(self, model_id: int):
+        return os.path.join(f"{self.config.upload_folder}/{self.table_name}/{model_id}")

@@ -1,7 +1,7 @@
 import pytest
 
 from flask_file_upload.file_upload import FileUpload
-from tests.fixtures.app import db
+from tests.app import db
 from tests.fixtures.models import MockBlogModel
 from flask_file_upload.model import Model
 

@@ -2,7 +2,7 @@ import pytest
 
 from flask_file_upload._config import Config
 
-from tests.fixtures.app import app
+from tests.app import app
 
 
 @pytest.fixture

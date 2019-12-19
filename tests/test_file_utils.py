@@ -1,10 +1,11 @@
 import os
 from flask import request
+import pytest
 
 from flask_file_upload.file_utils import FileUtils
 from .fixtures.models import mock_blog_model
 from .fixtures.config import test_config
-from .fixtures.app import create_app
+from .app import create_app
 
 
 class TestFileUtils:

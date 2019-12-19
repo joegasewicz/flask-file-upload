@@ -4,7 +4,7 @@ from flask import Flask
 
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.fixtures.app import create_app, flask_app
+from tests.app import create_app, flask_app
 
 
 class TestFileUploads:
@@ -63,5 +63,6 @@ class TestFileUploads:
         assert "200" in rv.status
 
     @pytest.mark.t
-    def test_stream_file(self):
-        pass
+    def test_stream_file(self, create_app):
+        rv = create_app.get("/blog")
+        assert "200" in rv.status

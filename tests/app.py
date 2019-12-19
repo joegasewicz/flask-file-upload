@@ -1,5 +1,5 @@
 import pytest
-from flask import Flask, request
+from flask import Flask, request, send_from_directory, current_app
 from flask_sqlalchemy import SQLAlchemy
 
 from flask_file_upload.file_upload import FileUpload
@@ -18,14 +18,14 @@ file_upload = FileUpload()
 
 @app.route("/config_test", methods=["POST"])
 def config_test():
-    from ..fixtures.models import mock_blog_model
+    from tests.fixtures.models import MockModel
 
     file = request.files["file"]
-
+    current_app.config["UPLOAD_FOLDER"] = "tests/test_path"
     config = Config()
     config.init_config(app)
 
-    file_util = FileUtils(mock_blog_model, config, table_name="blogs")
+    file_util = FileUtils(MockModel, config)
     file_util.save_file(file, 1)
 
     return {
@@ -35,10 +35,25 @@ def config_test():
 
 @app.route("/blog", methods=["GET", "POST"])
 def blog():
-
     from tests.fixtures.models import MockBlogModel
     if request.method == "GET":
-        pass
+
+        blog_post = MockBlogModel(
+            id=1,
+            name="My Blog Post",
+            my_video__file_name="video1",
+            my_video__mime_type="video/mpeg",
+            my_video__file_type="mp4",
+        )
+
+        file_upload = FileUpload()
+
+        # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
+        current_app.config["UPLOAD_FOLDER"] = "test_path"
+        file_upload.init_app(app)
+
+        return file_upload.stream_file(blog_post, filename="my_video")
+
     if request.method == "POST":
 
         my_video = request.files["my_video"]

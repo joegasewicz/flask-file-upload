@@ -1,8 +1,10 @@
+import pytest
+
 from flask_file_upload._model_utils import _ModelUtils
-from tests.fixtures.models import MockBlogModel
+from tests.fixtures.models import MockModel
 
 
-class Test_FileUtils:
+class Test_ModelUtils:
 
     def test_create_keys(self):
         result = {
@@ -14,5 +16,6 @@ class Test_FileUtils:
         assert result == _ModelUtils.create_keys(_ModelUtils.keys, "my_video")
 
     def test_get_by_postfix(self):
-        test_model = MockBlogModel()
-        assert hasattr(test_model, _ModelUtils.get_by_postfix("my_video", _ModelUtils.keys[1]))
+        # TODO remove 'in' from assertion
+
+        assert "mp4" in _ModelUtils.get_by_postfix(MockModel, "my_video", _ModelUtils.keys[1])
