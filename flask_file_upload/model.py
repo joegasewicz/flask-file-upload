@@ -4,7 +4,6 @@
     meta:
         -
 """
-from typing import List, Dict
 from functools import update_wrapper
 
 
@@ -12,12 +11,6 @@ from ._model_utils import _ModelUtils
 
 
 class Model:
-
-    file_names: List[str] = []
-
-    new_cols: List[Dict[str, str]] = []
-
-    primary_key: str
 
     def __init__(self, _class):
         """
