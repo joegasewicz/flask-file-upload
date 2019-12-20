@@ -66,3 +66,13 @@ class TestFileUploads:
     def test_stream_file(self, create_app):
         rv = create_app.get("/blog")
         assert "200" in rv.status
+
+    def test_update_files(self):
+        pass
+
+    def test_delete_files(self):
+        pass
+
+    def test_get_file_url(self):
+        pass
+

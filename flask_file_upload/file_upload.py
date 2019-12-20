@@ -196,16 +196,6 @@ class FileUpload:
                 self.check_attrs(model, k)
                 setattr(model, k, v)
 
-    def update_model_attr(self):
-        """
-        Updates the model with attributes:
-            - orig_name
-            - mime_type
-            - file_type
-        :return:
-        """
-        pass
-
     def stream_file(self, model, **kwargs) -> Any:
         """
         Streams a file from the directory defined by
@@ -215,7 +205,12 @@ class FileUpload:
         :param kwargs:
         :return Any:
         """
-        filename = kwargs.get('filename')
+        try:
+            filename = kwargs['filename']
+        except KeyError:
+            warn("'files' is a Required Argument")
+            return None
+
         file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[1])
 
         self.file_utils = FileUtils(model, self.config)
@@ -226,15 +221,54 @@ class FileUpload:
             conditional=True,
         )
 
-    def get_file_ext(self, filename):
+    def update_files(self, model: Any, **kwargs):
         """
-        This checks which file in the table we need to stream
-        and returns the extension name
-        :param filename:
+        :param model:
+        :key files Dict[str, Any]: A dict with the key
+        representing the model attr name & file as value.
+        :key commit_update: Default is True (Recommended). If set to False,
+        then only the files on the server are removed & the model is updated with
+        each attribute set to None but the session is not commited (This could cause
+        your database & files on server to be out of sync if you fail to commit
+        the session.
+        If you encounter an exception before you can commit the session then you
+        can call either `clean_up_model()` or `clean_up_files()` to update the model or
+        update the files on the server respectively.
+        :return Any: Returns the model back
+        """
+        commit_update: bool = kwargs.get("make_query") or True
+        try:
+            files = kwargs["files"]
+        except KeyError:
+            warn("'files' is a Required Argument")
+            return None
+
+        # Inside loop
+            # check if filenames exist on the model
+
+            # delete files from directory
+
+            # set file model attributes to None
+
+            # if commit_update is True commit the changes session
+
+
+
+    def delete_files(self, model, **kwargs):
+        """
+         - set each file model attribute to None
+         - remove file(s) from directory on server
+        :param model:
+        :param kwargs:
         :return:
         """
-        pass
 
     def get_file_url(self, model, **kwargs):
         """returns file url"""
+        pass
+
+    def clean_up_model(self):
+        pass
+
+    def clean_up_files(self):
         pass
