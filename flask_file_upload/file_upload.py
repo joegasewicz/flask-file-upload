@@ -250,6 +250,11 @@ class FileUpload:
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
 
+        self.file_utils = FileUtils(model, self.config)
+
+        # Save files to dirs
+        self._save_files_to_dir(model)
+
         # if commit_update is True commit the changes session
 
         return model

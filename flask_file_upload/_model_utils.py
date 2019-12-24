@@ -24,10 +24,9 @@ class _ModelUtils:
         This will always target the first primary key in
         the list (in case there are multiple being used)
         :param model:
-        :return:
+        :return str:
         """
-        if hasattr(model, "__mapper__"):
-            return model.__mapper__.primary_key[0].name
+        return model.__mapper__.primary_key[0].name
 
     @staticmethod
     def get_table_name(model: Any) -> str:
