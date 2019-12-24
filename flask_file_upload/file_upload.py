@@ -121,14 +121,16 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
-    def create_file_dict(self, file):
+    def create_file_dict(self, file, attr_name: str):
         """
+
         :param file:
+        :param attr_name:
         :return:
         """
         if file.filename != "" and file and FileUtils.allowed_file(file.filename, self.config):
             filename = secure_filename(file.filename)
-            filename_key = filename.split('.')[0]
+            filename_key = attr_name
             mime_type = file.content_type
             file_type = file.filename.split(".")[1]
             return {
@@ -148,24 +150,6 @@ class FileUpload:
         self.app = app
         self.config.init_config(app)
 
-    def save_files(self, model, **kwargs) -> Any:
-        """
-        :param model:
-        :param kwargs:
-        :return Any:
-        """
-        # Warning: These methods need to set members on the Model class
-        # before we instantiate FileUtils()
-        self._set_file_data(**kwargs)
-        self._set_model_attrs(model)
-
-        self.file_utils = FileUtils(model, self.config)
-
-        # Save files to dirs
-        self._save_files_to_dir(model)
-
-        return model
-
     def _save_files_to_dir(self, model: Any) -> None:
         """
         :param model:
@@ -178,12 +162,13 @@ class FileUpload:
     def _set_file_data(self, **file_data) -> List[Dict[str, str]]:
         """
         Adds items to files & file_data
-        :param file_data:
+        :key files: Dict[str: Any] Key is the filename & Value
+        is the file.
         :return List[Dict[str, str]]:
         """
         for k, v in file_data.get("files").items():
             self.files.append(v)
-            self.file_data.append(self.create_file_dict(v))
+            self.file_data.append(self.create_file_dict(v, k))
         return self.file_data
 
     def _set_model_attrs(self, model: Any) -> None:
@@ -221,6 +206,24 @@ class FileUpload:
             conditional=True,
         )
 
+    def save_files(self, model, **kwargs) -> Any:
+        """
+        :param model:
+        :param kwargs:
+        :return Any:
+        """
+        # Warning: These methods need to set members on the Model class
+        # before we instantiate FileUtils()
+        self._set_file_data(**kwargs)
+        self._set_model_attrs(model)
+
+        self.file_utils = FileUtils(model, self.config)
+
+        # Save files to dirs
+        self._save_files_to_dir(model)
+
+        return model
+
     def update_files(self, model: Any, **kwargs):
         """
         :param model:
@@ -232,8 +235,8 @@ class FileUpload:
         your database & files on server to be out of sync if you fail to commit
         the session.
         If you encounter an exception before you can commit the session then you
-        can call either `clean_up_model()` or `clean_up_files()` to update the model or
-        update the files on the server respectively.
+        can call either `update_model_clean_up()` or `update_files_clean_up()` to
+        update the model or update the files on the server respectively.
         :return Any: Returns the model back
         """
         commit_update: bool = kwargs.get("make_query") or True
@@ -243,16 +246,13 @@ class FileUpload:
             warn("'files' is a Required Argument")
             return None
 
-        # Inside loop
-            # check if filenames exist on the model
+        # Set file_data
+        self._set_file_data(**kwargs)
+        self._set_model_attrs(model)
 
-            # delete files from directory
+        # if commit_update is True commit the changes session
 
-            # set file model attributes to None
-
-            # if commit_update is True commit the changes session
-
-
+        return model
 
     def delete_files(self, model, **kwargs):
         """
@@ -267,8 +267,8 @@ class FileUpload:
         """returns file url"""
         pass
 
-    def clean_up_model(self):
+    def update_model_clean_up(self, model, **kwargs):
         pass
 
-    def clean_up_files(self):
+    def update_files_clean_up(self):
         pass

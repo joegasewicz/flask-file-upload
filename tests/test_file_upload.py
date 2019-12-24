@@ -1,15 +1,17 @@
 import os
 import pytest
 from flask import Flask
+from werkzeug.datastructures import FileStorage
 
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.app import create_app, flask_app
+from tests.app import create_app, flask_app, app
 
 
 class TestFileUploads:
 
     my_video = os.path.join("tests/assets/my_video.mp4")
+    my_video_update = os.path.join("tests/assets/my_video_update.mp4")
     my_placeholder = os.path.join("tests/assets/my_placeholder.png")
 
     file_data = [
@@ -67,12 +69,30 @@ class TestFileUploads:
         rv = create_app.get("/blog")
         assert "200" in rv.status
 
-    def test_update_files(self):
-        pass
+    @pytest.mark.q
+    def test_update_files(self, mock_model):
+
+        file_upload = FileUpload()
+        file_upload.init_app(app)
+
+        result = file_upload.update_files(mock_model, files={
+            "my_video": FileStorage(
+                stream=(self.my_video_update, "my_video_update.mp4"),
+                filename="my_video_updated.mp4",
+                content_type="video/mpeg",
+            ),
+        })
+
+        # Test model
+        assert result.my_video__file_name == "my_video_updated.mp4"
+        assert result.my_video__mime_type == "mp4"
+        assert result.my_video__file_type == "video/mpeg"
+
+        # Test files / dirs
+        assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
 
     def test_delete_files(self):
         pass
 
     def test_get_file_url(self):
         pass
-
