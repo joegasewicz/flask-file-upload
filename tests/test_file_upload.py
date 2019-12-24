@@ -90,7 +90,7 @@ class TestFileUploads:
 
         # Test files / dirs
         assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
-        # assert "my_video" not in os.listdir("tests/test_path/blogs/1")
+        # assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
 
     def test_delete_files(self):
         pass
