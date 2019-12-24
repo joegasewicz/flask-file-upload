@@ -3,10 +3,13 @@ import pytest
 from flask import Flask
 from werkzeug.datastructures import FileStorage
 from shutil import copyfile
+from flask_sqlalchemy import SQLAlchemy
+import time
 
+from flask_file_upload._config import Config
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.app import create_app, flask_app, app, db
+from tests.app import create_app, flask_app, app
 
 
 class TestFileUploads:
@@ -22,22 +25,22 @@ class TestFileUploads:
     attrs = {
         "id": 1,
         "name": "test_name",
-        "my_video__file_name": "my_video",
+        "my_video__file_name": "my_video.mp4",
         "my_video__mime_type": "video/mpeg",
         "my_video__file_type": "mp4",
-        "my_placeholder__file_name": "my_placeholder",
+        "my_placeholder__file_name": "my_placeholder.png",
         "my_placeholder__mime_type": "image/jpeg",
         "my_placeholder__file_type": "jpg",
     }
 
     file_data = [
         {
-            "my_video__file_name": "my_video",
+            "my_video__file_name": "my_video.mp4",
             "my_video__mime_type": "video/mpeg",
             "my_video__file_type": "mp4",
         },
         {
-            "my_placeholder__file_name": "my_placeholder",
+            "my_placeholder__file_name": "my_placeholder.png",
             "my_placeholder__mime_type": "image/jpeg",
             "my_placeholder__file_type": "jpg",
         }
@@ -95,6 +98,8 @@ class TestFileUploads:
     @pytest.mark.q
     def test_update_files(self, mock_blog_model):
 
+        db = SQLAlchemy(app)
+        db.create_all()
         file_upload = FileUpload()
         file_upload.init_app(app)
 
@@ -104,15 +109,22 @@ class TestFileUploads:
                 content_type="video/mpeg",
             )
 
-        result = file_upload.update_files(
-            mock_blog_model(**self.attrs),
+        model = mock_blog_model(**self.attrs)
+
+        assert model.my_video__file_name == "my_video.mp4"
+        assert model.my_video__mime_type == "video/mpeg"
+        assert model.my_video__file_type == "mp4"
+
+        file_upload.update_files(
+            model,
             db,
             files={"my_video": new_file},
         )
-        # Test model
-        assert result.my_video__file_name == "my_video_updated.mp4"
-        assert result.my_video__mime_type == "mp4"
-        assert result.my_video__file_type == "video/mpeg"
+
+
+        assert model.my_video__file_name == "my_video_updated.mp4"
+        assert model.my_video__mime_type == "mp4"
+        assert model.my_video__file_type == "video/mpeg"
 
         # Test files / dirs
         assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")

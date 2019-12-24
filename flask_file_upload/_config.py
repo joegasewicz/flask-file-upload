@@ -13,6 +13,7 @@ class Config:
     def init_config(self, app):
         try:
             self.upload_folder = app.config["UPLOAD_FOLDER"]
+            print(f"here---> {self.upload_folder }")
         except KeyError as _:
             raise KeyError("Flask-File-Uploads: UPLOAD_FOLDER must be set")
         try:

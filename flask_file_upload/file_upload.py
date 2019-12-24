@@ -179,6 +179,7 @@ class FileUpload:
         for d in self.file_data:
             for k, v in d.items():
                 self.check_attrs(model, k)
+                print()
                 setattr(model, k, v)
 
     def stream_file(self, model, **kwargs) -> Any:
@@ -266,11 +267,11 @@ class FileUpload:
 
         # if a db arg is provided then commit changes to db
         if db:
-            print(f"db -----> {model.my_video__mime_type}")
             db.session.add(model)
             db.session.commit()
 
-        return model
+        else:
+            return model
 
     def delete_files(self, model, **kwargs):
         """
