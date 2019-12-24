@@ -264,8 +264,9 @@ class FileUpload:
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
-        # if commit_update is True commit the changes session
+        # if a db arg is provided then commit changes to db
         if db:
+            print(f"db -----> {model.my_video__mime_type}")
             db.session.add(model)
             db.session.commit()
 

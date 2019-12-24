@@ -19,14 +19,25 @@ class TestFileUploads:
     dest_my_video_update = "tests/test_path/blogs/1/my_video_updated.mp4"
     dest_my_placeholder = "tests/test_path/blogs/1/my_placeholder.png"
 
+    attrs = {
+        "id": 1,
+        "name": "test_name",
+        "my_video__file_name": "my_video",
+        "my_video__mime_type": "video/mpeg",
+        "my_video__file_type": "mp4",
+        "my_placeholder__file_name": "my_placeholder",
+        "my_placeholder__mime_type": "image/jpeg",
+        "my_placeholder__file_type": "jpg",
+    }
+
     file_data = [
         {
-            "my_video__file_name": "video1",
+            "my_video__file_name": "my_video",
             "my_video__mime_type": "video/mpeg",
             "my_video__file_type": "mp4",
         },
         {
-            "my_placeholder__file_name": "placeholder1",
+            "my_placeholder__file_name": "my_placeholder",
             "my_placeholder__mime_type": "image/jpeg",
             "my_placeholder__file_type": "jpg",
         }
@@ -58,10 +69,10 @@ class TestFileUploads:
         assert hasattr(mock_model, "my_placeholder__mime_type")
         assert hasattr(mock_model, "my_placeholder__file_type")
 
-        assert mock_model.my_video__file_name == "video1"
+        assert mock_model.my_video__file_name == "my_video"
         assert mock_model.my_video__mime_type == "video/mpeg"
         assert mock_model.my_video__file_type == "mp4"
-        assert mock_model.my_placeholder__file_name == "placeholder1"
+        assert mock_model.my_placeholder__file_name == "my_placeholder"
         assert mock_model.my_placeholder__mime_type == "image/jpeg"
         assert mock_model.my_placeholder__file_type == "jpg"
 
@@ -93,14 +104,11 @@ class TestFileUploads:
                 content_type="video/mpeg",
             )
 
-        result = file_upload.update_files(mock_blog_model(
-            id=1,
-            name="test_name",
-            my_video__file_name="my_video.mp4",
-        ), db, files={
-            "my_video": new_file,
-        })
-
+        result = file_upload.update_files(
+            mock_blog_model(**self.attrs),
+            db,
+            files={"my_video": new_file},
+        )
         # Test model
         assert result.my_video__file_name == "my_video_updated.mp4"
         assert result.my_video__mime_type == "mp4"
