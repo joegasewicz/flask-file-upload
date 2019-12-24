@@ -224,12 +224,10 @@ class FileUpload:
 
         return model
 
-    def update_files(self, model: Any, **kwargs):
+    def update_files(self, model: Any, db=None, **kwargs):
         """
         :param model:
-        :key files Dict[str, Any]: A dict with the key
-        representing the model attr name & file as value.
-        :key commit_update: Default is True (Recommended). If set to False,
+        :param db: Default is None which is not Recommended. If db is None,
         then only the files on the server are removed & the model is updated with
         each attribute set to None but the session is not commited (This could cause
         your database & files on server to be out of sync if you fail to commit
@@ -237,9 +235,10 @@ class FileUpload:
         If you encounter an exception before you can commit the session then you
         can call either `update_model_clean_up()` or `update_files_clean_up()` to
         update the model or update the files on the server respectively.
+        :key files Dict[str, Any]: A dict with the key
+        representing the model attr name & file as value.
         :return Any: Returns the model back
         """
-        commit_update: bool = kwargs.get("make_query") or True
         try:
             files = kwargs["files"]
         except KeyError:
@@ -266,6 +265,9 @@ class FileUpload:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
         # if commit_update is True commit the changes session
+        if db:
+            db.session.add(model)
+            db.session.commit()
 
         return model
 

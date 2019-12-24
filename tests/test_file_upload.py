@@ -2,10 +2,11 @@ import os
 import pytest
 from flask import Flask
 from werkzeug.datastructures import FileStorage
+from shutil import copyfile
 
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.app import create_app, flask_app, app
+from tests.app import create_app, flask_app, app, db
 
 
 class TestFileUploads:
@@ -13,6 +14,10 @@ class TestFileUploads:
     my_video = os.path.join("tests/assets/my_video.mp4")
     my_video_update = os.path.join("tests/assets/my_video_update.mp4")
     my_placeholder = os.path.join("tests/assets/my_placeholder.png")
+
+    dest_my_video = os.path.join("tests/test_path/blogs/1/my_video.mp4")
+    dest_my_video_update = "tests/test_path/blogs/1/my_video_updated.mp4"
+    dest_my_placeholder = "tests/test_path/blogs/1/my_placeholder.png"
 
     file_data = [
         {
@@ -26,6 +31,14 @@ class TestFileUploads:
             "my_placeholder__file_type": "jpg",
         }
     ]
+
+    def setup_method(self):
+        # Copy files from asset dir to test dir here:
+        copyfile("tests/assets/my_video.mp4", "tests/test_path/blogs/1/my_video.mp4")
+
+    def teardown_method(self):
+        # Delete the files from the test dir here:
+        os.remove("tests/test_path/blogs/1/my_video_updated.mp4")
 
     def test_init_app(self, create_app, mock_blog_model, flask_app):
 
@@ -84,7 +97,7 @@ class TestFileUploads:
             id=1,
             name="test_name",
             my_video__file_name="my_video.mp4",
-        ), files={
+        ), db, files={
             "my_video": new_file,
         })
 
@@ -102,4 +115,3 @@ class TestFileUploads:
 
     def test_get_file_url(self):
         pass
-
