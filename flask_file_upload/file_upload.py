@@ -246,6 +246,12 @@ class FileUpload:
             warn("'files' is a Required Argument")
             return None
 
+        original_file_names = []
+
+        for f in files:
+            value = _ModelUtils.get_by_postfix(model, f, "file_name")
+            original_file_names.append(value)
+
         # Set file_data
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
@@ -254,6 +260,10 @@ class FileUpload:
 
         # Save files to dirs
         self._save_files_to_dir(model)
+
+        # remove original files from directory
+        for f in original_file_names:
+            os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
         # if commit_update is True commit the changes session
 

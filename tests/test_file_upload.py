@@ -64,23 +64,28 @@ class TestFileUploads:
         rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
         assert "200" in rv.status
 
-    @pytest.mark.t
     def test_stream_file(self, create_app):
         rv = create_app.get("/blog")
         assert "200" in rv.status
 
     @pytest.mark.q
-    def test_update_files(self, mock_model):
+    def test_update_files(self, mock_blog_model):
 
         file_upload = FileUpload()
         file_upload.init_app(app)
 
-        result = file_upload.update_files(mock_model, files={
-            "my_video": FileStorage(
-                stream=(self.my_video_update, "my_video_update.mp4"),
+        new_file = FileStorage(
+                stream=open(self.my_video_update, "rb"),
                 filename="my_video_updated.mp4",
                 content_type="video/mpeg",
-            ),
+            )
+
+        result = file_upload.update_files(mock_blog_model(
+            id=1,
+            name="test_name",
+            my_video__file_name="my_video.mp4",
+        ), files={
+            "my_video": new_file,
         })
 
         # Test model
@@ -90,10 +95,11 @@ class TestFileUploads:
 
         # Test files / dirs
         assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
-        # assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
+        assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
 
     def test_delete_files(self):
         pass
 
     def test_get_file_url(self):
         pass
+
