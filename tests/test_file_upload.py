@@ -9,7 +9,7 @@ import time
 from flask_file_upload._config import Config
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.app import create_app, flask_app, app
+from tests.app import create_app, flask_app, flask_app_db, app, db
 
 
 class TestFileUploads:
@@ -64,13 +64,6 @@ class TestFileUploads:
         file_upload = FileUpload()
         file_upload.file_data = self.file_data
         file_upload._set_model_attrs(mock_model)
-        
-        assert hasattr(mock_model, "my_video__file_name")
-        assert hasattr(mock_model, "my_video__mime_type")
-        assert hasattr(mock_model, "my_video__file_type")
-        assert hasattr(mock_model, "my_placeholder__file_name")
-        assert hasattr(mock_model, "my_placeholder__mime_type")
-        assert hasattr(mock_model, "my_placeholder__file_type")
 
         assert mock_model.my_video__file_name == "my_video"
         assert mock_model.my_video__mime_type == "video/mpeg"
@@ -96,9 +89,48 @@ class TestFileUploads:
         assert "200" in rv.status
 
     @pytest.mark.q
-    def test_update_files(self, mock_blog_model):
+    def test_update_files(self, flask_app_db, mock_blog_model):
+        app, db = flask_app_db
+        from tests.fixtures.models import MockBlogModel
 
-        db = SQLAlchemy(app)
+        file_upload = FileUpload()
+        file_upload.init_app(app)
+
+        new_file = FileStorage(
+                stream=open(self.my_video_update, "rb"),
+                filename="my_video_updated.mp4",
+                content_type="video/mpeg",
+            )
+
+        m = MockBlogModel(**self.attrs)
+        db.session.add(m)
+        db.session.commit()
+
+
+        print(f"dir ----> {dir(MockBlogModel)}")
+
+        query = db.engine.execute("SELECT * FROM blogs")
+
+        for q in query:
+            print(f"here-----> {q}")
+
+        file_upload.update_files(
+            m,
+            db,
+            files={"my_video": new_file},
+        )
+
+
+
+        # Test files / dirs
+        assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
+        assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
+
+        assert query.first().my_video__file_name == "my_video_updated.mp4"
+
+    @pytest.mark.g
+    def test_update_files_2(self, mock_blog_model):
+        db.init_app(app)
         db.create_all()
         file_upload = FileUpload()
         file_upload.init_app(app)
@@ -115,20 +147,16 @@ class TestFileUploads:
         assert model.my_video__mime_type == "video/mpeg"
         assert model.my_video__file_type == "mp4"
 
-        file_upload.update_files(
+        result = file_upload.update_files(
             model,
-            db,
             files={"my_video": new_file},
         )
 
+        assert result.my_video__file_name == "my_video_updated.mp4"
+        assert result.my_video__mime_type == "mp4"
+        assert result.my_video__file_type == "video/mpeg"
 
-        assert model.my_video__file_name == "my_video_updated.mp4"
-        assert model.my_video__mime_type == "mp4"
-        assert model.my_video__file_type == "video/mpeg"
 
-        # Test files / dirs
-        assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
-        assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
 
     def test_delete_files(self):
         pass

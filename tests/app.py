@@ -81,8 +81,18 @@ def blog():
 
 @pytest.fixture
 def flask_app():
+    from tests.fixtures.models import MockBlogModel
     db.init_app(app)
+    db.create_all()
     return app
+
+@pytest.fixture
+def flask_app_db():
+    db.init_app(app)
+    from tests.fixtures.models import MockBlogModel
+
+    db.create_all()
+    return app, db
 
 
 @pytest.fixture

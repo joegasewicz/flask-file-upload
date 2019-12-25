@@ -179,7 +179,6 @@ class FileUpload:
         for d in self.file_data:
             for k, v in d.items():
                 self.check_attrs(model, k)
-                print()
                 setattr(model, k, v)
 
     def stream_file(self, model, **kwargs) -> Any:
@@ -269,7 +268,7 @@ class FileUpload:
         if db:
             db.session.add(model)
             db.session.commit()
-
+            return None
         else:
             return model
 

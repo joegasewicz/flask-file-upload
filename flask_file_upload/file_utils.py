@@ -55,7 +55,6 @@ class FileUtils:
         :param model_id:
         :return None:
         """
-        print(f'here---> {self.config.upload_folder}')
         file.save(self.get_file_path(model_id, file.filename))
 
     def get_stream_path(self, model_id: int):
