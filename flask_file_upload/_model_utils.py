@@ -34,7 +34,12 @@ class _ModelUtils:
         :param model:
         :return str:
         """
-        return model.__mapper__.primary_key[0].name
+        try:
+            return model.__mapper__.primary_key[0].name
+        except AttributeError as err:
+            raise AttributeError("[FLASK_FILE_UPLOADS_ERROR] You must pass a model instance"
+                                 f"to the save_file method. Full error: {err}"
+                                 )
 
     @staticmethod
     def get_table_name(model: Any) -> str:

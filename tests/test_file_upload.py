@@ -1,6 +1,6 @@
 import os
 import pytest
-from flask import Flask
+from flask import Flask, current_app
 from werkzeug.datastructures import FileStorage
 from shutil import copyfile
 from flask_sqlalchemy import SQLAlchemy
@@ -9,7 +9,7 @@ import time
 from flask_file_upload._config import Config
 from flask_file_upload.file_upload import FileUpload
 from tests.fixtures.models import mock_blog_model, mock_model
-from tests.app import create_app, flask_app, db, file_upload
+from tests.app import create_app, flask_app, db, file_upload, app
 
 
 class TestFileUploads:
@@ -52,7 +52,11 @@ class TestFileUploads:
 
     def teardown_method(self):
         # Delete the files from the test dir here:
-        os.remove("tests/test_path/blogs/1/my_video_updated.mp4")
+        try:
+            pass
+            os.remove("tests/test_path/blogs/1/my_video_updated.mp4")
+        except:
+            pass
 
     def test_init_app(self, create_app, mock_blog_model, flask_app):
 
@@ -65,10 +69,10 @@ class TestFileUploads:
         file_upload.file_data = self.file_data
         file_upload._set_model_attrs(mock_model)
 
-        assert mock_model.my_video__file_name == "my_video"
+        assert mock_model.my_video__file_name == "my_video.mp4"
         assert mock_model.my_video__mime_type == "video/mpeg"
         assert mock_model.my_video__file_type == "mp4"
-        assert mock_model.my_placeholder__file_name == "my_placeholder"
+        assert mock_model.my_placeholder__file_name == "my_placeholder.png"
         assert mock_model.my_placeholder__mime_type == "image/jpeg"
         assert mock_model.my_placeholder__file_type == "jpg"
 
@@ -88,8 +92,9 @@ class TestFileUploads:
         rv = create_app.get("/blog")
         assert "200" in rv.status
 
-    @pytest.mark.q
+    @pytest.mark.d
     def test_update_files(self, create_app, mock_blog_model):
+        file_upload.config.upload_folder = "tests/test_path"
 
         m = mock_blog_model(
             name="hello",
@@ -107,8 +112,7 @@ class TestFileUploads:
                 content_type="video/mpeg",
             )
 
-        m2 = mock_blog_model()
-        blog = m2.get_blog()
+        blog = m.get_blog()
 
         file_upload.update_files(
             blog,

@@ -18,14 +18,14 @@ file_upload = FileUpload()
 
 @app.route("/config_test", methods=["POST"])
 def config_test():
-    from tests.fixtures.models import MockModel
+    from tests.fixtures.models import MockBlogModel
 
     file = request.files["file"]
     current_app.config["UPLOAD_FOLDER"] = "tests/test_path"
     config = Config()
     config.init_config(app)
 
-    file_util = FileUtils(MockModel, config)
+    file_util = FileUtils(MockBlogModel(name="test_save"), config)
     file_util.save_file(file, 1)
 
     return {
@@ -91,10 +91,11 @@ def flask_app():
 def create_app():
     from tests.fixtures.models import MockBlogModel, MockModel
 
-
+    app.config["UPLOAD_FOLDER"] = "tests/test_path"
     file_upload.init_app(app)
 
     with app.app_context():
+
         db.create_all()
 
     testing_client = app.test_client()

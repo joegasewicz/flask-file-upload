@@ -12,6 +12,7 @@ class TestFileUtils:
 
     file = os.path.join("tests/assets/my_video.mp4")
 
+    @pytest.mark.r
     def test_save_file(self, create_app):
 
         rv = create_app.post("/config_test", data={"file": (self.file, "my_video.mp4")}, content_type='multipart/form-data')
