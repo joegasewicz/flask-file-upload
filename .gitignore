@@ -107,7 +107,6 @@ venv.bak/
 .venv_one
 venv_one/
 venv_one.bak/
-.idea/
 
 # VS Code project settings
 .vscode

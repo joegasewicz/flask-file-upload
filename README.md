@@ -77,15 +77,19 @@ Decorate your SqlAlchemy model with file_upload's Model class:
     })
 ````
 
-##### Update files
+##### Update file
 ````python
-    file_upload.update_files(BlogPostModel, files=[my_video])
+    blog_post = BlogPostModel(title="Hello World Today")
+    blog_post = file_upload.update_files(blog_post, files={
+        "my_video": new_my_video,
+        "placeholder_img": new_placeholder_img,
+    })
 ````
 
 
-##### Update file name
+##### Delete files
 ````python
-    file_upload.update_file_name(BlogPostModel, my_video, new_filename="new_name")
+    file_upload.delete_files(BlogPostModel, files=["my_video"])
 ````
 
 

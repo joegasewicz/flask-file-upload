@@ -2,7 +2,7 @@
     Behaviours required by Model class _so we can keep SqlAlchemy Model
     free of methods & other members.
 """
-from typing import List, Any, Dict, Tuple, ClassVar
+from typing import List, Any, Dict, Tuple, ClassVar, Callable
 
 from .column import Column
 
@@ -12,10 +12,18 @@ class _ModelUtils:
     keys: Tuple[str] = ("file_name", "file_type", "mime_type")
 
     @staticmethod
-    def create_keys(keys: Tuple[str], filename: str, value: Any = None) -> Dict[str, None]:
+    def create_keys(keys: Tuple[str], filename: str, fn: Callable = None) -> Dict[str, None]:
+        """
+        Adds the SqlAlchemy Column object with key & name kwargs defined to the returned dict
+        :param keys:
+        :param filename:
+        :param fn: Generates a SqlAlchemy Column with key & name kwargs set
+        :return:
+        """
         col_dict = {}
         for k in keys:
-            col_dict[f"{filename}__{k}"] = value
+            key = f"{filename}__{k}"
+            col_dict[key] = fn(key, key)
         return col_dict
 
     @staticmethod
@@ -24,10 +32,14 @@ class _ModelUtils:
         This will always target the first primary key in
         the list (in case there are multiple being used)
         :param model:
-        :return:
+        :return str:
         """
-        if hasattr(model, "__mapper__"):
+        try:
             return model.__mapper__.primary_key[0].name
+        except AttributeError as err:
+            raise AttributeError("[FLASK_FILE_UPLOADS_ERROR] You must pass a model instance"
+                                 f"to the save_file method. Full error: {err}"
+                                 )
 
     @staticmethod
     def get_table_name(model: Any) -> str:
@@ -48,9 +60,18 @@ class _ModelUtils:
     @staticmethod
     def columns_dict(file_name: str, db) -> Dict[str, Any]:
         """
-        :return: Dict[str, Any]
+        We must define the SqlAlchemy Column object with key & name kwargs
+        otherwise sqlAlchemy will define these incorrectly if they are set to None
+        :param file_name:
+        :param db:
+        :return Dict[str, Any]:
         """
-        return _ModelUtils.create_keys(_ModelUtils.keys, file_name, db.Column(db.String))
+        def create_col(key, name): return db.Column(db.String,  key=key, name=name)
+        return _ModelUtils.create_keys(
+            _ModelUtils.keys,
+            file_name,
+            create_col
+        )
 
     @staticmethod
     def set_columns(wrapped: ClassVar, new_cols: Tuple[Dict[str, Any]]) -> None:

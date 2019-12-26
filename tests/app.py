@@ -18,14 +18,14 @@ file_upload = FileUpload()
 
 @app.route("/config_test", methods=["POST"])
 def config_test():
-    from tests.fixtures.models import MockModel
+    from tests.fixtures.models import MockBlogModel
 
     file = request.files["file"]
     current_app.config["UPLOAD_FOLDER"] = "tests/test_path"
     config = Config()
     config.init_config(app)
 
-    file_util = FileUtils(MockModel, config)
+    file_util = FileUtils(MockBlogModel(name="test_save"), config)
     file_util.save_file(file, 1)
 
     return {
@@ -48,7 +48,7 @@ def blog():
 
         file_upload = FileUpload()
 
-        # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
+        # Warning - The UPLOAD_FOLDER - onnly needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
         file_upload.init_app(app)
 
@@ -81,18 +81,23 @@ def blog():
 
 @pytest.fixture
 def flask_app():
+    from tests.fixtures.models import mock_blog_model
     db.init_app(app)
+    db.create_all()
     return app
 
 
 @pytest.fixture
 def create_app():
-    from tests.fixtures.models import MockBlogModel
+    from tests.fixtures.models import MockBlogModel, MockModel
 
+    app.config["UPLOAD_FOLDER"] = "tests/test_path"
     file_upload.init_app(app)
 
     with app.app_context():
+
         db.create_all()
+
     testing_client = app.test_client()
 
     ctx = app.app_context()

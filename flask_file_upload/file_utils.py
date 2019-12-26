@@ -31,7 +31,7 @@ class FileUtils:
         :return bool:
         """
         return "." in filename and \
-           filename.rsplit(".", 1)[1].lower() in config.allowed_extensions
+            filename.rsplit(".", 1)[1].lower() in config.allowed_extensions
 
     def postfix_file_path(self, id: int, filename: str) -> str:
         """
