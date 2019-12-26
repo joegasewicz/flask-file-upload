@@ -2,7 +2,6 @@
    Public SqlAlchemy class decorator.
 """
 from functools import update_wrapper
-from sqlalchemy import Column, String
 
 
 from ._model_utils import _ModelUtils
@@ -30,9 +29,6 @@ class Model:
         # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
         print("finish")
-
-
-
 
     def __call__(self, *args, **kwargs):
         """
