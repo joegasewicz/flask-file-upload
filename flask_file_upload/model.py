@@ -28,7 +28,6 @@ class Model:
         _ModelUtils.set_columns(self._class, new_cols_list)
         # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
-        print("finish")
 
     def __call__(self, *args, **kwargs):
         """
