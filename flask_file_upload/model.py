@@ -2,6 +2,7 @@
    Public SqlAlchemy class decorator.
 """
 from functools import update_wrapper
+from sqlalchemy import Column, String
 
 
 from ._model_utils import _ModelUtils
@@ -16,6 +17,7 @@ class Model:
         :param _class:
         """
         update_wrapper(self, super)
+        super(Model, self).__init__()
 
         self._class = _class
 
@@ -23,14 +25,14 @@ class Model:
         filenames = []
 
         new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(self._class, new_cols, filenames)
-
         # Add new attributes to the SqlAlchemy model
         _ModelUtils.set_columns(self._class, new_cols_list)
-
         # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
+        print("finish")
 
-        super(Model, self).__init__()
+
+
 
     def __call__(self, *args, **kwargs):
         """
