@@ -6,11 +6,14 @@ class Config:
 
     upload_folder: str = ""
 
+    server_name: str = ""
+
     allowed_extensions: List = []
 
     max_content_length: int = 0
 
     def init_config(self, app):
+        self.server_name = app.config["SERVER_NAME"]
         try:
             self.upload_folder = app.config["UPLOAD_FOLDER"]
         except KeyError as _:

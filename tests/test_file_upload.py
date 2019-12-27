@@ -57,13 +57,13 @@ class TestFileUploads:
             os.remove("tests/test_path/blogs/1/my_video_updated.mp4")
         except:
             pass
-    @pytest.mark.d
+
     def test_init_app(self, create_app, mock_blog_model, flask_app):
 
         file_upload = FileUpload()
         file_upload.init_app(flask_app)
         assert isinstance(file_upload.app, Flask)
-    @pytest.mark.d
+
     def test_set_model_attrs(self, mock_model):
         file_upload = FileUpload()
         file_upload.file_data = self.file_data
@@ -84,6 +84,16 @@ class TestFileUploads:
     def test_stream_file(self, create_app):
         rv = create_app.get("/blog")
         assert "200" in rv.status
+
+    def test_get_file_url(self, mock_blog_model):
+        db.init_app(app)
+        db.create_all()
+        file_upload = FileUpload()
+        file_upload.init_app(app)
+        m = mock_blog_model(**self.attrs)
+        with app.test_request_context():
+            url = file_upload.get_file_url(m, filename="my_video")
+            assert url == "http://localhost/tests/test_path/blogs/1/my_video.mp4"
 
 
     def test_update_files(self, create_app, mock_blog_model):
@@ -146,6 +156,7 @@ class TestFileUploads:
         assert result.my_video__mime_type == "mp4"
         assert result.my_video__file_type == "video/mpeg"
 
+
     def test_save_files(self, create_app):
         """This test resets the upload folder so needs to be run last"""
         data = {
@@ -154,9 +165,3 @@ class TestFileUploads:
         }
         rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
         assert "200" in rv.status
-
-    def test_delete_files(self):
-        pass
-
-    def test_get_file_url(self):
-        pass
