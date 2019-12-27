@@ -108,6 +108,15 @@ class _ModelUtils:
         return new_cols, file_names
 
     @staticmethod
+    def add_postfix(filename: str, postfix: str) -> str:
+        """
+        :param filename:
+        :param postfix:
+        :return str:
+        """
+        return f"{filename}__{postfix}"
+
+    @staticmethod
     def get_by_postfix(model: ClassVar, filename: str, postfix: str) -> str:
         """
         :param model:
@@ -115,4 +124,4 @@ class _ModelUtils:
         :param postfix:
         :return str:
         """
-        return getattr(model, f"{filename}__{postfix}")
+        return getattr(model, _ModelUtils.add_postfix(filename, postfix))
