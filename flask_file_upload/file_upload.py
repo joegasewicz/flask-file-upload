@@ -76,7 +76,7 @@ Flask File Upload
 """
 import os
 from warnings import warn
-from flask import send_from_directory, Flask
+from flask import send_from_directory, Flask, request
 from werkzeug.utils import secure_filename
 from typing import Any, List, Tuple, Dict
 
@@ -272,6 +272,21 @@ class FileUpload:
         else:
             return model
 
+    def get_file_url(self, model: Any, **kwargs) -> str:
+        """
+        :param model:
+        :param kwargs:
+        :return:
+        """
+        try:
+            filename = kwargs["filename"]
+            self.file_utils = FileUtils(model, self.config)
+            file_path = self.file_utils.get_file_path(model.id, filename)
+            file_type = _ModelUtils.get_by_postfix(model, filename, "file_type")
+            return f"{request.url}{file_path}.{file_type}"
+        except AttributeError:
+            AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
+
     def delete_files(self, model, **kwargs):
         """
          - set each file model attribute to None
@@ -280,13 +295,6 @@ class FileUpload:
         :param kwargs:
         :return:
         """
-
-    def get_file_url(self, model, **kwargs):
-        """returns file url"""
         pass
 
-    def update_model_clean_up(self, model, **kwargs):
-        pass
 
-    def update_files_clean_up(self):
-        pass
