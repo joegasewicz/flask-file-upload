@@ -1,78 +1,6 @@
 """
 Flask File Upload
 
-    # Public api:
-
-        file_uploads = FileUpload(app)
-
-    ##### General Flask config options
-    ````python
-        UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/lessons")
-        ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
-        MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
-    ````
-
-
-    ##### Setup
-    ````python
-        db = SQLAlchemy()
-        file_uploads = FileUpload()
-    ````
-
-
-    ##### FlaskFileUploads needs to do some work with your SqlAlchemy model
-    Decorate your SqlAlchemy model with your files
-     ````python
-        @file_uploads.Model("my_video")
-        @file_uploads.Model("my_placeholder")
-        class MyModel(db, uploads):
-           id = Model(Integer, primary_key=True)
-    ````
-
-    ##### define files to be upload:
-        (This is an example of a video with placeholder image attached):
-    ````python
-        my_video = request.files["my_video"]
-        my_placeholder = request.files["my_placeholder"]
-    ````
-
-
-    ##### Get main form data and pass to your SqlAlchemy Model
-    ````python
-        blog_post = BlogPostModel(title="Hello World Today")
-
-        file_uploads.save_files(blog_post, files={
-            "my_video": my_video,
-            "my_placeholder": my_placeholder,
-        })
-    ````
-
-    ##### Update files
-    ````python
-        file_uploads.update_files(BlogPostModel, files=[my_video])
-    ````
-
-
-    ##### Update file name
-    ````python
-        file_uploads.update_file_name(BlogPostModel, my_video, new_filename="new_name")
-    ````
-
-
-    ##### Stream a file
-    ````python
-        First get your entity
-        my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
-        file_upload.stream_file(blog_post, filename="my_video")
-    ````
-
-
-    ##### File Url paths
-    ````python
-        file_upload.get_file_url(blog_post, filename="my_placeholder")
-    ````
-
-
 """
 import os
 from warnings import warn
@@ -311,9 +239,6 @@ class FileUpload:
             for postfix in _ModelUtils.keys:
                 print(_ModelUtils.add_postfix(f_name, postfix))
                 setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-
-        print(dir(model))
-
         if db:
             db.session.add(model)
             db.session.commit()
