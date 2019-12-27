@@ -97,8 +97,6 @@ class TestFileUploads:
 
 
     def test_update_files(self, create_app, mock_blog_model):
-        file_upload.config.upload_folder = "tests/test_path"
-
         m = mock_blog_model(
             name="hello",
             my_video__file_name="my_video.mp4",
@@ -127,6 +125,30 @@ class TestFileUploads:
         assert "my_video_updated.mp4" in os.listdir("tests/test_path/blogs/1")
         assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
 
+    def test_delete_files(self, create_app, mock_blog_model):
+        assert "my_video.mp4" in os.listdir("tests/test_path/blogs/1")
+        m = mock_blog_model(
+            name="hello",
+            my_video__file_name="my_video.mp4",
+            my_video__mime_type="video/mpeg",
+            my_video__file_type="mp4",
+        )
+
+        db.session.add(m)
+        db.session.commit()
+
+        blog = m.get_blog()
+
+        assert getattr(blog, "my_video__file_name") == "my_video.mp4"
+        assert getattr(blog, "my_video__mime_type") == "video/mpeg"
+        assert getattr(blog, "my_video__file_type") == "mp4"
+
+        result = file_upload.delete_files(blog, db, files=["my_video"])
+
+        assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
+        assert getattr(result, "my_video__file_name") is None
+        assert getattr(result, "my_video__mime_type") is None
+        assert getattr(result, "my_video__file_type") is None
 
     def test_update_files_2(self, mock_blog_model):
 

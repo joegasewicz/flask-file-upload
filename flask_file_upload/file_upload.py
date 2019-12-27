@@ -287,37 +287,36 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def delete_files(self, model, db=None, **kwargs):
+    def delete_files(self, model, db=None, **kwargs) -> None:
         """
-         - set each file model attribute to None
-         - remove file(s) from directory on server
         :param model:
+        :param db:
         :param kwargs:
-        :return:
+        :return None:
         """
         try:
-            files = kwargs["files"]
+            files: List[str] = kwargs["files"]
         except KeyError:
             warn("'files' is a Required Argument")
             return None
 
-        # Set file_data
-        self._set_file_data(**kwargs)
-        # Remove attrs
-        for file_data in self.file_data:
-            for k in file_data.keys():
-                delattr(model, k)
-
-        # remove original files from directory
-        original_file_names = []
+        self.file_utils = FileUtils(model, self.config)
 
         for f in files:
-            value = _ModelUtils.get_by_postfix(model, f, "file_name")
-            original_file_names.append(value)
+            file_type = _ModelUtils.get_by_postfix(model, f, 'file_type')
+            file_path = f"{self.file_utils.get_stream_path(model.id)}/{f}.{file_type}"
+            os.remove(f"{file_path}")
 
-        for f in original_file_names:
-            os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
+        for f_name in files:
+            for postfix in _ModelUtils.keys:
+                print(_ModelUtils.add_postfix(f_name, postfix))
+                setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
+
+        print(dir(model))
 
         if db:
-            db.session.delete(model)
+            db.session.add(model)
             db.session.commit()
+            return model
+        else:
+            return model
