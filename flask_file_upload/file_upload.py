@@ -287,7 +287,7 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def delete_files(self, model, **kwargs):
+    def delete_files(self, model, db=None, **kwargs):
         """
          - set each file model attribute to None
          - remove file(s) from directory on server
@@ -295,6 +295,29 @@ class FileUpload:
         :param kwargs:
         :return:
         """
-        pass
+        try:
+            files = kwargs["files"]
+        except KeyError:
+            warn("'files' is a Required Argument")
+            return None
 
+        # Set file_data
+        self._set_file_data(**kwargs)
+        # Remove attrs
+        for file_data in self.file_data:
+            for k in file_data.keys():
+                delattr(model, k)
 
+        # remove original files from directory
+        original_file_names = []
+
+        for f in files:
+            value = _ModelUtils.get_by_postfix(model, f, "file_name")
+            original_file_names.append(value)
+
+        for f in original_file_names:
+            os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
+
+        if db:
+            db.session.delete(model)
+            db.session.commit()
