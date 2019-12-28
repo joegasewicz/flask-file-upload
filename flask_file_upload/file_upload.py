@@ -61,7 +61,18 @@ class FileUpload:
             blog_results = blogModel.get_one()
 
             # We pass the blog
-            file_upload.delete_files(blog_result, files=["my_video"])
+            blog = file_upload.delete_files(blog_result, files=["my_video"])
+
+            # As the `db` arg has not been passed to this method,
+            # the changes would need persisting to the database:
+            db.session.add(blog)
+            db.session.commit()
+
+            # If `db` is passed to this method then the updates are persisted.
+            # to the session. And therefore the session has been commited &
+            # no blog is returned.
+            file_upload.delete_files(blog_result, db, files=["my_video"])
+
 
         :param model: Instance of a SqlAlchemy Model
         :param db: Either an instance of Flask-SqlAlchemy ``SqlAlchmey`` class or
