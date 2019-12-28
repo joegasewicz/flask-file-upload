@@ -1,12 +1,12 @@
 """
-Flask File Upload
-
+FileUpload Class
+================
 """
 import os
 from warnings import warn
 from flask import send_from_directory, Flask, request
 from werkzeug.utils import secure_filename
-from typing import Any, List, Tuple, Dict
+from typing import Any, List, Dict, Union
 
 from ._config import Config
 from .model import Model
@@ -16,9 +16,21 @@ from ._model_utils import _ModelUtils
 
 
 class FileUpload:
+    """
+    :param app: Flask application instance
 
+    Public class FileUploads
+
+    The main public api for Flask File Upload library
+    """
+
+    #: The Flask application instance: ``app = Flask(__name__)``.
+    #: We can either pass the instance to ``FileUpload(app)`` or
+    #: to the ``init_app(app)`` method.
     app: Flask = None
 
+    #: The configuration class used for this library. See :class:`~flask_file_upload._config`
+    #: for more information.
     config: Config = Config()
 
     file_data: List[Dict[str, str]] = []
@@ -33,7 +45,54 @@ class FileUpload:
         if app:
             self.init_app(app)
 
-    def check_attrs(self, model: Any, attr: str):
+    def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
+        """
+        Public method for removing stored files from the server & database.
+        This method will remove all files passed to the kwarg ``files`` list.
+        It will also update the passed in SqlAlchemy ``model`` object & return
+        the updated model object if ``db`` is None.
+
+        If the ``db`` arg is passed in then the session is updated & session commited &
+        this method return value is void::
+
+            # Example using a SqlAlchemy model with an appended
+            # method that fetches a single `blog`
+            blogModel = BlogModel()
+            blog_results = blogModel.get_one()
+
+            # We pass the blog
+            file_upload.delete_files(blog_result, files=["my_video"])
+
+        :param model: Instance of a SqlAlchemy Model
+        :param db: Either an instance of Flask-SqlAlchemy ``SqlAlchmey`` class or
+               SqlAlchmey's ``Session`` object.
+        :key files: A list of the file names decalred on your model.
+        :return: SqlAlchemy model object
+        """
+        try:
+            files: List[str] = kwargs["files"]
+        except KeyError:
+            warn("'files' is a Required Argument")
+            return None
+
+        self.file_utils = FileUtils(model, self.config)
+
+        for f in files:
+            file_type = _ModelUtils.get_by_postfix(model, f, 'file_type')
+            file_path = f"{self.file_utils.get_stream_path(model.id)}/{f}.{file_type}"
+            os.remove(f"{file_path}")
+
+        for f_name in files:
+            for postfix in _ModelUtils.keys:
+                print(_ModelUtils.add_postfix(f_name, postfix))
+                setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
+        if db:
+            db.session.add(model)
+            db.session.commit()
+        else:
+            return model
+
+    def _check_attrs(self, model: Any, attr: str):
         """
         Before we can set the attribute on the Model we check
         that this attributes exists so it matches with the
@@ -49,9 +108,8 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
-    def create_file_dict(self, file, attr_name: str):
+    def _create_file_dict(self, file, attr_name: str):
         """
-
         :param file:
         :param attr_name:
         :return:
@@ -69,10 +127,6 @@ class FileUpload:
         else:
             warn("Flask-File-Upload: No files were saved")
             return {}
-
-    def get_store_name(self, model):
-        """TODO Attach to model"""
-        model.store_name = f"{model.id}.{model.file_type}"
 
     def init_app(self, app):
         self.app = app
@@ -96,7 +150,7 @@ class FileUpload:
         """
         for k, v in file_data.get("files").items():
             self.files.append(v)
-            self.file_data.append(self.create_file_dict(v, k))
+            self.file_data.append(self._create_file_dict(v, k))
         return self.file_data
 
     def _set_model_attrs(self, model: Any) -> None:
@@ -106,7 +160,7 @@ class FileUpload:
         """
         for d in self.file_data:
             for k, v in d.items():
-                self.check_attrs(model, k)
+                self._check_attrs(model, k)
                 setattr(model, k, v)
 
     def stream_file(self, model, **kwargs) -> Any:
@@ -214,34 +268,3 @@ class FileUpload:
             return f"{request.url}{file_path}.{file_type}"
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
-
-    def delete_files(self, model, db=None, **kwargs) -> None:
-        """
-        :param model:
-        :param db:
-        :param kwargs:
-        :return None:
-        """
-        try:
-            files: List[str] = kwargs["files"]
-        except KeyError:
-            warn("'files' is a Required Argument")
-            return None
-
-        self.file_utils = FileUtils(model, self.config)
-
-        for f in files:
-            file_type = _ModelUtils.get_by_postfix(model, f, 'file_type')
-            file_path = f"{self.file_utils.get_stream_path(model.id)}/{f}.{file_type}"
-            os.remove(f"{file_path}")
-
-        for f_name in files:
-            for postfix in _ModelUtils.keys:
-                print(_ModelUtils.add_postfix(f_name, postfix))
-                setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-        if db:
-            db.session.add(model)
-            db.session.commit()
-            return model
-        else:
-            return model
