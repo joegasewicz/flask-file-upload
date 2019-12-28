@@ -29,14 +29,20 @@ class FileUpload:
     #: to the ``init_app(app)`` method.
     app: Flask = None
 
-    #: The configuration class used for this library. See :class:`~flask_file_upload._config`
-    #: for more information.
+    #: The configuration class used for this library.
+    # See :class:`~flask_file_upload._config` for more information.
     config: Config = Config()
 
+    #: All the file related model attributes & values are stored
+    #: here as a list of dicts.
     file_data: List[Dict[str, str]] = []
 
+    #: A record of the original filenames used when saving files
+    #: to the server.
     files: Any = []
 
+    #: A class containing utility methods for working with files.
+    #: See :class:`flask_file_upload.file_utils` for more information.
     file_utils: FileUtils = None
 
     def __init__(self, app=None):
@@ -95,7 +101,6 @@ class FileUpload:
 
         for f_name in files:
             for postfix in _ModelUtils.keys:
-                print(_ModelUtils.add_postfix(f_name, postfix))
                 setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
         if db:
             db.session.add(model)
