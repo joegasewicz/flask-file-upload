@@ -26,11 +26,25 @@ class FileUpload:
 
     #: The Flask application instance: ``app = Flask(__name__)``.
     #: We can either pass the instance to ``FileUpload(app)`` or
-    #: to the ``init_app(app)`` method.
+    #: to the ``init_app(app)`` method::
+    #:
+    #:    app = Flask(__name__)
+    #:    
+    #:    db = SQLAlchemy()
+    #:    file_upload = FileUpload()
+    #:    
+    #:    def create_app():
+    #:        db.init_app(app)
+    #:        file_upload.init_app(app)
+    #:
+    #:    # Or we can pass the Flask app instance directly:
+    #:    db = SQLAlchemy(app)
+    #:    file_upload = FileUpload(app)
+    #:    app: Flask = None
     app: Flask = None
 
     #: The configuration class used for this library.
-    # See :class:`~flask_file_upload._config` for more information.
+#:    See :class:`~flask_file_upload._config` for more information.
     config: Config = Config()
 
     #: All the file related model attributes & values are stored
@@ -46,6 +60,10 @@ class FileUpload:
     file_utils: FileUtils = None
 
     def __init__(self, app=None):
+        """
+        The Flask application instance: ``app = Flask(__name__)``.
+        :param app: Flask application instance
+        """
         self.Model = Model
         self.Column = Column
         if app:
@@ -61,22 +79,22 @@ class FileUpload:
         If the ``db`` arg is passed in then the session is updated & session commited &
         this method return value is void::
 
-            # Example using a SqlAlchemy model with an appended
-            # method that fetches a single `blog`
+        #:    Example using a SqlAlchemy model with an appended
+        #:    method that fetches a single `blog`
             blogModel = BlogModel()
             blog_results = blogModel.get_one()
 
-            # We pass the blog
+        #:    We pass the blog
             blog = file_upload.delete_files(blog_result, files=["my_video"])
 
-            # As the `db` arg has not been passed to this method,
-            # the changes would need persisting to the database:
+        #:    As the `db` arg has not been passed to this method,
+        #:    the changes would need persisting to the database:
             db.session.add(blog)
             db.session.commit()
 
-            # If `db` is passed to this method then the updates are persisted.
-            # to the session. And therefore the session has been commited &
-            # no blog is returned.
+        #:    If `db` is passed to this method then the updates are persisted.
+        #:    to the session. And therefore the session has been commited &
+        #:    no blog is returned.
             file_upload.delete_files(blog_result, db, files=["my_video"])
 
 
@@ -210,14 +228,14 @@ class FileUpload:
         :param kwargs:
         :return Any:
         """
-        # Warning: These methods need to set members on the Model class
-        # before we instantiate FileUtils()
+    #:    Warning: These methods need to set members on the Model class
+    #:    before we instantiate FileUtils()
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
 
         self.file_utils = FileUtils(model, self.config)
 
-        # Save files to dirs
+    #:    Save files to dirs
         self._save_files_to_dir(model)
 
         return model
@@ -226,15 +244,15 @@ class FileUpload:
         """
         :param model:
         :param db: Default is None which is not Recommended. If db is None,
-        then only the files on the server are removed & the model is updated with
-        each attribute set to None but the session is not commited (This could cause
-        your database & files on server to be out of sync if you fail to commit
-        the session.
-        If you encounter an exception before you can commit the session then you
-        can call either `update_model_clean_up()` or `update_files_clean_up()` to
-        update the model or update the files on the server respectively.
-        :key files Dict[str, Any]: A dict with the key
-        representing the model attr name & file as value.
+            then only the files on the server are removed & the model is updated with
+            each attribute set to None but the session is not commited (This could cause
+            your database & files on server to be out of sync if you fail to commit
+            the session.
+            If you encounter an exception before you can commit the session then you
+            can call either `update_model_clean_up()` or `update_files_clean_up()` to
+            update the model or update the files on the server respectively.
+            :key files Dict[str, Any]: A dict with the key
+            representing the model attr name & file as value.
         :return Any: Returns the model back
         """
         try:
@@ -249,20 +267,20 @@ class FileUpload:
             value = _ModelUtils.get_by_postfix(model, f, "file_name")
             original_file_names.append(value)
 
-        # Set file_data
+    #:    Set file_data
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
 
         self.file_utils = FileUtils(model, self.config)
 
-        # Save files to dirs
+    #:    Save files to dirs
         self._save_files_to_dir(model)
 
-        # remove original files from directory
+    #:    remove original files from directory
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
-        # if a db arg is provided then commit changes to db
+    #:    if a db arg is provided then commit changes to db
         if db:
             db.session.add(model)
             db.session.commit()
