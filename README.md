@@ -93,7 +93,7 @@ class blogModel(db.Model):
     })
 ````
 
-##### Update file
+##### Update files
 ````python
     blog_post = BlogPostModel(title="Hello World Today")
     blog_post = file_upload.update_files(blog_post, files={
