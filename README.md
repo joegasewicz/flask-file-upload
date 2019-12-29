@@ -83,10 +83,8 @@ class blogModel(db.Model):
 ````
 
 
-##### Get main form data and pass to your SqlAlchemy Model
+##### Save files
 ````python
-    blog_post = BlogPostModel(title="Hello World Today")
-    
     file_upload.save_files(blog_post, files={
         "my_video": my_video,
         "placeholder_img": placeholder_img,
@@ -95,7 +93,6 @@ class blogModel(db.Model):
 
 ##### Update files
 ````python
-    blog_post = BlogPostModel(title="Hello World Today")
     blog_post = file_upload.update_files(blog_post, files={
         "my_video": new_my_video,
         "placeholder_img": new_placeholder_img,
@@ -111,8 +108,6 @@ class blogModel(db.Model):
 
 ##### Stream a file
 ````python
-    First get your entity
-    my_blog_post = BlogModel().get(id=1)  # Or your way of getting an entity
     file_upload.stream_file(blog_post, filename="my_video")
 ````
 
