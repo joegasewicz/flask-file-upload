@@ -11,6 +11,7 @@ Welcome to Flask File Upload's documentation!
    :caption: Contents:
 
    file_upload
+   model
 
 
 Features
