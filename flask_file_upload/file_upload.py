@@ -311,9 +311,9 @@ class FileUpload:
 
             file_upload.stream_file(blogs, filename="my_video")
 
-        :param model:
-        :param kwargs:
-        :return Any:
+        :param model: SqlAlchemy model instance.
+        :key filename: The attribute name defined on your SqlAlchemy model
+        :return: Updated SqlAlchemy model instance or None.
         """
         try:
             filename = kwargs['filename']
