@@ -174,6 +174,7 @@ class FileUpload:
         to the ``filename`` kwarg. Example::
 
             file_upload.get_file_url(blog_post, filename="my_video")
+
         :param model:
         :param kwargs:
         :return:
@@ -199,6 +200,7 @@ class FileUpload:
 
             def create_app():
                 file_upload.init_app(app)
+
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :return: None
         """
@@ -217,7 +219,18 @@ class FileUpload:
                 placeholder_img = file_upload.Column(db)
 
         This example demonstrates creating a new row in your database
-        using a SqlAlchemy model. Example::
+        using a SqlAlchemy model which is is then pass as the first
+        argument to ``file_upload.save_files``. Normally, you will
+        access your files from Flask's ``request`` object::
+
+            from Flask import request
+
+            my_video = request.files['my_video']
+            placeholder_img = request.files['placeholder_img']
+
+        Then, we need to pass to the kwarg ``files`` a dict of keys that
+        reference the attribute name(s) defined in your SqlAlchemy
+        model & values that are your files.::
 
             blog_post = BlogPostModel(title="Hello World Today")
 
@@ -225,9 +238,11 @@ class FileUpload:
                 "my_video": my_video,
                 "placeholder_img": placeholder_img,
             })
-        :param model:
-        :param kwargs:
-        :return Any:
+
+        :param model: The SqlAlchemy model instance
+        :key filename: The attribute name(s) defined in your SqlAlchemy
+            model
+        :return: The updated SqlAlchemy model instance
         """
         # Warning: These methods need to set members on the Model class
         # before we instantiate FileUtils()
@@ -255,7 +270,7 @@ class FileUpload:
         Adds items to files & file_data
         :key files: Dict[str: Any] Key is the filename & Value
         is the file.
-        :return List[Dict[str, str]]:
+        :return:  List[Dict[str, str]]
         """
         for k, v in file_data.get("files").items():
             self.files.append(v)
@@ -295,6 +310,7 @@ class FileUpload:
            reference the attribute name defined on your SqlAlchemy model::
 
             file_upload.stream_file(blogs, filename="my_video")
+
         :param model:
         :param kwargs:
         :return Any:
@@ -317,17 +333,41 @@ class FileUpload:
 
     def update_files(self, model: Any, db=None, **kwargs):
         """
-        :param model:
+        First reference the attribute name defined on your
+        SqlAlchemy model. For example::
+
+            @file_upload.Model
+            class ModelTest(db.Model):
+
+                my_video = file_upload.Column(db)
+
+        Pass the model instance as a first argument to ``file_upload.update_files``.
+        The kwarg ``files`` requires the file(s) returned from Flask's request body::
+
+            from Flask import request
+
+            my_video = request.files['my_video']
+            placeholder_img = request.files['placeholder_img']
+
+        Then, we need to pass to the kwarg ``files`` a dict of keys that
+        reference the attribute name(s) defined in your SqlAlchemy
+        model & values that are your files.::
+
+
+            blog_post = BlogPostModel(title="Hello World Today")
+            blog_post = file_upload.update_files(blog_post, files={
+                "my_video": new_my_video,
+                "placeholder_img": new_placeholder_img,
+            })
+
+        :param model: SqlAlchemy model instance.
         :param db: Default is None which is not Recommended. If db is None,
             then only the files on the server are removed & the model is updated with
             each attribute set to None but the session is not commited (This could cause
             your database & files on server to be out of sync if you fail to commit
             the session.
-            If you encounter an exception before you can commit the session then you
-            can call either `update_model_clean_up()` or `update_files_clean_up()` to
-            update the model or update the files on the server respectively.
-            :key files Dict[str, Any]: A dict with the key
-            representing the model attr name & file as value.
+        :key files Dict[str, Any]: A dict with the key representing the model attr
+             name & file as value.
         :return Any: Returns the model back
         """
         try:
