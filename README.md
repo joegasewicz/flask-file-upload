@@ -28,21 +28,22 @@ Flask File Upload
 
 
 ##### Setup
+We can either pass the instance to FileUpload(app) or to the init_app(app) method:
 ````python
-    # my_app.py
-    
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    db = SQLAlchemy()
-    file_upload = FileUpload()
-    
-    def create_app():
-        db.init_app(app)
-        file_upload.init_app(app)
-        
-    # Or we can pass directly:
-    db = SQLAlchemy(app)
-    file_upload = FileUpload(app)
+db = SQLAlchemy()
+file_upload = FileUpload()
+
+# An example using the Flask factory pattern
+def create_app():
+    db.init_app(app)
+    file_upload.init_app(app)
+
+# Or we can pass the Flask app instance directly:
+db = SQLAlchemy(app)
+file_upload = FileUpload(app)
+app: Flask = None
 ````
 
 

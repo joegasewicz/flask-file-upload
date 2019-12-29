@@ -37,7 +37,6 @@ class FileUpload:
     #:    # Or we can pass the Flask app instance directly:
     #:    db = SQLAlchemy(app)
     #:    file_upload = FileUpload(app)
-    #:    app: Flask = None
     app: Flask = None
 
     #: The configuration class used for this library.
