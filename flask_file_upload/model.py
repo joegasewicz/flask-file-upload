@@ -9,8 +9,8 @@ from ._model_utils import _ModelUtils
 
 class Model:
     """
-    Setup requires the SqlAlchemy models to be decorated
-    with ``@file_upload.Model``. This will enable Flask-File-Upload
+    Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use
+    FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
     to update your database with the extra columns required to store
     files in your database.
     Declare your attributes as normal but assign a value of

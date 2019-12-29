@@ -10,8 +10,8 @@ Welcome to Flask File Upload's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   file_upload
    model
+   file_upload
 
 
 Features
