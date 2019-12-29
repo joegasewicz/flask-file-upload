@@ -6,7 +6,7 @@
 ![FlaskFileUpload](assets/logo.png?raw=true "Title")
 
 Library that works with Flask & SqlAlchemy to store
-files in your database
+files on your server & in your database
 
 Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/latest/)
 
