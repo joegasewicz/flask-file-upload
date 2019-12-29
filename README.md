@@ -1,4 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
 
 ![FlaskFileUpload](assets/logo.png?raw=true "Title")
 
