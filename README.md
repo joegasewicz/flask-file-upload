@@ -1,9 +1,11 @@
-![FlaskFileUpload](assets/logo.png?raw=true "Title")
+[![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 
-### Work in progress...  
+![FlaskFileUpload](assets/logo.png?raw=true "Title")
 
 Library that works with Flask & SqlAlchemy to store
 files in your database
+
+Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/latest/)
 
 ## Installation
 
