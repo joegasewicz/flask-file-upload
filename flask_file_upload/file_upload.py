@@ -18,10 +18,6 @@ from ._model_utils import _ModelUtils
 class FileUpload:
     """
     :param app: Flask application instance
-
-    Public class FileUploads
-
-    The main public api for Flask File Upload library
     """
 
     #: The Flask application instance: ``app = Flask(__name__)``.
@@ -29,10 +25,11 @@ class FileUpload:
     #: to the ``init_app(app)`` method::
     #:
     #:    app = Flask(__name__)
-    #:    
+    #:
     #:    db = SQLAlchemy()
     #:    file_upload = FileUpload()
-    #:    
+    #:
+    #:    # An example using the Flask factory pattern
     #:    def create_app():
     #:        db.init_app(app)
     #:        file_upload.init_app(app)
@@ -44,7 +41,7 @@ class FileUpload:
     app: Flask = None
 
     #: The configuration class used for this library.
-#:    See :class:`~flask_file_upload._config` for more information.
+    #: See :class:`~flask_file_upload._config` for more information.
     config: Config = Config()
 
     #: All the file related model attributes & values are stored
@@ -79,22 +76,22 @@ class FileUpload:
         If the ``db`` arg is passed in then the session is updated & session commited &
         this method return value is void::
 
-        #:    Example using a SqlAlchemy model with an appended
-        #:    method that fetches a single `blog`
+            # Example using a SqlAlchemy model with an appended
+            # method that fetches a single `blog`
             blogModel = BlogModel()
             blog_results = blogModel.get_one()
 
-        #:    We pass the blog
+            # We pass the blog
             blog = file_upload.delete_files(blog_result, files=["my_video"])
 
-        #:    As the `db` arg has not been passed to this method,
-        #:    the changes would need persisting to the database:
+            # As the `db` arg has not been passed to this method,
+            # the changes would need persisting to the database:
             db.session.add(blog)
             db.session.commit()
 
-        #:    If `db` is passed to this method then the updates are persisted.
-        #:    to the session. And therefore the session has been commited &
-        #:    no blog is returned.
+            # If `db` is passed to this method then the updates are persisted.
+            # to the session. And therefore the session has been commited &
+            # no blog is returned.
             file_upload.delete_files(blog_result, db, files=["my_video"])
 
 
@@ -161,6 +158,24 @@ class FileUpload:
         else:
             warn("Flask-File-Upload: No files were saved")
             return {}
+
+    def get_file_url(self, model: Any, **kwargs) -> str:
+        """
+        Example::
+
+            file_upload.get_file_url(blog_post, filename="placeholder_img")
+        :param model:
+        :param kwargs:
+        :return:
+        """
+        try:
+            filename = kwargs["filename"]
+            self.file_utils = FileUtils(model, self.config)
+            file_path = self.file_utils.get_file_path(model.id, filename)
+            file_type = _ModelUtils.get_by_postfix(model, filename, "file_type")
+            return f"{request.url}{file_path}.{file_type}"
+        except AttributeError:
+            AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
     def init_app(self, app):
         self.app = app
@@ -288,17 +303,3 @@ class FileUpload:
         else:
             return model
 
-    def get_file_url(self, model: Any, **kwargs) -> str:
-        """
-        :param model:
-        :param kwargs:
-        :return:
-        """
-        try:
-            filename = kwargs["filename"]
-            self.file_utils = FileUtils(model, self.config)
-            file_path = self.file_utils.get_file_path(model.id, filename)
-            file_type = _ModelUtils.get_by_postfix(model, filename, "file_type")
-            return f"{request.url}{file_path}.{file_type}"
-        except AttributeError:
-            AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
