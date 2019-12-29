@@ -98,7 +98,7 @@ class FileUpload:
         :param model: Instance of a SqlAlchemy Model
         :param db: Either an instance of Flask-SqlAlchemy ``SqlAlchmey`` class or
                SqlAlchmey's ``Session`` object.
-        :key files: A list of the file names decalred on your model.
+        :key files: A list of the file names declared on your model.
         :return: SqlAlchemy model object
         """
         try:
@@ -187,9 +187,59 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def init_app(self, app):
+    def init_app(self, app) -> None:
+        """
+        If you are using the Flask factory pattern, normally you
+        will, by convention, create a method called ``create_app``.
+        At runtime, you may then set configuration values before initiating
+        FileUpload etc. Example::
+
+            app = Flask(__name__)
+            file_upload = FileUpload()
+
+            def create_app():
+                file_upload.init_app(app)
+        :param app: The Flask application instance: ``app = Flask(__name__)``.
+        :return: None
+        """
         self.app = app
         self.config.init_config(app)
+
+    def save_files(self, model, **kwargs) -> Any:
+        """
+        The file(s) must reference the attribute name(s)
+        defined in your SqlAlchemy model. For example::
+
+            @file_upload.Model
+            class ModelTest(db.Model):
+
+                my_video = file_upload.Column(db)
+                placeholder_img = file_upload.Column(db)
+
+        This example demonstrates creating a new row in your database
+        using a SqlAlchemy model. Example::
+
+            blog_post = BlogPostModel(title="Hello World Today")
+
+            file_upload.save_files(blog_post, files={
+                "my_video": my_video,
+                "placeholder_img": placeholder_img,
+            })
+        :param model:
+        :param kwargs:
+        :return Any:
+        """
+        # Warning: These methods need to set members on the Model class
+        # before we instantiate FileUtils()
+        self._set_file_data(**kwargs)
+        self._set_model_attrs(model)
+
+        self.file_utils = FileUtils(model, self.config)
+
+        # Save files to dirs
+        self._save_files_to_dir(model)
+
+        return model
 
     def _save_files_to_dir(self, model: Any) -> None:
         """
@@ -225,8 +275,26 @@ class FileUpload:
     def stream_file(self, model, **kwargs) -> Any:
         """
         Streams a file from the directory defined by
-        the Flask's UPLOAD_FOLDER your Flask app's
-        configuration settings.
+        the Flask's ``UPLOAD_FOLDER``, in your Flask app's
+        configuration settings. To access the file,
+        it must reference the attribute name defined on
+        your SqlAlchemy model. For example::
+
+            @file_upload.Model
+            class ModelTest(db.Model):
+
+                my_video = file_upload.Column(db)
+
+        The required steps to stream files using ``file_upload.stream_file`` are:
+
+        1. Fetch the required row from your database using SqlAlchemy::
+
+            blog = BlogModel.query.filter_by(id=id).first()
+
+        2. Pass the SqlAlchemy instance to ``file_upload.stream_file`` &
+           reference the attribute name defined on your SqlAlchemy model::
+
+            file_upload.stream_file(blogs, filename="my_video")
         :param model:
         :param kwargs:
         :return Any:
@@ -246,24 +314,6 @@ class FileUpload:
             f"{filename}.{file_type}",
             conditional=True,
         )
-
-    def save_files(self, model, **kwargs) -> Any:
-        """
-        :param model:
-        :param kwargs:
-        :return Any:
-        """
-    #:    Warning: These methods need to set members on the Model class
-    #:    before we instantiate FileUtils()
-        self._set_file_data(**kwargs)
-        self._set_model_attrs(model)
-
-        self.file_utils = FileUtils(model, self.config)
-
-    #:    Save files to dirs
-        self._save_files_to_dir(model)
-
-        return model
 
     def update_files(self, model: Any, db=None, **kwargs):
         """
@@ -292,20 +342,20 @@ class FileUpload:
             value = _ModelUtils.get_by_postfix(model, f, "file_name")
             original_file_names.append(value)
 
-    #:    Set file_data
+        # Set file_data
         self._set_file_data(**kwargs)
         self._set_model_attrs(model)
 
         self.file_utils = FileUtils(model, self.config)
 
-    #:    Save files to dirs
+        # Save files to dirs
         self._save_files_to_dir(model)
 
-    #:    remove original files from directory
+        # remove original files from directory
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
-    #:    if a db arg is provided then commit changes to db
+        # if a db arg is provided then commit changes to db
         if db:
             db.session.add(model)
             db.session.commit()
