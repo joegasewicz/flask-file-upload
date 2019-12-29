@@ -161,9 +161,19 @@ class FileUpload:
 
     def get_file_url(self, model: Any, **kwargs) -> str:
         """
-        Example::
+        Returns the url path to a file on your server.
+        To access the file, it must reference the attribute name
+        defined on your SqlAlchemy model. For example::
 
-            file_upload.get_file_url(blog_post, filename="placeholder_img")
+            @file_upload.Model
+            class ModelTest(db.Model):
+
+                my_video = file_upload.Column(db)
+
+        To return the url of the above file, pass in attribuute name
+        to the ``filename`` kwarg. Example::
+
+            file_upload.get_file_url(blog_post, filename="my_video")
         :param model:
         :param kwargs:
         :return:
