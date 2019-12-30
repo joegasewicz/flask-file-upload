@@ -12,6 +12,7 @@ Welcome to Flask File Upload's documentation!
 
    model
    file_upload
+   column
 
 
 Features

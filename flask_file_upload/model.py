@@ -1,5 +1,5 @@
 """
-   Public SqlAlchemy class decorator.
+   Public SQLAlchemy class decorator.
 """
 from functools import update_wrapper
 
@@ -9,17 +9,17 @@ from ._model_utils import _ModelUtils
 
 class Model:
     """
-    Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use
+    Flask-File-Upload (FFU) setup requires each SQLAlchemy model that wants to use
     FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
     to update your database with the extra columns required to store
     files in your database.
     Declare your attributes as normal but assign a value of
-    ``file_upload.Column`` & pass the SqlAlchemy ``db`` instance:
-    ``file_upload.Column(db)``. This is easy if you are using Flask-SqlAlchemy::
+    ``file_upload.Column`` & pass the SQLAlchemy ``db`` instance:
+    ``file_upload.Column(db)``. This is easy if you are using Flask-SQLAlchemy::
 
-        from flask_sqlalchemy import SqlAlchemy
+        from flask_SQLAlchemy import SQLAlchemy
 
-        db = SqlAlchemy()
+        db = SQLAlchemy()
 
     Full example::
 
@@ -30,7 +30,7 @@ class Model:
            __tablename__ = "blogs"
            id = db.Column(db.Integer, primary_key=True)
 
-           # Your files -  Notice how we pass in the SqlAlchemy instance
+           # Your files -  Notice how we pass in the SQLAlchemy instance
            # or `db` to the `file_uploads.Column` class:
 
            my_placeholder = file_upload.Column(db)
@@ -40,7 +40,7 @@ class Model:
 
     def __init__(self, _class):
         """
-        We set all our attributes in this __init__ method so that when SqlAlchemy's
+        We set all our attributes in this __init__ method so that when SQLAlchemy's
         `create_all` method is evoked the model's attributes are set.
         :param _class:
         """
@@ -53,7 +53,7 @@ class Model:
         filenames = []
 
         new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(self._class, new_cols, filenames)
-        # Add new attributes to the SqlAlchemy model
+        # Add new attributes to the SQLAlchemy model
         _ModelUtils.set_columns(self._class, new_cols_list)
         # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
