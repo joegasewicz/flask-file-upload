@@ -2,12 +2,13 @@
    Public SQLAlchemy class decorator.
 """
 from functools import update_wrapper
+import inspect
 
 
 from ._model_utils import _ModelUtils
 
 
-class Model:
+class Model(object):
     """
     Flask-File-Upload (FFU) setup requires each SQLAlchemy model that wants to use
     FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
@@ -45,8 +46,6 @@ class Model:
         :param _class:
         """
         update_wrapper(self, _class)
-        super(Model, self).__init__()
-
         self._class = _class
 
         new_cols = []
@@ -57,6 +56,8 @@ class Model:
         _ModelUtils.set_columns(self._class, new_cols_list)
         # The original model's attributes set by the user for files get removed here
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
+        # Set static methods on Model class otherwise they are not callable
+        _ModelUtils.set_static_methods(self, _class)
 
     def __call__(self, *args, **kwargs):
         """
@@ -68,6 +69,5 @@ class Model:
         :return:
         """
         return self._class(*args, **kwargs)
-
 
 
