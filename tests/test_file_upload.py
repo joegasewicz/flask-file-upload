@@ -143,7 +143,12 @@ class TestFileUploads:
         assert getattr(blog, "my_video__mime_type") == "video/mpeg"
         assert getattr(blog, "my_video__file_type") == "mp4"
 
-        result = file_upload.delete_files(blog, db, files=["my_video"])
+        file_upload.delete_files(blog, db, files=["my_video"])
+
+        db.session.add(m)
+        db.session.commit()
+
+        result = m.get_blog()
 
         assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
         assert getattr(result, "my_video__file_name") is None
