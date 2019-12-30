@@ -2,7 +2,7 @@ import pytest
 
 from flask_file_upload.file_upload import FileUpload
 from tests.app import db
-from tests.fixtures.models import MockBlogModel
+from tests.fixtures.models import MockBlogModel, mock_blog_model
 from flask_file_upload.model import Model
 
 
@@ -39,3 +39,13 @@ class TestModel:
         assert model_test.my_placeholder__mime_type == "image/jpeg"
         assert model_test.my_placeholder__file_type == "jpg"
         assert model_test.id == 1
+
+    @pytest.mark.g
+    def test_model_attr(self, mock_blog_model):
+        # Test static members:
+        print(dir(MockBlogModel))
+        assert hasattr(MockBlogModel, "get_blog_by_id")
+
+        # Test instance members
+        blog = mock_blog_model(name="test_name")
+        assert hasattr(blog, "get_blog")

@@ -15,9 +15,12 @@ class MockBlogModel(db.Model):
     my_placeholder = file_upload.Column(db)
     my_video = file_upload.Column(db)
 
-
     def get_blog(self):
         return self.query.filter_by(id=1).one()
+
+    @staticmethod
+    def get_blog_by_id():
+        return MockBlogModel.query.filter_by(id=1).first()
 
 
 class MockModel:
