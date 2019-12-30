@@ -44,7 +44,7 @@ class Model:
         `create_all` method is evoked the model's attributes are set.
         :param _class:
         """
-        update_wrapper(self, super)
+        update_wrapper(self, _class)
         super(Model, self).__init__()
 
         self._class = _class
@@ -68,3 +68,6 @@ class Model:
         :return:
         """
         return self._class(*args, **kwargs)
+
+
+
