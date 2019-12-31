@@ -45,7 +45,7 @@ def blog():
             my_video__mime_type="video/mpeg",
             my_video__file_type="mp4",
         )
-        file_upload = FileUpload()
+        file_upload = FileUpload(app, db)
 
         # Warning - The UPLOAD_FOLDER - onnly needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
@@ -59,7 +59,7 @@ def blog():
 
         blog_post = MockBlogModel(id=1, name="My Blog Post")
 
-        file_upload = FileUpload()
+        file_upload = FileUpload(app, db)
 
         blog = file_upload.save_files(blog_post, files={
             "my_video": my_video,

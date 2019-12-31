@@ -49,6 +49,7 @@ class FileUpload:
     #:
     #:    file_upload = FileUpload(
     #:        app,
+    #:        db,
     #:        upload_folder=UPLOAD_FOLDER,
     #:        allowed_extensions=ALLOWED_EXTENSIONS,
     #:         max_content_length=MAX_CONTENT_LENGTH,
@@ -83,7 +84,10 @@ class FileUpload:
     #: See :class:`flask_file_upload.file_utils` for more information.
     file_utils: FileUtils = None
 
-    def __init__(self, app=None, *args, **kwargs):
+    #: The Flask-SQLAlchemy `SQLAlchemy()` instance`
+    db = None
+
+    def __init__(self, app=None, db=None, *args, **kwargs):
         """
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :param kwargs:
@@ -95,8 +99,9 @@ class FileUpload:
 
         self.Model = Model
         self.Column = Column
+        self.db = db
         if app:
-            self.init_app(app, **kwargs)
+            self.init_app(app, db, **kwargs)
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
@@ -220,7 +225,7 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def init_app(self, app, **kwargs) -> None:
+    def init_app(self, app, db=None, **kwargs) -> None:
         """
         If you are using the Flask factory pattern, normally you
         will, by convention, create a method called ``create_app``.
@@ -236,8 +241,13 @@ class FileUpload:
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :return: None
         """
+        db = db or self.db
         self.app = app
         self.config.init_config(app, **kwargs)
+        if db:
+            app.extensions["file_upload"] = {
+                "db": db,
+            }
 
     def save_files(self, model, **kwargs) -> Any:
         """
@@ -272,8 +282,11 @@ class FileUpload:
             })
 
         :param model: The SqlAlchemy model instance
-        :key filename: The attribute name(s) defined in your SqlAlchemy
-            model
+        :key filename: The attribute name(s) defined in your SqlAlchemy model
+        :key commit_session: Default is `True` or if you have not passed in
+        a SQLAlchemy instance to ``FileUpload()`` then it is also set to False.
+        *If you prefer to handle the session yourself*.
+
         :return: The updated SqlAlchemy model instance
         """
         # Warning: These methods need to set members on the Model class
@@ -286,7 +299,19 @@ class FileUpload:
         # Save files to dirs
         self._save_files_to_dir(model)
 
-        return model
+        commit_session = kwargs.get("commit_session") or True
+        if commit_session:
+            try:
+                db = self.app.extensions["file_upload"].get("db")
+                if db:
+                    db.session.add(model)
+                    db.session.commit()
+            except AttributeError as err:
+                raise AttributeError(
+                    "[FLASK_FILE_UPLOAD_ERROR]: You must pass the SQLAlchemy"
+                    f" instance (db) to FileUpload(). Full Error: {err}"
+                )
+            return model
 
     def _save_files_to_dir(self, model: Any) -> None:
         """
