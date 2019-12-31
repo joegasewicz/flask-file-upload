@@ -76,7 +76,8 @@ class _ModelUtils:
         :param db:
         :return Dict[str, Any]:
         """
-        def create_col(key, name): return db.Column(db.String,  key=key, name=name)
+        def create_col(key, name):
+            return db.Column(db.String(len(key)), key=key, name=name)
         return _ModelUtils.create_keys(
             _ModelUtils.keys,
             file_name,
