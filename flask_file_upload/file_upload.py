@@ -24,13 +24,17 @@ class FileUpload:
     :key max_content_length: Limit the amount of file memory
     :key sqlalchemy_database_uri: The database URI that should be used for the connection
     """
+
     #: Flask-File-Upload (**FFU**) requires Flask application configuration variables
     #: passed directly to the ``FileUpload`` class. This is because **FFU** needs to do some
     #: work on your SqlAlchemy models before the application instance is created. One
     #: way to make this setup dynamic, is to create your environment variables before
     #: creating a ``FileUpload`` instance & if any of these variables need to get
     #: reset dynamically when the Flask application instance is returned (*when using the
-    #: factory-pattern*), then update them within the *create_app* function. For Example::
+    #: factory-pattern*), then update them within the *create_app* function.
+    #:
+    #: We can then call the ``file_upload.init_app`` method & this will now receive the dynamically set
+    #: variables. For Example::
     #:
     #:    app = Flask(__name__)
     #:
@@ -54,7 +58,7 @@ class FileUpload:
     #:    # An example using the Flask factory pattern
     #:    def create_app():
     #:
-    #:      # Config
+    #:      # Dynamically set config variables:
     #:      app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
     #:      app.config["ALLOWED_EXTENSIONS"] = ALLOWED_EXTENSIONS
     #:      app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
