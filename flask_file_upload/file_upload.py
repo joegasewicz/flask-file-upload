@@ -237,7 +237,7 @@ class FileUpload:
         :return: None
         """
         self.app = app
-        self.config.init_config(app)
+        self.config.init_config(app, **kwargs)
 
     def save_files(self, model, **kwargs) -> Any:
         """
