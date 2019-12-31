@@ -83,7 +83,10 @@ class FileUpload:
     #: See :class:`flask_file_upload.file_utils` for more information.
     file_utils: FileUtils = None
 
-    def __init__(self, app=None, *args, **kwargs):
+    #: The Flask-SQLAlchemy `SQLAlchemy()` instance`
+    db = None
+
+    def __init__(self, app=None, db=None, *args, **kwargs):
         """
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :param kwargs:
@@ -95,8 +98,9 @@ class FileUpload:
 
         self.Model = Model
         self.Column = Column
+        self.db = db
         if app:
-            self.init_app(app, **kwargs)
+            self.init_app(app, db, **kwargs)
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
@@ -220,7 +224,7 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def init_app(self, app, **kwargs) -> None:
+    def init_app(self, app, db=None, **kwargs) -> None:
         """
         If you are using the Flask factory pattern, normally you
         will, by convention, create a method called ``create_app``.
@@ -236,8 +240,13 @@ class FileUpload:
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :return: None
         """
+        db = db or self.db
         self.app = app
         self.config.init_config(app, **kwargs)
+        if db:
+            app.extensions["file_upload"] = {
+                "db": db,
+            }
 
     def save_files(self, model, **kwargs) -> Any:
         """
@@ -286,6 +295,10 @@ class FileUpload:
         # Save files to dirs
         self._save_files_to_dir(model)
 
+        db = self.app.extensions["file_upload"].get("db")
+        if db:
+            db.session.add(model)
+            db.session.commit()
         return model
 
     def _save_files_to_dir(self, model: Any) -> None:
