@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="flask-file-upload",
-    version="0.0.6",
+    version="0.0.7",
     description="Library that works with Flask & SqlAlchemy to store files in your database and server.",
     packages=["flask_file_upload"],
     py_modules=["flask_file_upload"],
