@@ -45,13 +45,11 @@ def blog():
             my_video__mime_type="video/mpeg",
             my_video__file_type="mp4",
         )
-
         file_upload = FileUpload()
 
         # Warning - The UPLOAD_FOLDER - onnly needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
         file_upload.init_app(app)
-
         return file_upload.stream_file(blog_post, filename="my_video")
 
     if request.method == "POST":
