@@ -40,7 +40,6 @@ class TestModel:
         assert model_test.my_placeholder__file_type == "jpg"
         assert model_test.id == 1
 
-    @pytest.mark.g
     def test_model_attr(self, mock_blog_model):
         # Test static members:
         assert hasattr(MockBlogModel, "get_blog_by_id")
