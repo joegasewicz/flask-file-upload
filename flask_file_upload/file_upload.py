@@ -17,26 +17,50 @@ from ._model_utils import _ModelUtils
 
 class FileUpload:
     """
-    :param app: Flask application instance
+    :param app: The Flask application instance: ``app = Flask(__name__)``.
+    :kwargs:
+    :key allowed_extensions: A list of accepted file types eg. ['.jpg', etc..]
+    :key upload_folder: where the uploaded files are stored
+    :key max_content_length: Limit the amount of file memory
+    :key sqlalchemy_database_uri: The database URI that should be used for the connection
     """
-
-    #: The Flask application instance: ``app = Flask(__name__)``.
-    #: We can either pass the instance to ``FileUpload(app)`` or
-    #: to the ``init_app(app)`` method::
+    #: Flask-File-Upload (**FFU**) requires Flask application configuration variables
+    #: passed directly to the ``FileUpload`` class. This is because **FFU** needs to do some
+    #: work on your SqlAlchemy models before the application instance is created. One
+    #: way to make this setup dynamic, is to create your environment variables before
+    #: creating a ``FileUpload`` instance & if any of these variables need to get
+    #: reset dynamically when the Flask application instance is returned (*when using the
+    #: factory-pattern*), then update them within the *create_app* function. For Example::
     #:
     #:    app = Flask(__name__)
     #:
-    #:    db = SQLAlchemy()
-    #:    file_upload = FileUpload()
+    #:    db = SQLAlchemy()`
+    #:
+    #:    # Environment variables
+    #:    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    #:    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/media")
+    #:    ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
+    #:    MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
+    #:    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/blog_database"
+    #:
+    #:    file_upload = FileUpload(
+    #:        app,
+    #:        upload_folder=UPLOAD_FOLDER,
+    #:        allowed_extensions=ALLOWED_EXTENSIONS,
+    #:         max_content_length=MAX_CONTENT_LENGTH,
+    #:         sqlalchemy_database_uri=SQLALCHEMY_DATABASE_URI,
+    #:    )
     #:
     #:    # An example using the Flask factory pattern
     #:    def create_app():
-    #:        db.init_app(app)
-    #:        file_upload.init_app(app)
     #:
-    #:    # Or we can pass the Flask app instance directly:
-    #:    db = SQLAlchemy(app)
-    #:    file_upload = FileUpload(app)
+    #:      # Config
+    #:      app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+    #:      app.config["ALLOWED_EXTENSIONS"] = ALLOWED_EXTENSIONS
+    #:      app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+    #:      app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+    #:
+    #:      file_upload.init_app(app)
     app: Flask = None
 
     #: The configuration class used for this library.
@@ -57,9 +81,14 @@ class FileUpload:
 
     def __init__(self, app=None, *args, **kwargs):
         """
-        The Flask application instance: ``app = Flask(__name__)``.
-        :param app: Flask application instance
+        :param app: The Flask application instance: ``app = Flask(__name__)``.
+        :param kwargs:
+            :key allowed_extensions: A list of accepted file types eg. ['.jpg', etc..]
+            :key upload_folder: where the uploaded files are stored
+            :key max_content_length: Limit the amount of file memory
+            :key sqlalchemy_database_uri: The database URI that should be used for the connection
         """
+
         self.Model = Model
         self.Column = Column
         if app:

@@ -2,7 +2,6 @@
    Public SQLAlchemy class decorator.
 """
 from functools import update_wrapper
-import inspect
 
 
 from ._model_utils import _ModelUtils
