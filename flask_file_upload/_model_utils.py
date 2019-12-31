@@ -19,7 +19,6 @@ class _ModelUtils:
         '_sa_class_manager',
         'metadata',
         'query',
-        'session',
     ]
 
     @staticmethod
