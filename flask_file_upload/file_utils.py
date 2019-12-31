@@ -2,6 +2,7 @@
     Helper class
 """
 import os
+import errno
 
 from ._config import Config
 from ._model_utils import _ModelUtils
@@ -55,7 +56,15 @@ class FileUtils:
         :param model_id:
         :return None:
         """
-        file.save(self.get_file_path(model_id, file.filename))
+        file_path = self.get_file_path(model_id, file.filename)
+        if not os.path.exists(os.path.dirname(file_path)):
+            try:
+                os.makedirs(os.path.dirname(file_path))
+            except OSError as err:
+                if err.errno != errno.EEXIST:
+                    raise OSError("[FLASK_FILE_UPLOAD_ERROR]: Couldn't create file path: "
+                                  f"{file_path}")
+        file.save(file_path)
 
     def get_stream_path(self, model_id: int):
         return os.path.join(f"{self.config.upload_folder}/{self.table_name}/{model_id}")
