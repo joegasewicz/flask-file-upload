@@ -49,6 +49,7 @@ class FileUpload:
     #:
     #:    file_upload = FileUpload(
     #:        app,
+    #:        db,
     #:        upload_folder=UPLOAD_FOLDER,
     #:        allowed_extensions=ALLOWED_EXTENSIONS,
     #:         max_content_length=MAX_CONTENT_LENGTH,
@@ -283,6 +284,9 @@ class FileUpload:
         :param model: The SqlAlchemy model instance
         :key filename: The attribute name(s) defined in your SqlAlchemy
             model
+        :key commit_session: Default is `True` or you have not passed in
+        a SQLAlchemy instance then it is also set to False. If you prefer
+        to handle the session yourself.
         :return: The updated SqlAlchemy model instance
         """
         # Warning: These methods need to set members on the Model class
@@ -295,11 +299,19 @@ class FileUpload:
         # Save files to dirs
         self._save_files_to_dir(model)
 
-        db = self.app.extensions["file_upload"].get("db")
-        if db:
-            db.session.add(model)
-            db.session.commit()
-        return model
+        commit_session = kwargs.get("commit_session") or True
+        if commit_session:
+            try:
+                db = self.app.extensions["file_upload"].get("db")
+                if db:
+                    db.session.add(model)
+                    db.session.commit()
+            except AttributeError as err:
+                raise AttributeError(
+                    "[FLASK_FILE_UPLOAD_ERROR]: You must pass the SQLAlchemy"
+                    f" instance (db) to FileUpload(). Full Error: {err}"
+                )
+            return model
 
     def _save_files_to_dir(self, model: Any) -> None:
         """

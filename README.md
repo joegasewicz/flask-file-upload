@@ -38,16 +38,16 @@ app = Flask(__name__)
 db = SQLAlchemy()
 # Important! See documentation for set up specifics
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
-file_upload = FileUpload(app)
+file_upload = FileUpload(app, db)
 
 # An example using the Flask factory pattern
 def create_app():
     db.init_app(app)
     file_upload.init_app(app)
 
-# Or we can pass the Flask app instance directly:
+# Or we can pass the Flask app instance directly & the Flask-SQLAlchemy instance:
 db = SQLAlchemy(app)
-file_upload = FileUpload(app)
+file_upload = FileUpload(app, db)
 app: Flask = None
 ````
 
