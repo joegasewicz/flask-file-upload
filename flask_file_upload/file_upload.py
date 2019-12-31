@@ -296,9 +296,6 @@ class FileUpload:
 
         self.file_utils = FileUtils(model, self.config)
 
-        # Save files to dirs
-        self._save_files_to_dir(model)
-
         commit_session = kwargs.get("commit_session") or True
         if commit_session:
             try:
@@ -306,12 +303,15 @@ class FileUpload:
                 if db:
                     db.session.add(model)
                     db.session.commit()
+                    self._save_files_to_dir(model)
             except AttributeError as err:
                 raise AttributeError(
                     "[FLASK_FILE_UPLOAD_ERROR]: You must pass the SQLAlchemy"
                     f" instance (db) to FileUpload(). Full Error: {err}"
                 )
-            return model
+        else:
+            self._save_files_to_dir(model)
+        return model
 
     def _save_files_to_dir(self, model: Any) -> None:
         """
