@@ -21,9 +21,12 @@ Flask File Upload
 
 ##### General Flask config options
 ````python
-    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/lessons")
+    # Important: The below configuration variables need to be set  before
+    # initiating `FileUpload`
+    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/media")
     ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
-    MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
+    MAX_CONTENT_LENGTH` = 1000 * 1024 * 1024  # 1000mb
+    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/blog_db"
 ````
 
 
@@ -33,7 +36,9 @@ We can either pass the instance to FileUpload(app) or to the init_app(app) metho
 app = Flask(__name__)
 
 db = SQLAlchemy()
-file_upload = FileUpload()
+# Important! See documentation for set up specifics
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+file_upload = FileUpload(app)
 
 # An example using the Flask factory pattern
 def create_app():
