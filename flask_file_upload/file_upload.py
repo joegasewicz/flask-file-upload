@@ -282,11 +282,11 @@ class FileUpload:
             })
 
         :param model: The SqlAlchemy model instance
-        :key filename: The attribute name(s) defined in your SqlAlchemy
-            model
-        :key commit_session: Default is `True` or you have not passed in
-        a SQLAlchemy instance then it is also set to False. If you prefer
-        to handle the session yourself.
+        :key filename: The attribute name(s) defined in your SqlAlchemy model
+        :key commit_session: Default is `True` or if you have not passed in
+        a SQLAlchemy instance to ``FileUpload()`` then it is also set to False.
+        *If you prefer to handle the session yourself*.
+
         :return: The updated SqlAlchemy model instance
         """
         # Warning: These methods need to set members on the Model class
