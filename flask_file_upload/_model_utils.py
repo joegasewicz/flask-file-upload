@@ -11,6 +11,7 @@ from .column import Column
 class _ModelUtils:
 
     keys: Tuple[str] = ("file_name", "file_type", "mime_type")
+
     sqlalchemy_attr: List[str] = [
         '__table__',
         '__tablename__',

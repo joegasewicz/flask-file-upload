@@ -63,17 +63,7 @@ class FileUpload:
         self.Model = Model
         self.Column = Column
         if app:
-            upload_folder = kwargs.get("upload_folder")
-            allowed_extensions = kwargs.get("allowed_extensions")
-            max_content_length = kwargs.get("max_content_length")
-            sqlalchemy_database_uri = kwargs.get("sqlalchemy_database_uri")
-
-            app.config["UPLOAD_FOLDER"] = upload_folder or app.config.get("UPLOAD_FOLDER")
-            app.config["ALLOWED_EXTENSIONS"] = allowed_extensions or app.config.get("ALLOWED_EXTENSIONS")
-            app.config["MAX_CONTENT_LENGTH"] = max_content_length or app.config.get("MAX_CONTENT_LENGTH")
-            app.config["SQLALCHEMY_DATABASE_URI"] = sqlalchemy_database_uri or app.config.get("SQLALCHEMY_DATABASE_URI")
-
-            self.init_app(app)
+            self.init_app(app, **kwargs)
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
@@ -197,7 +187,7 @@ class FileUpload:
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
-    def init_app(self, app) -> None:
+    def init_app(self, app, **kwargs) -> None:
         """
         If you are using the Flask factory pattern, normally you
         will, by convention, create a method called ``create_app``.
