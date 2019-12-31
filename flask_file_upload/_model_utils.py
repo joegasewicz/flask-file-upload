@@ -11,6 +11,7 @@ from .column import Column
 class _ModelUtils:
 
     keys: Tuple[str] = ("file_name", "file_type", "mime_type")
+    sqlalchemy_attr: List[str] = ['query', 'query_class', 'metadata', '_decl_class_registry']
 
     @staticmethod
     def create_keys(keys: Tuple[str], filename: str, fn: Callable = None) -> Dict[str, None]:
@@ -133,10 +134,16 @@ class _ModelUtils:
         Function to set static methods as until a class is instantiated
         static methods are not callable.
         :param static_cls:
-        :param cls:
+        :param klass:
         :return: None
         """
         for attr in dir(klass):
+            for sql_key in _ModelUtils.sqlalchemy_attr:
+                if attr == sql_key:
+                    try:
+                        setattr(static_cls, sql_key, getattr(klass, sql_key))
+                    except AttributeError:
+                        pass
             for cls in inspect.getmro(klass):
                 if inspect.isroutine(getattr(klass, attr)):
                     if attr in cls.__dict__:
@@ -145,3 +152,4 @@ class _ModelUtils:
                             static_method_name = bound_value.__func__.__name__
                             static_method = cls.__dict__[attr].__func__
                             setattr(static_cls, static_method_name, static_method)
+

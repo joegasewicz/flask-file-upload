@@ -4,7 +4,7 @@ from flask_file_upload.file_upload import FileUpload
 from tests.app import db
 from tests.fixtures.models import MockBlogModel, mock_blog_model
 from flask_file_upload.model import Model
-
+from flask_file_upload._model_utils import _ModelUtils
 
 class TestModel:
 
@@ -40,10 +40,15 @@ class TestModel:
         assert model_test.my_placeholder__file_type == "jpg"
         assert model_test.id == 1
 
+    @pytest.mark.g
     def test_model_attr(self, mock_blog_model):
         # Test static members:
         assert hasattr(MockBlogModel, "get_blog_by_id")
+        print(dir(db.Model))
         assert MockBlogModel.get_blog_by_id() == 1
+
+        for k in _ModelUtils.sqlalchemy_attr:
+            assert hasattr(MockBlogModel, k)
 
         # Test instance members
         blog = mock_blog_model(name="test_name")
