@@ -55,7 +55,7 @@ class FileUpload:
     #: See :class:`flask_file_upload.file_utils` for more information.
     file_utils: FileUtils = None
 
-    def __init__(self, app=None):
+    def __init__(self, app=None, *args, **kwargs):
         """
         The Flask application instance: ``app = Flask(__name__)``.
         :param app: Flask application instance
@@ -63,6 +63,16 @@ class FileUpload:
         self.Model = Model
         self.Column = Column
         if app:
+            upload_folder = kwargs.get("upload_folder")
+            allowed_extensions = kwargs.get("allowed_extensions")
+            max_content_length = kwargs.get("max_content_length")
+            sqlalchemy_database_uri = kwargs.get("sqlalchemy_database_uri")
+
+            app.config["UPLOAD_FOLDER"] = upload_folder or app.config.get("UPLOAD_FOLDER")
+            app.config["ALLOWED_EXTENSIONS"] = allowed_extensions or app.config.get("ALLOWED_EXTENSIONS")
+            app.config["MAX_CONTENT_LENGTH"] = max_content_length or app.config.get("MAX_CONTENT_LENGTH")
+            app.config["SQLALCHEMY_DATABASE_URI"] = sqlalchemy_database_uri or app.config.get("SQLALCHEMY_DATABASE_URI")
+
             self.init_app(app)
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:

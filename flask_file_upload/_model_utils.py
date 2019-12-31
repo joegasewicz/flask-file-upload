@@ -11,7 +11,15 @@ from .column import Column
 class _ModelUtils:
 
     keys: Tuple[str] = ("file_name", "file_type", "mime_type")
-    sqlalchemy_attr: List[str] = ['query', 'query_class', 'metadata', '_decl_class_registry']
+    sqlalchemy_attr: List[str] = [
+        '__table__',
+        '__tablename__',
+        '_decl_class_registry',
+        '_sa_class_manager',
+        'metadata',
+        'query',
+        'session',
+    ]
 
     @staticmethod
     def create_keys(keys: Tuple[str], filename: str, fn: Callable = None) -> Dict[str, None]:
@@ -142,7 +150,7 @@ class _ModelUtils:
                 if attr == sql_key:
                     try:
                         setattr(static_cls, sql_key, getattr(klass, sql_key))
-                    except AttributeError:
+                    except (AttributeError, ValueError):
                         pass
             for cls in inspect.getmro(klass):
                 if inspect.isroutine(getattr(klass, attr)):
