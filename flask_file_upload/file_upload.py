@@ -356,9 +356,10 @@ class FileUpload:
         file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[1])
 
         self.file_utils = FileUtils(model, self.config)
-
+        primary_key = _ModelUtils.get_primary_key(model)
+        model_id = getattr(model, primary_key, None)
         return send_from_directory(
-            self.file_utils.get_stream_path(model.id),
+            self.file_utils.get_stream_path(model_id),
             f"{filename}.{file_type}",
             conditional=True,
         )
