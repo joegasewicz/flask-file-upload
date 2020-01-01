@@ -316,7 +316,7 @@ class FileUpload:
                 )
         else:
             self._save_files_to_dir(model)
-
+        # Clean up lists here as this state can become stale
         self._clean_up()
         return model
 
@@ -464,7 +464,9 @@ class FileUpload:
         if db:
             db.session.add(model)
             db.session.commit()
+            self._clean_up()
             return None
         else:
+            self._clean_up()
             return model
 
