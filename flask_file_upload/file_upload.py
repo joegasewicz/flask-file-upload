@@ -176,6 +176,11 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
+    def _clean_up(self) -> None:
+        """Clean list data & state"""
+        self.files.clear()
+        self.file_data.clear()
+
     def _create_file_dict(self, file, attr_name: str):
         """
         :param file:
@@ -311,6 +316,8 @@ class FileUpload:
                 )
         else:
             self._save_files_to_dir(model)
+
+        self._clean_up()
         return model
 
     def _save_files_to_dir(self, model: Any) -> None:
@@ -460,3 +467,4 @@ class FileUpload:
             return None
         else:
             return model
+
