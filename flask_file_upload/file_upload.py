@@ -385,7 +385,7 @@ class FileUpload:
             warn("'files' is a Required Argument")
             return None
 
-        file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[1])
+        file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[2])
 
         self.file_utils = FileUtils(model, self.config)
         primary_key = _ModelUtils.get_primary_key(model)
