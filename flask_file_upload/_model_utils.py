@@ -128,6 +128,15 @@ class _ModelUtils:
         return f"{filename}__{postfix}"
 
     @staticmethod
+    def get_original_file_name(filename: str, model: Any) -> str:
+        """
+        :param filename: Werkzueg's file.filename value
+        :param model:
+        :return: the filename from the db e.g. *"my_video.mp4"*
+        """
+        return getattr(model, f"{filename}__file_name", None)
+
+    @staticmethod
     def get_by_postfix(model: ClassVar, filename: str, postfix: str) -> str:
         """
         :param model:
