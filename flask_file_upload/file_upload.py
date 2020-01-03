@@ -392,7 +392,7 @@ class FileUpload:
         model_id = getattr(model, primary_key, None)
         return send_from_directory(
             self.file_utils.get_stream_path(model_id),
-            f"{filename}.{file_type}",
+            _ModelUtils.get_original_file_name(filename, model),
             conditional=True,
         )
 
