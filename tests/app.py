@@ -41,15 +41,15 @@ def blog():
         blog_post = MockBlogModel(
             id=1,
             name="My Blog Post",
-            my_video__file_name="video1",
+            my_video__file_name="my_video.mp4",
             my_video__mime_type="video/mpeg",
             my_video__file_type="mp4",
         )
         file_upload = FileUpload(app, db)
-
-        # Warning - The UPLOAD_FOLDER - onnly needs to be reset for testing!
+        # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
         file_upload.init_app(app)
+        print(f"here------>>")
         return file_upload.stream_file(blog_post, filename="my_video")
 
     if request.method == "POST":
