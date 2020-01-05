@@ -153,6 +153,9 @@ class FileUpload:
             # To clean up the model pass in the args as follows:
             file_upload.delete_files(blog_result, db, files=["my_video"], clean_up="model")
 
+        The root directory (*The directory containing the files*) which is named after the model
+        id, is never deleted. Only the files within this directory are removed from the server.
+
         :return: SqlAlchemy model object
         """
         try:

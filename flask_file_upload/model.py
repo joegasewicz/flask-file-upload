@@ -57,7 +57,6 @@ class Model(object):
         _ModelUtils.remove_unused_cols(self._class, filenames_list)
         # Set static methods on Model class otherwise they are not callable
         _ModelUtils.set_static_methods(self, _class)
-        super(Model, self).__init__()
 
     def __call__(self, *args, **kwargs):
         """
@@ -70,4 +69,12 @@ class Model(object):
         """
         return self._class(*args, **kwargs)
 
-
+    def __new__(cls, *args, **kwargs):
+        """
+        We create a new instance of Model with all the attributes of
+        the wrapped SqlAlchemy Model class. this is because we cannot
+        make a call to self.query = _class.query as this will then
+        create a a new session (_class.query calls to a __get__ descriptor).
+        """
+        instance = super(Model, cls).__new__(args[0], *args, **kwargs)
+        return instance
