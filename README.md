@@ -11,9 +11,9 @@ files on your server & in your database
 Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/latest/)
 
 ## Installation
-
+Please install the latest release candidate:
 ```bash
-pip install flask-file-upload
+pip install flask-file-upload==0.1.0-rc.1
 ```
 
 Flask File Upload
