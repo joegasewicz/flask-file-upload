@@ -1,13 +1,10 @@
 """
    Public SQLAlchemy class decorator.
 """
-from functools import update_wrapper
-
-
 from ._model_utils import _ModelUtils
 
 
-class Model(object):
+class Model:
     """
     Flask-File-Upload (FFU) setup requires each SQLAlchemy model that wants to use
     FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
@@ -38,36 +35,31 @@ class Model(object):
 
     """
 
-    def __init__(self, _class):
+    def __new__(cls, _class=None, *args, **kwargs):
         """
-        We set all our attributes in this __init__ method so that when SQLAlchemy's
-        `create_all` method is evoked the model's attributes are set.
-        :param _class:
-        """
-        update_wrapper(self, _class)
-        self._class = _class
-
-        new_cols = []
-        filenames = []
-
-        new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(self._class, new_cols, filenames)
-        # Add new attributes to the SQLAlchemy model
-        _ModelUtils.set_columns(self._class, new_cols_list)
-        # The original model's attributes set by the user for files get removed here
-        _ModelUtils.remove_unused_cols(self._class, filenames_list)
-        # Set static methods on Model class otherwise they are not callable
-        _ModelUtils.set_static_methods(self, _class)
-        super(Model, self).__init__()
-
-    def __call__(self, *args, **kwargs):
-        """
-        When the wrapped class is instantiated , this method will be called
-        with the wrapped constructor kwargs passed in - in this case it would
-        be the user's model attribute values
-        :param args:
+        We create a new instance of Model with all the attributes of
+        the wrapped SqlAlchemy Model class. this is because we cannot
+        make a call to self.query = _class.query as this will then
+        create a a new session (_class.query calls to a __get__ descriptor).
+        :param _class: Is the wrapped SqlAlchemy model
+        :param args: The first arg is the wrapped SqlAlchemy model if exists.
+            This means the __call__ method is being called either because Model
+            is decorating an SQLAlchemy model or it is being reference, ie calling
+            a static method e.g. Blog.query.filter_by()
         :param kwargs:
         :return:
         """
-        return self._class(*args, **kwargs)
-
-
+        if not isinstance(args, tuple):
+            # Model is being reference
+            instance = super(Model, cls).__new__(args[0], *args, **kwargs)
+        else:
+            # Model is being instantiated
+            instance = _class
+        new_cols = []
+        filenames = []
+        new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(instance, new_cols, filenames)
+        # Add new attributes to the SQLAlchemy model
+        _ModelUtils.set_columns(instance, new_cols_list)
+        # The original model's attributes set by the user for files get removed here
+        _ModelUtils.remove_unused_cols(instance, filenames_list)
+        return instance

@@ -106,19 +106,23 @@ class FileUpload:
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
         Public method for removing stored files from the server & database.
-        This method will remove all files passed to the kwarg ``files`` list.
-        It will also update the passed in SqlAlchemy ``model`` object & return
-        the updated model object if ``db`` is None.
+        This method will remove all files passed to the kwarg ``files`` list
+        from the server. It will also update the passed in SqlAlchemy ``model``
+        object & return the updated model.
 
         If the ``db`` arg is passed in then the session is updated & session commited &
-        this method return value is void::
+        this method returns the current updated model
+
+        *If a current session exists then Flask-File-Upload will use this before attempting to
+        create a new session*.
+        Example::
 
             # Example using a SqlAlchemy model with an appended
             # method that fetches a single `blog`
             blogModel = BlogModel()
             blog_results = blogModel.get_one()
 
-            # We pass the blog
+            # We pass the blog & files
             blog = file_upload.delete_files(blog_result, files=["my_video"])
 
             # As the `db` arg has not been passed to this method,
@@ -127,15 +131,31 @@ class FileUpload:
             db.session.commit()
 
             # If `db` is passed to this method then the updates are persisted.
-            # to the session. And therefore the session has been commited &
-            # no blog is returned.
-            file_upload.delete_files(blog_result, db, files=["my_video"])
+            # to the session. And therefore the session has been commited.
+            blog = file_upload.delete_files(blog_result, db, files=["my_video"])
 
 
         :param model: Instance of a SqlAlchemy Model
         :param db: Either an instance of Flask-SqlAlchemy ``SqlAlchmey`` class or
                SqlAlchmey's ``Session`` object.
         :key files: A list of the file names declared on your model.
+        :key clean_up: Default is None. There are 2 possible ``clean_up`` values
+        you can pass to the ``clean_up`` kwarg:
+            - ``files`` will clean up files on the server but not update the model
+            - ``model`` will update the model but not attempt to remove the files
+                from the server.
+
+        Example::
+
+            # To clean up files on your server pass in the args as follows:
+            file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
+
+            # To clean up the model pass in the args as follows:
+            file_upload.delete_files(blog_result, db, files=["my_video"], clean_up="model")
+
+        The root directory (*The directory containing the files*) which is named after the model
+        id, is never deleted. Only the files within this directory are removed from the server.
+
         :return: SqlAlchemy model object
         """
         try:
@@ -143,6 +163,36 @@ class FileUpload:
         except KeyError:
             warn("'files' is a Required Argument")
             return None
+
+        self.file_utils = FileUtils(model, self.config)
+
+        clean_up = kwargs.get("clean_up")
+
+        primary_key = _ModelUtils.get_primary_key(model)
+        model_id = getattr(model, primary_key, None)
+
+        if clean_up is None or clean_up is "files":
+            for f in files:
+                original_filename = _ModelUtils.get_original_file_name(f, model)
+                file_path = f"{self.file_utils.get_stream_path(model_id)}/{original_filename}"
+                os.remove(f"{file_path}")
+
+        if clean_up is None or clean_up is "model":
+            for f_name in files:
+                for postfix in _ModelUtils.keys:
+                    setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
+            if db:
+                current_session = db.session.object_session(model)
+                current_session.add(model)
+                current_session.commit()
+                return model
+            else:
+                raise Warning(
+                    "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
+                    "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files"
+                )
+        else:
+            return model
 
         self.file_utils = FileUtils(model, self.config)
 
@@ -384,8 +434,6 @@ class FileUpload:
         except KeyError:
             warn("'files' is a Required Argument")
             return None
-
-        file_type = _ModelUtils.get_by_postfix(model, filename, _ModelUtils.keys[2])
 
         self.file_utils = FileUtils(model, self.config)
         primary_key = _ModelUtils.get_primary_key(model)
