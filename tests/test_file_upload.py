@@ -155,6 +155,7 @@ class TestFileUploads:
         assert getattr(result, "my_video__mime_type") is None
         assert getattr(result, "my_video__file_type") is None
 
+    @pytest.mark.f
     def test_update_files_2(self, mock_blog_model):
 
         db.init_app(app)

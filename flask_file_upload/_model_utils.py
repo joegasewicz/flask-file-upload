@@ -145,29 +145,3 @@ class _ModelUtils:
         :return str:
         """
         return getattr(model, _ModelUtils.add_postfix(filename, postfix))
-
-    @staticmethod
-    def set_static_methods(static_cls: Any, klass: Any) -> None:
-        """
-        Function to set static methods as until a class is instantiated
-        static methods are not callable.
-        :param static_cls:
-        :param klass:
-        :return: None
-        """
-        for attr in dir(klass):
-            for sql_key in _ModelUtils.sqlalchemy_attr:
-                if attr == sql_key:
-                    try:
-                        setattr(static_cls, sql_key, getattr(klass, sql_key))
-                    except (AttributeError, ValueError):
-                        pass
-            for cls in inspect.getmro(klass):
-                if inspect.isroutine(getattr(klass, attr)):
-                    if attr in cls.__dict__:
-                        bound_value = cls.__dict__[attr]
-                        if isinstance(bound_value, staticmethod):
-                            static_method_name = bound_value.__func__.__name__
-                            static_method = cls.__dict__[attr].__func__
-                            setattr(static_cls, static_method_name, static_method)
-
