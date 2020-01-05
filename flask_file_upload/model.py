@@ -1,9 +1,6 @@
 """
    Public SQLAlchemy class decorator.
 """
-from functools import update_wrapper
-
-
 from ._model_utils import _ModelUtils
 
 
@@ -44,11 +41,20 @@ class Model:
         the wrapped SqlAlchemy Model class. this is because we cannot
         make a call to self.query = _class.query as this will then
         create a a new session (_class.query calls to a __get__ descriptor).
+        :param _class: Is the wrapped SqlAlchemy model
+        :param args: The first arg is the wrapped SqlAlchemy model if exists.
+            This means the __call__ method is being called either because Model
+            is decorating an SQLAlchemy model or it is being reference, ie calling
+            a static method e.g. Blog.query.filter_by()
+        :param kwargs:
+        :return:
         """
-        if isinstance(args, tuple):
-            instance = _class
-        else:
+        if not isinstance(args, tuple):
+            # Model is being reference
             instance = super(Model, cls).__new__(args[0], *args, **kwargs)
+        else:
+            # Model is being instantiated
+            instance = _class
         new_cols = []
         filenames = []
         new_cols_list, filenames_list = _ModelUtils.get_attr_from_model(instance, new_cols, filenames)
