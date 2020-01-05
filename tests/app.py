@@ -49,7 +49,6 @@ def blog():
         # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
         file_upload.init_app(app)
-        print(f"here------>>")
         return file_upload.stream_file(blog_post, filename="my_video")
 
     if request.method == "POST":
