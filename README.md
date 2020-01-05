@@ -107,7 +107,22 @@ class blogModel(db.Model):
 
 ##### Delete files
 ````python
-    file_upload.delete_files(BlogPostModel, files=["my_video"])
+    # Example using a SqlAlchemy model with an appended
+    # method that fetches a single `blog`
+    blogModel = BlogModel()
+    blog_results = blogModel.get_one()
+    
+    # We pass the blog & files
+    blog = file_upload.delete_files(blog_result, files=["my_video"])
+    
+    # As the `db` arg has not been passed to this method,
+    # the changes would need persisting to the database:
+    db.session.add(blog)
+    db.session.commit()
+    
+    # If `db` is passed to this method then the updates are persisted.
+    # to the session. And therefore the session has been commited.
+    blog = file_upload.delete_files(blog_result, db, files=["my_video"])
 ````
 
 
