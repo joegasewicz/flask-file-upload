@@ -23,10 +23,10 @@ Flask File Upload
 ````python
     # Important: The below configuration variables need to be set  before
     # initiating `FileUpload`
-    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/media")
-    ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
-    MAX_CONTENT_LENGTH` = 1000 * 1024 * 1024  # 1000mb
-    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/blog_db"
+    app.config["UPLOAD_FOLDER"] = join(dirname(realpath(__file__)), "uploads/media")
+    app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
+    app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024  # 1000mb
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/blog_db"
 ````
 
 
