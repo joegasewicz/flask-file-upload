@@ -1,3 +1,6 @@
+from warnings import warn
+
+
 class Column:
     """
     The Column class is used to define the file attributes on
@@ -14,4 +17,10 @@ class Column:
     db = None
 
     def __init__(self, db=None):
-        self.db = db
+        if db:
+            warn(
+                DeprecationWarning(
+                    "FLASK-FILE-UPLOAD: Passing db to Column class is  now not "
+                    "not required. This will be removed in v0.1.0"
+                )
+            )

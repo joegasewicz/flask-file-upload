@@ -27,11 +27,8 @@ class Model:
            __tablename__ = "blogs"
            id = db.Column(db.Integer, primary_key=True)
 
-           # Your files -  Notice how we pass in the SQLAlchemy instance
-           # or `db` to the `file_uploads.Column` class:
-
-           my_placeholder = file_upload.Column(db)
-           my_video = file_upload.Column(db)
+           my_placeholder = file_upload.Column()
+           my_video = file_upload.Column()
 
     """
 

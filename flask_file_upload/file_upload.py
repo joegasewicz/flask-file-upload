@@ -164,9 +164,13 @@ class FileUpload:
             return None
 
         if db:
-            warn("FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
-                 "is now not required. The second argument to `update_files` method will be"
-                 "removed in version v0.1.0")
+            warn(
+                DeprecationWarning(
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
+                    "is now not required. The second argument to `update_files` method will be"
+                    "removed in version v0.1.0"
+                )
+            )
 
         self.file_utils = FileUtils(model, self.config)
 
@@ -497,9 +501,13 @@ class FileUpload:
         commit = kwargs.get("commit") or True
 
         if db:
-            warn("FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
-                 "is now not required. The second argument to `update_files` method will be"
-                 "removed in version v0.1.0")
+            warn(
+                DeprecationWarning(
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
+                    "is now not required. The second argument to `update_files` method will be"
+                    "removed in version v0.1.0"
+                )
+            )
 
         original_file_names = []
 
