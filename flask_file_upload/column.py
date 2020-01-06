@@ -19,7 +19,7 @@ class Column:
         if db:
             warn(
                 DeprecationWarning(
-                    "FLASK-FILE-UPLOAD: Passing db to Column class is  now not "
+                    "FLASK-FILE-UPLOAD: Passing db to Column class is now not "
                     "not required. This will be removed in v0.1.0"
                 )
             )

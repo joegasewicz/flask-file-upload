@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from typing import Any, List, Dict, Union
 
 from ._config import Config
-from .model import Model
+from .model import create_model
 from .column import Column
 from .file_utils import FileUtils
 from ._model_utils import _ModelUtils
@@ -96,8 +96,7 @@ class FileUpload:
             :key max_content_length: Limit the amount of file memory
             :key sqlalchemy_database_uri: The database URI that should be used for the connection
         """
-
-        self.Model = Model
+        self.Model = create_model(db)
         self.Column = Column
         if app:
             self.init_app(app, db, **kwargs)
