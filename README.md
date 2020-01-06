@@ -147,7 +147,7 @@ for more details
     file_upload.get_file_url(blog_post, filename="placeholder_img")
 ````
 
-Example for getting file urls from a lost of objects / tables:
+Example for getting file urls from many objects:
 ```python
     # If blogs_model are many blogs:
     for blog in blogs_model:
