@@ -14,7 +14,6 @@ class Column:
     #:
     #:      db = SQLAlchemy()
     #:      my_video = file_upload.Column(db)
-    db = None
 
     def __init__(self, db=None):
         if db:

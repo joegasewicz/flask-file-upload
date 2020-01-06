@@ -166,8 +166,8 @@ class FileUpload:
         if db:
             warn(
                 DeprecationWarning(
-                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
-                    "is now not required. The second argument to `update_files` method will be"
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method. "
+                    "is now not required. The second argument to `update_files` method will be "
                     "removed in version v0.1.0"
                 )
             )
@@ -503,8 +503,8 @@ class FileUpload:
         if db:
             warn(
                 DeprecationWarning(
-                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method."
-                    "is now not required. The second argument to `update_files` method will be"
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method. "
+                    "is now not required. The second argument to `update_files` method will be "
                     "removed in version v0.1.0"
                 )
             )
@@ -543,7 +543,11 @@ class FileUpload:
             try:
                 self.app.extensions["file_upload"].get("db")
             except (AttributeError, KeyError):
-                return None
+                raise(
+                    "FLASK-FILE-UPLOAD: You must pass an instance of SQLAlchemy to "
+                    "`FileUpload(app, db)` or `file_upload.init_app(app, db)` as a "
+                    "second argument."
+                )
 
     @db.setter
     def db(self, db):
