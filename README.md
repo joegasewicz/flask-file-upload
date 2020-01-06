@@ -150,7 +150,7 @@ for more details
 Example for getting file urls from many objects:
 ```python
     # If blogs_model are many blogs:
-    for blog in blogs_model:
+    for blog in blog_models:
         blog_image_url = file_upload.get_file_url(blog, filename="blog_image")
         setattr(blog, "blog_image", blog_image_url)
 ```
