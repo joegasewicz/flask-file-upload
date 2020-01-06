@@ -272,7 +272,9 @@ class FileUpload:
         try:
             filename = kwargs["filename"]
             self.file_utils = FileUtils(model, self.config)
-            file_path = self.file_utils.get_file_path(model.id, filename)
+            primary_key = _ModelUtils.get_primary_key(model)
+            model_id = getattr(model, primary_key, None)
+            file_path = self.file_utils.get_file_path(model_id, filename)
             file_type = _ModelUtils.get_by_postfix(model, filename, "file_type")
             return f"{request.url}{file_path}.{file_type}"
         except AttributeError:
