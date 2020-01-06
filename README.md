@@ -13,7 +13,7 @@ Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/lates
 ## Installation
 Please install the latest release candidate:
 ```bash
-pip install flask-file-upload==0.1.0-rc.1
+pip install flask-file-upload==0.1.0-rc.2
 ```
 
 Flask File Upload
