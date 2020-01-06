@@ -147,3 +147,11 @@ for more details
     file_upload.get_file_url(blog_post, filename="placeholder_img")
 ````
 
+Example for getting file urls from a lost of objects / tables:
+```python
+    # If blogs_model are many blogs:
+    for blog in blogs_model:
+        blog_image_url = file_upload.get_file_url(blog, filename="blog_image")
+        setattr(blog, "blog_image", blog_image_url)
+```
+
