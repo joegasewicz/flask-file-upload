@@ -4,7 +4,7 @@ FileUpload Class
 """
 import os
 from warnings import warn
-from flask import send_from_directory, Flask, request
+from flask import send_from_directory, Flask, request, url_for
 from werkzeug.utils import secure_filename
 from typing import Any, List, Dict, Union
 
@@ -17,7 +17,7 @@ from ._model_utils import _ModelUtils
 
 class FileUpload:
     """
-    :param app: The Flask application instance: ``app = Flask(__name__)``.
+    :param app: The Flask application instance: ``app = Flask(__name__, static_folder="uploads")``.
     :kwargs:
     :key allowed_extensions: A list of accepted file types eg. ['.jpg', etc..]
     :key upload_folder: where the uploaded files are stored
@@ -36,13 +36,13 @@ class FileUpload:
     #: We can then call the ``file_upload.init_app`` method & this will now receive the dynamically set
     #: variables. For Example::
     #:
-    #:    app = Flask(__name__)
+    #:    app = Flask(__name__, static_folder="uploads")
     #:
     #:    db = SQLAlchemy()`
     #:
     #:    # Environment variables
     #:    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    #:    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads/media")
+    #:    UPLOAD_FOLDER = join(dirname(realpath(__file__)), "uploads")
     #:    ALLOWED_EXTENSIONS = ["jpg", "png", "mov", "mp4", "mpg"]
     #:    MAX_CONTENT_LENGTH = 1000 * 1024 * 1024  # 1000mb
     #:    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/blog_database"
@@ -89,7 +89,7 @@ class FileUpload:
 
     def __init__(self, app=None, db=None, *args, **kwargs):
         """
-        :param app: The Flask application instance: ``app = Flask(__name__)``.
+        :param app: The Flask application instance: ``app = Flask(__name__, static_folder="uploads")``.
         :param kwargs:
             :key allowed_extensions: A list of accepted file types eg. ['.jpg', etc..]
             :key upload_folder: where the uploaded files are stored
@@ -272,11 +272,21 @@ class FileUpload:
         try:
             filename = kwargs["filename"]
             self.file_utils = FileUtils(model, self.config)
+
             primary_key = _ModelUtils.get_primary_key(model)
             model_id = getattr(model, primary_key, None)
-            file_path = self.file_utils.get_file_path(model_id, filename)
-            file_type = _ModelUtils.get_by_postfix(model, filename, "file_type")
-            return f"{request.url}{file_path}.{file_type}"
+            file_name = _ModelUtils.get_by_postfix(model, filename, "file_name")
+            file_path = self.file_utils.postfix_file_path(model_id, file_name)
+
+            url_root = request.url_root
+            if url_root[-1] == "/":
+                url_root = url_root[:-1]
+
+            image_path = url_for('static', filename=file_path).replace("//", "/")
+            if image_path[0] == "/":
+                image_path = image_path[1:]
+            if filename:
+                return f"{url_root}/{image_path}"
         except AttributeError:
             AttributeError("[FLASK_FILE_UPLOAD] You must declare a filename kwarg")
 
@@ -287,13 +297,13 @@ class FileUpload:
         At runtime, you may then set configuration values before initiating
         FileUpload etc. Example::
 
-            app = Flask(__name__)
+            app = Flask(__name__, static_folder="uploads/media")
             file_upload = FileUpload()
 
             def create_app():
                 file_upload.init_app(app)
 
-        :param app: The Flask application instance: ``app = Flask(__name__)``.
+        :param app: The Flask application instance: ``app = Flask(__name__, static_folder="uploads")``.
         :return: None
         """
         # Let Flask request hook handle calling `self._clean_up`
