@@ -191,8 +191,6 @@ class FileUpload:
                     "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
                     "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files"
                 )
-        else:
-            return model
 
         self.file_utils = FileUtils(model, self.config)
 
