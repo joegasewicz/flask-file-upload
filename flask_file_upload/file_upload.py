@@ -191,20 +191,6 @@ class FileUpload:
                     "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
                     "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files"
                 )
-
-        self.file_utils = FileUtils(model, self.config)
-
-        for f in files:
-            file_type = _ModelUtils.get_by_postfix(model, f, 'file_type')
-            file_path = f"{self.file_utils.get_stream_path(model.id)}/{f}.{file_type}"
-            os.remove(f"{file_path}")
-
-        for f_name in files:
-            for postfix in _ModelUtils.keys:
-                setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-        if db:
-            db.session.add(model)
-            db.session.commit()
         else:
             return model
 
