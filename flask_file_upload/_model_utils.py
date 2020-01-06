@@ -77,7 +77,13 @@ class _ModelUtils:
         :return Dict[str, Any]:
         """
         def create_col(key, name):
-            return db.Column(db.String(len(key)), key=key, name=name)
+            """
+            issue #58 - Increases the string length to 1000
+            """
+            str_len = int(len(key)) + 1000
+            if not isinstance(str_len, int):
+                str_len = 1000
+            return db.Column(db.String(str_len), key=key, name=name)
         return _ModelUtils.create_keys(
             _ModelUtils.keys,
             file_name,
