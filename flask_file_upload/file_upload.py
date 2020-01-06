@@ -226,7 +226,7 @@ class FileUpload:
                 "See https://github.com/joegasewicz/Flask-File-Upload"
             )
 
-    def _clean_up(self) -> None:
+    def  _clean_up(self, error) -> None:
         """Clean list data & state"""
         self.files.clear()
         self.file_data.clear()
@@ -296,6 +296,11 @@ class FileUpload:
         :param app: The Flask application instance: ``app = Flask(__name__)``.
         :return: None
         """
+        # Let Flask request hook handle calling `self._clean_up`
+        @app.teardown_request
+        def _cu(_):
+            self._clean_up(error=None)
+
         db = db or self.db
         self.app = app
         self.config.init_config(app, **kwargs)
@@ -367,7 +372,6 @@ class FileUpload:
         else:
             self._save_files_to_dir(model)
         # Clean up lists here as this state can become stale
-        self._clean_up()
         return model
 
     def _save_files_to_dir(self, model: Any) -> None:
@@ -512,9 +516,7 @@ class FileUpload:
         if db:
             db.session.add(model)
             db.session.commit()
-            self._clean_up()
             return None
         else:
-            self._clean_up()
             return model
 
