@@ -33,7 +33,7 @@ Flask File Upload
 ##### Setup
 We can either pass the instance to FileUpload(app) or to the init_app(app) method:
 ````python
-app = Flask(__name__)
+app = Flask(__name__, static_folder="uploads/media") # Must be the save directory name as UPLOAD_FOLDER 
 
 db = SQLAlchemy()
 # Important! See documentation for set up specifics

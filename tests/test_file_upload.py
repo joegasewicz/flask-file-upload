@@ -93,7 +93,7 @@ class TestFileUploads:
         m = mock_blog_model(**self.attrs)
         with app.test_request_context():
             url = file_upload.get_file_url(m, filename="my_video")
-            assert url == "http://localhost/tests/test_path/blogs/1/my_video.mp4"
+            assert url == "http://localhost/static/blogs/1/my_video.mp4"
 
 
     def test_update_files(self, create_app, mock_blog_model):
