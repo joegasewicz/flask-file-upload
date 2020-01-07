@@ -12,8 +12,9 @@ class MockBlogModel(db.Model):
     __mapper_args__ = {'always_refresh': True}
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100))
-    my_placeholder = file_upload.Column(db)
-    my_video = file_upload.Column(db)
+    # File attributes
+    my_placeholder = file_upload.Column()
+    my_video = file_upload.Column()
 
     def get_name(self):
         return "joe"
@@ -25,15 +26,14 @@ class MockBlogModel(db.Model):
     def get_blog_by_id():
         return 1
 
-
 class MockModel:
     __tablename__ = "blogs"
-    my_video__file_name = "video1",
-    my_video__mime_type = "video/mpeg",
-    my_video__file_type = "mp4",
-    my_placeholder__file_name = "placeholder1",
-    my_placeholder__mime_type = "image/jpeg",
-    my_placeholder__file_type = "jpg",
+    my_video__file_name = "video1"
+    my_video__mime_type = "video/mpeg"
+    my_video__file_type = "mp4"
+    my_placeholder__file_name = "placeholder1"
+    my_placeholder__mime_type = "image/jpeg"
+    my_placeholder__file_type = "jpg"
 
 
 @pytest.fixture

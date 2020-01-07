@@ -3,7 +3,7 @@ import pytest
 from flask_file_upload.file_upload import FileUpload
 from tests.app import db
 from tests.fixtures.models import MockBlogModel, mock_blog_model
-from flask_file_upload.model import Model
+from flask_file_upload.model import create_model
 from flask_file_upload._model_utils import _ModelUtils
 
 class TestModel:

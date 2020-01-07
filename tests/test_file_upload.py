@@ -61,7 +61,7 @@ class TestFileUploads:
     def test_init_app(self, create_app, mock_blog_model, flask_app):
 
         file_upload = FileUpload()
-        file_upload.init_app(flask_app)
+        file_upload.init_app(flask_app, db)
         assert isinstance(file_upload.app, Flask)
 
     def test_set_model_attrs(self, mock_model):
@@ -89,7 +89,7 @@ class TestFileUploads:
         db.init_app(app)
         db.create_all()
         file_upload = FileUpload()
-        file_upload.init_app(app)
+        file_upload.init_app(app, db)
         m = mock_blog_model(**self.attrs)
         with app.test_request_context():
             url = file_upload.get_file_url(m, filename="my_video")
@@ -218,7 +218,7 @@ class TestFileUploads:
         db.init_app(app)
         db.create_all()
         file_upload = FileUpload()
-        file_upload.init_app(app)
+        file_upload.init_app(app, db)
 
         new_file = FileStorage(
                 stream=open(self.my_video_update, "rb"),

@@ -530,7 +530,7 @@ class FileUpload:
         if self.db and commit:
             self.db.session.add(model)
             self.db.session.commit()
-            return None
+            return model
         else:
             return model
 
