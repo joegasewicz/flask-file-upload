@@ -1,38 +1,29 @@
 """
-   Public SQLAlchemy class decorator.
+Flask-File-Upload (FFU) setup requires each SQLAlchemy model that wants to use
+FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
+to update your database with the extra columns required to store
+files in your database.
+Declare your attributes as normal but assign a value of
+``file_upload.Column()``. Example::
+
+Full example::
+
+   from my_app import db, file_upload
+
+   @file_upload.Model
+   class blogModel(db.Model):
+       __tablename__ = "blogs"
+       id = db.Column(db.Integer, primary_key=True)
+       my_placeholder = file_upload.Column()
+       my_video = file_upload.Column()
 """
 from ._model_utils import _ModelUtils
 
 
 def create_model(db):
-
+    #: We pass the db instance here as ``_ModelUtils.get_attr_from_model``
+    #: requires access to the SQLAlchemy object.
     class Model:
-        """
-        Flask-File-Upload (FFU) setup requires each SQLAlchemy model that wants to use
-        FFU library to be decorated with ``@file_upload.Model``.This will enable FFU
-        to update your database with the extra columns required to store
-        files in your database.
-        Declare your attributes as normal but assign a value of
-        ``file_upload.Column`` & pass the SQLAlchemy ``db`` instance:
-        ``file_upload.Column(db)``. This is easy if you are using Flask-SQLAlchemy::
-
-            from flask_SQLAlchemy import SQLAlchemy
-
-            db = SQLAlchemy()
-
-        Full example::
-
-           from my_app import db, file_upload
-
-           @file_upload.Model
-           class blogModel(db.Model):
-               __tablename__ = "blogs"
-               id = db.Column(db.Integer, primary_key=True)
-
-               my_placeholder = file_upload.Column()
-               my_video = file_upload.Column()
-
-        """
 
         def __new__(cls, _class=None, *args, **kwargs):
             """
