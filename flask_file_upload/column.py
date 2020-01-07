@@ -10,8 +10,7 @@ class Column:
     #: is decorated with Model :class: `flask_file_upload.Model`
     #: constructor::
     #:
-    #:
-    #:      my_video = file_upload.Column()
+    #:    my_video = file_upload.Column()
 
     def __init__(self, db=None):
         if db:
