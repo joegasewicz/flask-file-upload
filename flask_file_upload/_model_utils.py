@@ -112,7 +112,7 @@ class _ModelUtils:
             delattr(wrapped, col_name)
 
     @staticmethod
-    def get_attr_from_model(wrapped: ClassVar, new_cols: List, file_names: List) -> Any:
+    def get_attr_from_model(wrapped: ClassVar, new_cols: List, file_names: List, db: Any) -> Any:
         """
         Adds values to new_cols & file_names so as not to
         change the size of the dict at runtime
@@ -120,7 +120,7 @@ class _ModelUtils:
         """
         for attr, value in wrapped.__dict__.items():
             if isinstance(value, Column):
-                new_cols.append(_ModelUtils.columns_dict(attr, value.db))
+                new_cols.append(_ModelUtils.columns_dict(attr, db))
                 file_names.append(str(attr))
         return new_cols, file_names
 

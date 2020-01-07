@@ -24,7 +24,7 @@ class Test_ModelUtils:
         assert str(results["my_video__mime_type"]) == str(model_data["my_video__mime_type"])
         assert str(results["my_video__file_type"]) == str(model_data["my_video__file_type"])
 
-
+    @pytest.mark.t
     def test_get_by_postfix(self):
         # TODO remove 'in' from assertion
 

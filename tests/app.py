@@ -13,7 +13,7 @@ app.config["UPLOAD_FOLDER"] = "tests/test_path"
 app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
 app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024
 db = SQLAlchemy(app)
-file_upload = FileUpload()
+file_upload = FileUpload(app, db)
 
 
 @app.route("/config_test", methods=["POST"])
@@ -48,7 +48,7 @@ def blog():
         file_upload = FileUpload(app, db)
         # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
         current_app.config["UPLOAD_FOLDER"] = "test_path"
-        file_upload.init_app(app)
+        file_upload.init_app(app, db)
         return file_upload.stream_file(blog_post, filename="my_video")
 
     if request.method == "POST":
@@ -56,7 +56,7 @@ def blog():
         my_video = request.files["my_video"]
         my_placeholder = request.files["my_placeholder"]
 
-        blog_post = MockBlogModel(id=1, name="My Blog Post")
+        blog_post = MockBlogModel(id=2, name="My Blog Post")
 
         file_upload = FileUpload(app, db)
 
@@ -65,8 +65,6 @@ def blog():
             "my_placeholder": my_placeholder,
         })
 
-        db.session.add(blog)
-        db.session.commit()
 
         blog_post = MockBlogModel()
         blog_data = blog_post.get_blog()
@@ -89,7 +87,7 @@ def create_app():
     from tests.fixtures.models import MockBlogModel, MockModel
 
     app.config["UPLOAD_FOLDER"] = "tests/test_path"
-    file_upload.init_app(app)
+    file_upload.init_app(app, db)
 
     with app.app_context():
 

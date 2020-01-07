@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from typing import Any, List, Dict, Union
 
 from ._config import Config
-from .model import Model
+from .model import create_model
 from .column import Column
 from .file_utils import FileUtils
 from ._model_utils import _ModelUtils
@@ -85,7 +85,7 @@ class FileUpload:
     file_utils: FileUtils = None
 
     #: The Flask-SQLAlchemy `SQLAlchemy()` instance`
-    db = None
+    _db = None
 
     def __init__(self, app=None, db=None, *args, **kwargs):
         """
@@ -96,10 +96,8 @@ class FileUpload:
             :key max_content_length: Limit the amount of file memory
             :key sqlalchemy_database_uri: The database URI that should be used for the connection
         """
-
-        self.Model = Model
+        self.Model = create_model(db)
         self.Column = Column
-        self.db = db
         if app:
             self.init_app(app, db, **kwargs)
 
@@ -110,7 +108,7 @@ class FileUpload:
         from the server. It will also update the passed in SqlAlchemy ``model``
         object & return the updated model.
 
-        If the ``db`` arg is passed in then the session is updated & session commited &
+        If `commit` kwarg has not been set then the session is updated & session commited &
         this method returns the current updated model
 
         *If a current session exists then Flask-File-Upload will use this before attempting to
@@ -123,22 +121,22 @@ class FileUpload:
             blog_results = blogModel.get_one()
 
             # We pass the blog & files
-            blog = file_upload.delete_files(blog_result, files=["my_video"])
+            blog = file_upload.delete_files(blog_result, commit=False, files=["my_video"])
 
-            # As the `db` arg has not been passed to this method,
+            # As the `commit` kwarg has been set to False,
             # the changes would need persisting to the database:
             db.session.add(blog)
             db.session.commit()
 
-            # If `db` is passed to this method then the updates are persisted.
+            # If `commit` kwarg is not set (default is True) then the updates are persisted.
             # to the session. And therefore the session has been commited.
-            blog = file_upload.delete_files(blog_result, db, files=["my_video"])
+            blog = file_upload.delete_files(blog_result, files=["my_video"])
 
 
         :param model: Instance of a SqlAlchemy Model
-        :param db: Either an instance of Flask-SqlAlchemy ``SqlAlchmey`` class or
-               SqlAlchmey's ``Session`` object.
         :key files: A list of the file names declared on your model.
+        :key commit: Default is set to True. If set to False then the changed to the
+            model class will not be updated or commited.
         :key clean_up: Default is None. There are 2 possible ``clean_up`` values
         you can pass to the ``clean_up`` kwarg:
             - ``files`` will clean up files on the server but not update the model
@@ -151,7 +149,7 @@ class FileUpload:
             file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
 
             # To clean up the model pass in the args as follows:
-            file_upload.delete_files(blog_result, db, files=["my_video"], clean_up="model")
+            file_upload.delete_files(blog_result, files=["my_video"], clean_up="model")
 
         The root directory (*The directory containing the files*) which is named after the model
         id, is never deleted. Only the files within this directory are removed from the server.
@@ -164,9 +162,19 @@ class FileUpload:
             warn("'files' is a Required Argument")
             return None
 
+        if db:
+            warn(
+                DeprecationWarning(
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method. "
+                    "is now not required. The second argument to `update_files` method will be "
+                    "removed in version v0.1.0"
+                )
+            )
+
         self.file_utils = FileUtils(model, self.config)
 
         clean_up = kwargs.get("clean_up")
+        commit = kwargs.get("commit") or True
 
         primary_key = _ModelUtils.get_primary_key(model)
         model_id = getattr(model, primary_key, None)
@@ -181,8 +189,8 @@ class FileUpload:
             for f_name in files:
                 for postfix in _ModelUtils.keys:
                     setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-            if db:
-                current_session = db.session.object_session(model)
+            if self.db and commit:
+                current_session = self.db.session.object_session(model)
                 current_session.add(model)
                 current_session.commit()
                 return model
@@ -244,9 +252,9 @@ class FileUpload:
             @file_upload.Model
             class ModelTest(db.Model):
 
-                my_video = file_upload.Column(db)
+                my_video = file_upload.Column()
 
-        To return the url of the above file, pass in attribuute name
+        To return the url of the above file, pass in attribute name
         to the ``filename`` kwarg. Example::
 
             file_upload.get_file_url(blog_post, filename="my_video")
@@ -300,6 +308,7 @@ class FileUpload:
         db = db or self.db
         self.app = app
         self.config.init_config(app, **kwargs)
+        self._db = db
         if db:
             app.extensions["file_upload"] = {
                 "db": db,
@@ -313,8 +322,8 @@ class FileUpload:
             @file_upload.Model
             class ModelTest(db.Model):
 
-                my_video = file_upload.Column(db)
-                placeholder_img = file_upload.Column(db)
+                my_video = file_upload.Column()
+                placeholder_img = file_upload.Column()
 
         This example demonstrates creating a new row in your database
         using a SqlAlchemy model which is is then pass as the first
@@ -355,10 +364,9 @@ class FileUpload:
         commit_session = kwargs.get("commit_session") or True
         if commit_session:
             try:
-                db = self.app.extensions["file_upload"].get("db")
-                if db:
-                    db.session.add(model)
-                    db.session.commit()
+                if self.db:
+                    self.db.session.add(model)
+                    self.db.session.commit()
                     self._save_files_to_dir(model)
             except AttributeError as err:
                 raise AttributeError(
@@ -412,7 +420,7 @@ class FileUpload:
             @file_upload.Model
             class ModelTest(db.Model):
 
-                my_video = file_upload.Column(db)
+                my_video = file_upload.Column()
 
         The required steps to stream files using ``file_upload.stream_file`` are:
 
@@ -452,7 +460,7 @@ class FileUpload:
             @file_upload.Model
             class ModelTest(db.Model):
 
-                my_video = file_upload.Column(db)
+                my_video = file_upload.Column()
 
         Pass the model instance as a first argument to ``file_upload.update_files``.
         The kwarg ``files`` requires the file(s) returned from Flask's request body::
@@ -474,13 +482,13 @@ class FileUpload:
             })
 
         :param model: SqlAlchemy model instance.
-        :param db: Default is None which is not Recommended. If db is None,
+        :key files Dict[str, Any]: A dict with the key representing the model attr
+             name & file as value.
+        :key commit: Default is True which is recommended. If commit is False,
             then only the files on the server are removed & the model is updated with
             each attribute set to None but the session is not commited (This could cause
             your database & files on server to be out of sync if you fail to commit
             the session.
-        :key files Dict[str, Any]: A dict with the key representing the model attr
-             name & file as value.
         :return Any: Returns the model back
         """
         try:
@@ -488,6 +496,17 @@ class FileUpload:
         except KeyError:
             warn("'files' is a Required Argument")
             return None
+
+        commit = kwargs.get("commit") or True
+
+        if db:
+            warn(
+                DeprecationWarning(
+                    "FLASK-FILE-UPLOAD: Passing `db` as a second argument  to `update_files` method. "
+                    "is now not required. The second argument to `update_files` method will be "
+                    "removed in version v0.1.0"
+                )
+            )
 
         original_file_names = []
 
@@ -508,11 +527,27 @@ class FileUpload:
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
 
-        # if a db arg is provided then commit changes to db
-        if db:
-            db.session.add(model)
-            db.session.commit()
-            return None
+        if self.db and commit:
+            self.db.session.add(model)
+            self.db.session.commit()
+            return model
         else:
             return model
 
+    @property
+    def db(self):
+        if self._db:
+            return self._db
+        else:
+            try:
+                self.app.extensions["file_upload"].get("db")
+            except (AttributeError, KeyError):
+                raise(
+                    "FLASK-FILE-UPLOAD: You must pass an instance of SQLAlchemy to "
+                    "`FileUpload(app, db)` or `file_upload.init_app(app, db)` as a "
+                    "second argument."
+                )
+
+    @db.setter
+    def db(self, db):
+        self._db = db

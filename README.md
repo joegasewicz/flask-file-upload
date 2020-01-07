@@ -36,17 +36,20 @@ We can either pass the instance to FileUpload(app) or to the init_app(app) metho
 app = Flask(__name__, static_folder="uploads/media") # Must be the save directory name as UPLOAD_FOLDER 
 
 db = SQLAlchemy()
-# Important! See documentation for set up specifics
-app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
-file_upload = FileUpload(app, db)
+
+file_upload = FileUpload()
 
 # An example using the Flask factory pattern
 def create_app():
-    db.init_app(app)
-    file_upload.init_app(app)
+    db.init_app(app) 
+    # Pass the Flask app instance as the 1st arg &
+    # the SQLAlchemy object as the 2nd arg to file_upload.init_app.
+    file_upload.init_app(app, db)
 
 # Or we can pass the Flask app instance directly & the Flask-SQLAlchemy instance:
 db = SQLAlchemy(app)
+# Pass the Flask app instance as the 1st arg &
+# the SQLAlchemy object as the 2nd arg to FileUpload
 file_upload = FileUpload(app, db)
 app: Flask = None
 ````
@@ -73,11 +76,8 @@ class blogModel(db.Model):
     __tablename__ = "blogs"
     id = db.Column(db.Integer, primary_key=True)
 
-    # Your files -  Notice how we pass in the SqlAlchemy instance
-    # or `db` to the `file_uploads.Column` class:
-
-    my_placeholder = file_upload.Column(db)
-    my_video = file_upload.Column(db)
+    my_placeholder = file_upload.Column()
+    my_video = file_upload.Column()
 ````
 
 ##### define files to be upload:
@@ -132,7 +132,7 @@ for more details
     
     # If `db` is passed to this method then the updates are persisted.
     # to the session. And therefore the session has been commited.
-    blog = file_upload.delete_files(blog_result, db, files=["my_video"])
+    blog = file_upload.delete_files(blog_result, files=["my_video"])
 ````
 
 
