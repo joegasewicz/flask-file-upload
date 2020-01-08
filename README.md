@@ -130,9 +130,12 @@ for more details
     db.session.add(blog)
     db.session.commit()
     
-    # If `db` is passed to this method then the updates are persisted.
+    # If the kwarg `commit` is not set or set to True then the updates are persisted.
     # to the session. And therefore the session has been commited.
     blog = file_upload.delete_files(blog_result, files=["my_video"])
+    
+    # Example of cleaning up files but not uipdating the model:
+    blog = file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
 ````
 
 
