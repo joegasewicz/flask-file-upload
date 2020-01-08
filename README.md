@@ -111,9 +111,9 @@ Deleting files from the db & server can be non trivial, especially to keep
 both in sync. The `file_upload.delete_files` method can be called with a
 kwarg of `clean_up` & then depending of the string value passed it will
 provide 2 types of clean up functionality:
-    - files will clean up files on the server but not update the model
-    - model will update the model but not attempt to remove the files
-      from the server.
+- `files` will clean up files on the server but not update the model
+- `model` will update the model but not attempt to remove the files
+   from the server.
 See [delete_files Docs](https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files)
 for more details
 ````python
