@@ -134,7 +134,7 @@ for more details
     # to the session. And therefore the session has been commited.
     blog = file_upload.delete_files(blog_result, files=["my_video"])
     
-    # Example of cleaning up files but not uipdating the model:
+    # Example of cleaning up files but not updating the model:
     blog = file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
 ````
 
