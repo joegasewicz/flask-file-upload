@@ -101,6 +101,37 @@ class FileUpload:
         if app:
             self.init_app(app, db, **kwargs)
 
+    def add_file_urls_to_models(self, models, **kwargs):
+        filename = kwargs.get("filename")
+        backref = kwargs.get("backref")
+        backref_name = None
+        backref_filename = None
+        if backref:
+            try:
+                backref_name = backref["name"]
+                backref_filename = backref["filename"]
+            except TypeError:
+                raise TypeError(
+                    "Flask-File_Upload Error: If `backref` kwarg is declared "
+                    "then you must include `filename` & `name` keys. See "
+                    "https://github.com/joegasewicz/flask-file-upload"
+                )
+
+        _models = []
+        try:
+            _models = models.all()
+        except:
+            pass
+        for model in _models:
+            model_img_url = self.get_file_url(model, filename=filename)
+            setattr(model, f"{filename}_url", model_img_url)
+            backref_models = getattr(model, backref_name)
+            if backref and backref_models:
+                for br_model in backref_models:
+                    br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
+                    setattr(br_model, f"{backref_filename}_url", br_model_img_url)
+        return _models
+
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
         Public method for removing stored files from the server & database.
