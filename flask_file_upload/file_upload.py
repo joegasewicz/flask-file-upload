@@ -103,8 +103,49 @@ class FileUpload:
 
     def add_file_urls_to_models(self, models, **kwargs):
         """
+        The majority of requests will require many entities to be returned
+        & these entities may back reference multiple entities. To make this
+        trivial, this method will attach the appropriate filename urls to
+        the first arg `models`.
+        The required kwarg `filename` references the Flask-File-Upload (FFU)
+        Model values when calling the FFU `file_upload.Column()` method
+        Example::
+
+            @file_upload.Model
+            class BlogModel(db.Model):
+
+                # This example has a backref but it's not required
+                blog_news = db.relationship("BlogNewsModel", backref="blogs")
+
+                blog_image = file_upload.Column()
+
+        And we can then our imaginary `BlogNewsModel` could look like this. Example::
+
+            @file_upload.Model
+            class BlogNewsModel(db.Model):
+
+                # Optional backref example
+                blog_id = db.Column(db.Integer, db.ForeignKey("blogs.blog_id", ondelete="CASCADE"))
+
+                blog_news_image = file_upload.Column()
+
+        Now, we have a nested list of entities that we need to attach our file names to.
+        This is made trivial with the `add_file_urls_to_models` method. We need to pass
+        an extra kwarg of `backref` that contains a Python dict with 2 keys:
+            - **name**: The name of the backref relation
+            - **filename**: The FFU attribute value assigned to this model
+
+        The kwarg `backref` keys represent the backred model or entity (in the above example
+        this would be the `BlogNewsModel`. Example:
+
+            blogs = add_file_urls_to_models(blogs, filename="blog_image",
+                backref={
+                    "name": "blog_news",
+                    "filename": "blog_news_image",
+            })
+
         WARNING: You must not set the relationship kwarg: `lazy="dynamic"`!
-        If `backref` is set to "dynamic"` then back-referenced entity's
+        If `backref` is set to *"dynamic"* then back-referenced entity's
         filenames will not get set, Example::
 
             # This will work:
@@ -113,13 +154,6 @@ class FileUpload:
             # this will NOT set filenames on your model class:
             blog_news = db.relationship("BlogNewsModel", backref="blog", lazy="dynamic")
 
-        Example::
-
-            blogs = add_file_urls_to_models(blogs, filename="blog_image",
-                backref={
-                    "name": "blog_news",
-                    "filename": "blog_news_image",
-            })
         :param models: SQLAlchemy models (this must be many entities)
         :kwargs backref:
             - **name**: The name of the backref relation
