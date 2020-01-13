@@ -104,11 +104,17 @@ class FileUpload:
     def add_file_urls_to_models(self, models, **kwargs):
         """
         The majority of requests will require many entities to be returned
-        & these entities may back reference multiple entities. To make this
-        trivial, this method will attach the appropriate filename urls to
-        the first arg `models`.
-        The required kwarg `filename` references the Flask-File-Upload (FFU)
-        Model values when calling the FFU `file_upload.Column()` method
+        & these entities may have SQLAlchemy `backrefs` & these back reference
+        relationships may also contain Flask-File-Upload (FFU) modified SQLAlchemy
+        models. To make this trivial, this method will set the appropriate
+        filename urls to to your SQLAlchemy model object (if the transaction
+        hasn't completed then FFU will complete the transaction by default).
+
+        The the only argument is `models` the SQLAlchemy model (which is is
+        normally many but can be a single item from your table.
+
+        Then pass in the required kwarg `filename` which references the parent
+        FFU Model values when calling the FFU `file_upload.Column()` method
         Example::
 
             @file_upload.Model
@@ -160,7 +166,7 @@ class FileUpload:
             - **filename**: The FFU attribute value assigned to this model
         :return:
         """
-        filename = kwargs.get("filename")
+        filenames = kwargs.get("filenames")
         backref = kwargs.get("backref")
         backref_name = None
         backref_filenames = None
@@ -168,6 +174,8 @@ class FileUpload:
             try:
                 backref_name = backref["name"]
                 backref_filenames = backref["filenames"]
+                if not isinstance(filenames, list):
+                    filenames = [filenames]
                 if not isinstance(backref_filenames, list):
                     backref_filenames = [backref_filenames]
             except TypeError:
@@ -183,14 +191,15 @@ class FileUpload:
         except:
             _models = models
         for model in _models:
-            model_img_url = self.get_file_url(model, filename=filename)
-            setattr(model, f"{filename}_url", model_img_url)
-            backref_models = getattr(model, backref_name)
-            for backref_filename in backref_filenames:
-                if backref and backref_models:
-                    for br_model in backref_models:
-                        br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
-                        setattr(br_model, f"{backref_filename}_url", br_model_img_url)
+            for filename in filenames:
+                model_img_url = self.get_file_url(model, filename=filename)
+                setattr(model, f"{filename}_url", model_img_url)
+                backref_models = getattr(model, backref_name)
+                for backref_filename in backref_filenames:
+                    if backref and backref_models:
+                        for br_model in backref_models:
+                            br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
+                            setattr(br_model, f"{backref_filename}_url", br_model_img_url)
         return _models
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:

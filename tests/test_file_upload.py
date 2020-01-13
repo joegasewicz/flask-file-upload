@@ -69,12 +69,18 @@ class TestFileUploads:
             my_video__file_name="my_video.mp4",
             my_video__mime_type="video/mpeg",
             my_video__file_type="mp4",
+            my_placeholder__file_name="my_placeholder1.png",
+            my_placeholder__mime_type="image/png",
+            my_placeholder__file_type="png",
         )
         blog2 = mock_blog_model(
             name="hello2",
             my_video__file_name="my_video2.mp4",
             my_video__mime_type="video/mpeg",
             my_video__file_type="mp4",
+            my_placeholder__file_name="my_placeholder2.png",
+            my_placeholder__mime_type="image/png",
+            my_placeholder__file_type="png",
         )
 
         mock_news_model(title="news_1", blog_id=1)
@@ -111,6 +117,8 @@ class TestFileUploads:
 
         assert rv.get_json()["results"]["my_video_url"] == "http://localhost/static/blogs/1/my_video.mp4"
         assert rv.get_json()["results"]["my_video_url_2"] == "http://localhost/static/blogs/2/my_video2.mp4"
+        assert rv.get_json()["results"]["my_placeholder_url"] == "http://localhost/static/blogs/1/my_placeholder1.png"
+        assert rv.get_json()["results"]["my_placeholder_url_2"] == "http://localhost/static/blogs/2/my_placeholder2.png"
         assert rv.get_json()["results"]["news_image_url"] == "http://localhost/static/news/1/news_image.png"
         assert rv.get_json()["results"]["news_image_url_2"] == "http://localhost/static/news/2/news_image.png"
         assert rv.get_json()["results"]["news_video_url"] == "http://localhost/static/news/1/news_video1.mp4"

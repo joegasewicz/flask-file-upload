@@ -38,18 +38,20 @@ def blogs():
 
     blogs = MockBlogModel.get_all_blogs()
 
-    results = file_upload.add_file_urls_to_models(blogs, filename="my_video", backref={
+    results = file_upload.add_file_urls_to_models(
+        blogs,
+        filenames=["my_video", "my_placeholder"],
+        backref={
         "name": "news",
         "filenames": ["news_image", "news_video"],
     })
 
-    # assert results == []
-
-
     return {
         "results": {
             "my_video_url": results[0].my_video_url,
+            "my_placeholder_url": results[0].my_placeholder_url,
             "my_video_url_2": results[1].my_video_url,
+            "my_placeholder_url_2": results[1].my_placeholder_url,
             "news_image_url": results[0].news[0].news_image_url,
             "news_video_url": results[0].news[0].news_video_url,
             "news_image_url_2": results[0].news[1].news_image_url,
