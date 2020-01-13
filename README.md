@@ -171,10 +171,9 @@ filename urls to your SQLAlchemy model objects (if the transaction
 hasn't completed then **add_file_urls_to_models** will complete the
 transaction by default).
 
-The the only argument is `models` the SQLAlchemy model (which is is
-normally many but can be a single item from your table.
+The first argument required by this method is `models` - the SQLAlchemy model(s).
 
-Then pass in the required kwarg `filenames` which references the parent(s)
+Then pass in the required kwarg `filenames` which references the parent's
 FFU Model values - this is the `file_upload.Model` decorated SQLALchemy model
 - `file_upload.Column()` method.
 
