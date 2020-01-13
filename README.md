@@ -19,7 +19,7 @@ pip install flask-file-upload==0.1.0-rc.4
 Flask File Upload
 
 
-##### General Flask config options
+#### General Flask config options
 ````python
     # Important: The below configuration variables need to be set  before
     # initiating `FileUpload`
@@ -30,7 +30,7 @@ Flask File Upload
 ````
 
 
-##### Setup
+#### Setup
 We can either pass the instance to FileUpload(app) or to the init_app(app) method:
 ````python
 app = Flask(__name__, static_folder="uploads/media") # Must be the save directory name as UPLOAD_FOLDER 
@@ -55,7 +55,7 @@ app: Flask = None
 ````
 
 
-##### Decorate your SqlAlchemy models
+#### Decorate your SqlAlchemy models
 Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use FFU
 library to be decorated with `@file_upload.Model` .This will enable FFU to update your
 database with the extra columns required to store files in your database.
@@ -80,7 +80,7 @@ class blogModel(db.Model):
     my_video = file_upload.Column()
 ````
 
-##### define files to be upload:
+#### define files to be upload:
     (This is an example of a video with placeholder image attached):
 ````python
     my_video = request.files["my_video"]
@@ -88,7 +88,7 @@ class blogModel(db.Model):
 ````
 
 
-##### Save files
+#### Save files
 ````python
     file_upload.save_files(blog_post, files={
         "my_video": my_video,
@@ -96,7 +96,7 @@ class blogModel(db.Model):
     })
 ````
 
-##### Update files
+#### Update files
 ````python
     blog_post = file_upload.update_files(blog_post, files={
         "my_video": new_my_video,
@@ -105,7 +105,7 @@ class blogModel(db.Model):
 ````
 
 
-##### Delete files
+#### Delete files
 
 Deleting files from the db & server can be non trivial, especially to keep
 both in sync. The `file_upload.delete_files` method can be called with a
@@ -139,13 +139,13 @@ for more details
 ````
 
 
-##### Stream a file
+#### Stream a file
 ````python
     file_upload.stream_file(blog_post, filename="my_video")
 ````
 
 
-##### File Url paths
+#### File Url paths
 ````python
     file_upload.get_file_url(blog_post, filename="placeholder_img")
 ````
@@ -158,7 +158,7 @@ Example for getting file urls from many objects:
         setattr(blog, "blog_image", blog_image_url)
 ```
 
-##### Set file paths to multiple objects
+#### Set file paths to multiple objects
 The majority of requests will require many entities to be returned
 & these entities may have SQLAlchemy `backrefs` with
 relationships that may also contain Flask-File-Upload (FFU) modified SQLAlchemy
