@@ -1,3 +1,7 @@
+Update: We are releasing a stable version -  `v0.1.0` of Flask-File-Upload 
+which will include `add_file_urls_to_models`. This will be released
+on the 18/01/2020, thank you.
+
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
@@ -158,7 +162,7 @@ Example for getting file urls from many objects:
         setattr(blog, "blog_image", blog_image_url)
 ```
 
-#### Set file paths to multiple objects
+#### Set file paths to multiple objects - *Available in `v0.1.0`*
 The majority of requests will require many entities to be returned
 & these entities may have SQLAlchemy `backrefs` with
 relationships that may also contain Flask-File-Upload (FFU) modified SQLAlchemy
