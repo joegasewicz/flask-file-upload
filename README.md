@@ -160,10 +160,10 @@ Example for getting file urls from many objects:
 
 ##### Set file paths to multiple objects
 The majority of requests will require many entities to be returned
-& these entities may have SQLAlchemy `backrefs` & these back reference
-relationships may also contain Flask-File-Upload (FFU) modified SQLAlchemy
+& these entities may have SQLAlchemy `backrefs` with
+relationships that may also contain Flask-File-Upload (FFU) modified SQLAlchemy
 models. To make this trivial, this method will set the appropriate
-filename urls to to your SQLAlchemy model object (if the transaction
+filename urls to your SQLAlchemy model objects (if the transaction
 hasn't completed then **add_file_urls_to_models** will complete the
 transaction by default).
 
