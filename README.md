@@ -158,3 +158,87 @@ Example for getting file urls from many objects:
         setattr(blog, "blog_image", blog_image_url)
 ```
 
+##### Set file paths to multiple objects
+The majority of requests will require many entities to be returned
+& these entities may have SQLAlchemy `backrefs` & these back reference
+relationships may also contain Flask-File-Upload (FFU) modified SQLAlchemy
+models. To make this trivial, this method will set the appropriate
+filename urls to to your SQLAlchemy model object (if the transaction
+hasn't completed then **add_file_urls_to_models** will complete the
+transaction by default).
+
+The the only argument is `models` the SQLAlchemy model (which is is
+normally many but can be a single item from your table.
+
+Then pass in the required kwarg `filenames` which references the parent(s)
+FFU Model values - this is the `file_upload.Model` decorated SQLALchemy model
+- `file_upload.Column()` method.
+
+Important! Also take note that each attribute set by this method postfixes
+a `_url` tag. e.g `blog_image` becomes `blog_image_url`
+
+Example for many SQLAlchemy entity objects (*or rows in your table*)::
+```python
+    @file_upload.Model
+    class BlogModel(db.Model):
+
+        blog_image = file_upload.Column()
+```
+
+Now we can use the `file_upload.add_file_urls_to_models` to add file urls to
+each SQLAlchemy object. For example::
+```python
+    blogs = add_file_urls_to_models(blogs, filenames="blog_image")
+
+    # Notice that we can get the file path `blog_image` + `_url`
+    assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image.png"
+```
+
+To set filename attributes to multiple SQLAlchemy parent models with backrefs
+to multiple child SQLAlchemy models, we can assign to the optional `backref`
+kwarg the name of the backref model & a list of the file attributes we set
+with the FFU Model decorated SQLAlchemy model.
+
+To use backrefs we need to declare a kwarg of `backref` & pass 2 keys:
+    - **name**: The name of the backref relation
+    - **filenames**: The FFU attribute values assigned to the backref model
+
+For example::
+```python
+    # Parent model
+    class BlogModel(db.Model):
+        # The backref:
+        blog_news = db.relationship("BlogNewsModel", backref="blogs")
+        blog_image = file_upload.Column()
+        blog_video = file_upload.Column()
+
+    # Model that has a foreign key back up to `BlogModel
+    @file_upload.Model
+    class BlogNewsModel(db.Model):
+        # The foreign key assigned to this model:
+        blog_id = db.Column(db.Integer, db.ForeignKey("blogs.blog_id"))
+        news_image = file_upload.Column()
+        news_video = file_upload.Column()
+```
+
+The kwarg `backref` keys represent the backref model or entity (in the above example
+this would be the `BlogNewsModel` which we have named `blog_news`. Example::
+```python
+    blogs = add_file_urls_to_models(blogs, filenames=["blog_image, blog_video"],
+        backref={
+            "name": "blog_news",`
+            "filenames": ["news_image", "news_video],
+    })
+```
+
+WARNING: You must not set the relationship kwarg: `lazy="dynamic"`!
+If `backref` is set to *"dynamic"* then back-referenced entity's
+filenames will not get set. Example::
+```python
+    # This will work
+    blog_news = db.relationship("BlogNewsModel", backref="blog")
+
+    # this will NOT set filenames on your model class
+    blog_news = db.relationship("BlogNewsModel", backref="blog", lazy="dynamic")
+
+```
