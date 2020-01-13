@@ -32,6 +32,31 @@ def config_test():
         "data": "hello"
     }, 200
 
+@app.route("/blogs", methods=["GET"])
+def blogs():
+    from tests.fixtures.models import MockBlogModel
+
+    blogs = MockBlogModel.get_all_blogs()
+
+    results = file_upload.add_file_urls_to_models(blogs, filename="my_video", backref={
+        "name": "news",
+        "filename": "news_image",
+    })
+
+    # assert results == []
+
+
+    return {
+        "results": {
+            "my_video_url": results[0].my_video_url,
+            "my_video_url_2": results[1].my_video_url,
+            "news_image_url": results[0].news[0].news_image_url,
+            # "news_video_url": results[0].news[0].news_video_url,
+            "news_image_url_2": results[0].news[1].news_image_url,
+            # "news_video_url_url": results[0].news[1].news_video_url,
+        },
+    }, 200
+
 
 @app.route("/blog", methods=["GET", "POST"])
 def blog():

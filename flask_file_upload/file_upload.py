@@ -179,7 +179,7 @@ class FileUpload:
         try:
             _models = models.all()
         except:
-            pass
+            _models = models
         for model in _models:
             model_img_url = self.get_file_url(model, filename=filename)
             setattr(model, f"{filename}_url", model_img_url)

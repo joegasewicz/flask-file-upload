@@ -8,7 +8,7 @@ import time
 
 from flask_file_upload._config import Config
 from flask_file_upload.file_upload import FileUpload
-from tests.fixtures.models import mock_blog_model, mock_model
+from tests.fixtures.models import mock_blog_model, mock_model, mock_news_model
 from tests.app import create_app, flask_app, db, file_upload, app
 
 
@@ -29,7 +29,7 @@ class TestFileUploads:
         "my_video__mime_type": "video/mpeg",
         "my_video__file_type": "mp4",
         "my_placeholder__file_name": "my_placeholder.png",
-        "my_placeholder__mime_type": "image/jpeg",
+        "my_placeholder__mime_type": "image/png",
         "my_placeholder__file_type": "jpg",
     }
 
@@ -41,7 +41,7 @@ class TestFileUploads:
         },
         {
             "my_placeholder__file_name": "my_placeholder.png",
-            "my_placeholder__mime_type": "image/jpeg",
+            "my_placeholder__mime_type": "image/png",
             "my_placeholder__file_type": "jpg",
         }
     ]
@@ -58,6 +58,67 @@ class TestFileUploads:
         except:
             pass
 
+    def test_add_file_urls_to_models(self, create_app, mock_blog_model, mock_news_model):
+        db.init_app(app)
+        db.create_all()
+        file_upload = FileUpload()
+        file_upload.init_app(app, db)
+
+        blog1 = mock_blog_model(
+            name="hello",
+            my_video__file_name="my_video.mp4",
+            my_video__mime_type="video/mpeg",
+            my_video__file_type="mp4",
+        )
+        blog2 = mock_blog_model(
+            name="hello2",
+            my_video__file_name="my_video2.mp4",
+            my_video__mime_type="video/mpeg",
+            my_video__file_type="mp4",
+        )
+
+        mock_news_model(title="news_1", blog_id=1)
+
+        db.session.add_all([
+            blog1,
+            blog2,
+            mock_news_model(
+                title="news_1",
+                blog_id=1,
+                news_video__file_name="my_video1.mp4",
+                news_video__mime_type="video/mpeg",
+                news_video__file_type="mp4",
+                news_image__file_name="news_image.png",
+                news_image__mime_type="image/png",
+                news_image__file_type="png",
+            ),
+            mock_news_model(
+                title="news_2",
+                blog_id=1,
+                news_video__file_name="news_video2.mp4",
+                news_video__mime_type="video/mpeg",
+                news_video__file_type="mp4",
+                news_image__file_name="news_image.png",
+                news_image__mime_type="image/png",
+                news_image__file_type="png",
+            )
+        ])
+
+        db.session.commit()
+
+        rv = create_app.get("/blogs")
+        assert "200" in rv.status
+
+        assert rv.get_json()["results"]["my_video_url"] == "http://localhost/static/blogs/1/my_video.mp4"
+        assert rv.get_json()["results"]["my_video_url_2"] == "http://localhost/static/blogs/2/my_video2.mp4"
+        assert rv.get_json()["results"]["news_image_url"] == "http://localhost/static/news/1/news_image.png"
+        assert rv.get_json()["results"]["news_image_url_2"] == "http://localhost/static/news/2/news_image.png"
+
+
+
+
+
+
     def test_init_app(self, create_app, mock_blog_model, flask_app):
 
         file_upload = FileUpload()
@@ -73,7 +134,7 @@ class TestFileUploads:
         assert mock_model.my_video__mime_type == "video/mpeg"
         assert mock_model.my_video__file_type == "mp4"
         assert mock_model.my_placeholder__file_name == "my_placeholder.png"
-        assert mock_model.my_placeholder__mime_type == "image/jpeg"
+        assert mock_model.my_placeholder__mime_type == "image/png"
         assert mock_model.my_placeholder__file_type == "jpg"
 
         with pytest.raises(AttributeError):
