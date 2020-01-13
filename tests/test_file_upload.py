@@ -85,7 +85,7 @@ class TestFileUploads:
             mock_news_model(
                 title="news_1",
                 blog_id=1,
-                news_video__file_name="my_video1.mp4",
+                news_video__file_name="news_video1.mp4",
                 news_video__mime_type="video/mpeg",
                 news_video__file_type="mp4",
                 news_image__file_name="news_image.png",
@@ -113,6 +113,8 @@ class TestFileUploads:
         assert rv.get_json()["results"]["my_video_url_2"] == "http://localhost/static/blogs/2/my_video2.mp4"
         assert rv.get_json()["results"]["news_image_url"] == "http://localhost/static/news/1/news_image.png"
         assert rv.get_json()["results"]["news_image_url_2"] == "http://localhost/static/news/2/news_image.png"
+        assert rv.get_json()["results"]["news_video_url"] == "http://localhost/static/news/1/news_video1.mp4"
+        assert rv.get_json()["results"]["news_video_url_2"] == "http://localhost/static/news/2/news_video2.mp4"
 
 
 

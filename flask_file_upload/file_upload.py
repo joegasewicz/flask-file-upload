@@ -163,11 +163,13 @@ class FileUpload:
         filename = kwargs.get("filename")
         backref = kwargs.get("backref")
         backref_name = None
-        backref_filename = None
+        backref_filenames = None
         if backref:
             try:
                 backref_name = backref["name"]
-                backref_filename = backref["filename"]
+                backref_filenames = backref["filenames"]
+                if not isinstance(backref_filenames, list):
+                    backref_filenames = [backref_filenames]
             except TypeError:
                 raise TypeError(
                     "Flask-File_Upload Error: If `backref` kwarg is declared "
@@ -184,10 +186,11 @@ class FileUpload:
             model_img_url = self.get_file_url(model, filename=filename)
             setattr(model, f"{filename}_url", model_img_url)
             backref_models = getattr(model, backref_name)
-            if backref and backref_models:
-                for br_model in backref_models:
-                    br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
-                    setattr(br_model, f"{backref_filename}_url", br_model_img_url)
+            for backref_filename in backref_filenames:
+                if backref and backref_models:
+                    for br_model in backref_models:
+                        br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
+                        setattr(br_model, f"{backref_filename}_url", br_model_img_url)
         return _models
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
