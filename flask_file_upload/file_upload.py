@@ -65,7 +65,7 @@ class FileUpload:
     #:      app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
     #:      app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     #:
-    #:      file_upload.init_app(app)
+    #:      file_upload.init_app(app, db)
     app: Flask = None
 
     #: The configuration class used for this library.
@@ -413,7 +413,7 @@ class FileUpload:
             file_upload = FileUpload()
 
             def create_app():
-                file_upload.init_app(app)
+                file_upload.init_app(app, db)
 
         :param app: The Flask application instance: ``app = Flask(__name__, static_folder="uploads")``.
         :return: None
