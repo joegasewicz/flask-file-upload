@@ -148,6 +148,7 @@ class FileUpload:
         For example::
 
             # Parent model
+            @file_upload.Model
             class BlogModel(db.Model):
                 # The backref:
                 blog_news = db.relationship("BlogNewsModel", backref="blogs")
@@ -200,7 +201,7 @@ class FileUpload:
                 backref_name = backref["name"]
                 backref_filenames = backref["filenames"]
                 if not isinstance(filenames, list):
-                    filenames = [filenames]
+                     filenames = [filenames]
                 if not isinstance(backref_filenames, list):
                     backref_filenames = [backref_filenames]
             except TypeError:
