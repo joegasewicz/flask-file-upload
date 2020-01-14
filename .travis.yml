@@ -1,13 +1,16 @@
 language: python
-python:
-  - "3.7"
-  - "3.8"
-  - "3.8-dev"  # 3.8 development branch
-# command to install dependencies
+sudo: false
+
 install:
-  - pip install -r requirements.txt
-  - pip install codecov
-# command to run tests
+  - pip install -U tox
+  - pip install -U codecov
+
+matrix:
+  include:
+    - python: "3.6-dev"
+    - python: "3.7-dev"
+    - python: "3.8-dev"
+
 script:
-  - pytest -vv
-  - codecov
+  - tox -v -e py
+  - codecovecov
