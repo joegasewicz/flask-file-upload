@@ -9,6 +9,10 @@ setup(
     description="Library that works with Flask & SqlAlchemy to store files in your database and server.",
     packages=["flask_file_upload"],
     py_modules=["flask_file_upload"],
+    install_requires=[
+        'flask',
+        'Flask-SQLAlchemy'
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
