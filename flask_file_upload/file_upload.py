@@ -632,7 +632,7 @@ class FileUpload:
         # remove original files from directory
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
-        return _ModelUtils.commit_session(db, model, commit)
+        return _ModelUtils.commit_session(self.db, model, commit)
 
     @property
     def db(self):

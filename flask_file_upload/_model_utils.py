@@ -157,11 +157,14 @@ class _ModelUtils:
         """Commit changes to current session if exists"""
         if db and commit:
             try:
-                current_session = db.session.object_session(model)
+                current_session = db.session.object_session(model) or db.session
                 current_session.add(model)
                 current_session.commit()
-            except AttributeError:
-                raise AttributeError()
+            except AttributeError as err:
+                raise AttributeError(
+                    "[FLASK_FILE_UPLOAD_ERROR]: You must pass the SQLAlchemy"
+                    f" instance (db) to FileUpload(). Full Error: {err}"
+                )
         else:
             raise Warning(
                 "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
