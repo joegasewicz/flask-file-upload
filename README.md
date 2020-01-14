@@ -1,7 +1,7 @@
 Update: We are releasing a stable version -  `v0.1.0` of Flask-File-Upload 
 which will include `add_file_urls_to_models`. This will be released
 on the 18/01/2020, thank you.
-
+[![Build Status](https://travis-ci.org/joegasewicz/flask-file-upload.svg?branch=master)](https://travis-ci.org/joegasewicz/flask-file-upload)
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
