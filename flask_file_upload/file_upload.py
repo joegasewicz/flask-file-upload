@@ -207,7 +207,7 @@ class FileUpload:
             except TypeError:
                 raise TypeError(
                     "Flask-File_Upload Error: If `backref` kwarg is declared "
-                    "then you must include `filename` & `name` keys. See "
+                    "then you must include `filenames` & `name` keys. See "
                     "https://github.com/joegasewicz/flask-file-upload"
                 )
 

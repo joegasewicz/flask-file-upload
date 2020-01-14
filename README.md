@@ -63,8 +63,7 @@ app: Flask = None
 Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use FFU
 library to be decorated with `@file_upload.Model` .This will enable FFU to update your
 database with the extra columns required to store files in your database.
-Declare your attributes as normal but assign a value of `file_upload.Column` &
-pass the SqlAlchemy db instance: `file_upload.Column(db)`.
+Declare your attributes as normal but assign a value of `file_upload.Column`.
 This is easy if you are using Flask-SqlAlchemy:
 ```python
 from flask_sqlalchemy import SqlAlchemy
@@ -73,7 +72,7 @@ db = SqlAlchemy()
 ```
 Full example:
  ````python
-from my_app import db, file_upload
+from my_app import file_upload
 
 @file_upload.Model
 class blogModel(db.Model):
