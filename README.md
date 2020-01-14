@@ -209,6 +209,7 @@ To use backrefs we need to declare a kwarg of `backref` & pass 2 keys:
 For example::
 ```python
     # Parent model
+    @file_upload.Model
     class BlogModel(db.Model):
         # The backref:
         blog_news = db.relationship("BlogNewsModel", backref="blogs")
