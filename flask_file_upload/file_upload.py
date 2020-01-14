@@ -316,7 +316,7 @@ class FileUpload:
             for f_name in files:
                 for postfix in _ModelUtils.keys:
                     setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-            return _ModelUtils.commit_session(db, model, commit)
+            return _ModelUtils.commit_session(self.db, model, commit)
         else:
             return model
 
@@ -480,19 +480,8 @@ class FileUpload:
         self.file_utils = FileUtils(model, self.config)
 
         commit_session = kwargs.get("commit_session") or True
-        if commit_session:
-            try:
-                if self.db:
-                    model = _ModelUtils.commit_session(self.db, model)
-                    self._save_files_to_dir(model)
-            except AttributeError as err:
-                raise AttributeError(
-                    "[FLASK_FILE_UPLOAD_ERROR]: You must pass the SQLAlchemy"
-                    f" instance (db) to FileUpload(). Full Error: {err}"
-                )
-        else:
-            self._save_files_to_dir(model)
-        # Clean up lists here as this state can become stale
+        model = _ModelUtils.commit_session(self.db, model, commit_session)
+        self._save_files_to_dir(model)
         return model
 
     def _save_files_to_dir(self, model: Any) -> None:

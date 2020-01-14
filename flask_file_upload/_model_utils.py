@@ -156,9 +156,12 @@ class _ModelUtils:
     def commit_session(db, model: Any, commit: bool = True) -> Any:
         """Commit changes to current session if exists"""
         if db and commit:
-            current_session = db.session.object_session(model)
-            current_session.add(model)
-            current_session.commit()
+            try:
+                current_session = db.session.object_session(model)
+                current_session.add(model)
+                current_session.commit()
+            except AttributeError:
+                raise AttributeError()
         else:
             raise Warning(
                 "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
