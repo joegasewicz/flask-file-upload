@@ -13,4 +13,4 @@ matrix:
 
 script:
   - tox -v -e py
-  - codecovecov
+  - codecov
