@@ -316,16 +316,7 @@ class FileUpload:
             for f_name in files:
                 for postfix in _ModelUtils.keys:
                     setattr(model, _ModelUtils.add_postfix(f_name, postfix), None)
-            if self.db and commit:
-                current_session = self.db.session.object_session(model)
-                current_session.add(model)
-                current_session.commit()
-                return model
-            else:
-                raise Warning(
-                    "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
-                    "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files"
-                )
+            return _ModelUtils.commit_session(db, model, commit)
         else:
             return model
 
@@ -492,8 +483,7 @@ class FileUpload:
         if commit_session:
             try:
                 if self.db:
-                    self.db.session.add(model)
-                    self.db.session.commit()
+                    model = _ModelUtils.commit_session(self.db, model)
                     self._save_files_to_dir(model)
             except AttributeError as err:
                 raise AttributeError(
@@ -653,13 +643,7 @@ class FileUpload:
         # remove original files from directory
         for f in original_file_names:
             os.remove(f"{self.file_utils.get_stream_path(model.id)}/{f}")
-
-        if self.db and commit:
-            self.db.session.add(model)
-            self.db.session.commit()
-            return model
-        else:
-            return model
+        return _ModelUtils.commit_session(db, model, commit)
 
     @property
     def db(self):
