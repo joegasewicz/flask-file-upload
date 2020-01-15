@@ -23,7 +23,7 @@ pip install flask-file-upload==0.1.0-rc.4
 ```
 
 The latest release is:
-```python
+```bash
 pip install flask-file-upload==0.1.0-rc.6
 ```
 
