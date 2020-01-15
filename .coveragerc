@@ -1,7 +1,7 @@
 [run]
 branch = True
-source=flask_jwt_upload
-include=flask_jwt_upload
+source=flask_file_upload
+include=flask_file_upload
 
 [report]
 exclude_lines =

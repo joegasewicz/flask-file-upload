@@ -8,7 +8,6 @@ install:
 matrix:
   include:
     - python: "3.7-dev"
-    - python: "3.8-dev"
 
 script:
   - tox -v -e py
