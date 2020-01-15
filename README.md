@@ -169,7 +169,7 @@ Example for getting file urls from many objects:
         setattr(blog, "blog_image", blog_image_url)
 ```
 
-#### Set file paths to multiple objects - *Available in `0.1.0-rc.4` & `v0.1.0`*
+#### Set file paths to multiple objects - *Available in `0.1.0-rc.6’ & `v0.1.0`*
 The majority of requests will require many entities to be returned
 & these entities may have SQLAlchemy `backrefs` with
 relationships that may also contain Flask-File-Upload (FFU) modified SQLAlchemy
