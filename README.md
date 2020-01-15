@@ -1,6 +1,5 @@
 Update: A stable version -  `v0.1.0` of Flask-File-Upload will be released 
-which will include `add_file_urls_to_models`. This will be released
-on the 18/01/2020, thank you.
+soon. The release `lask-file-upload==0.1.0-rc.4` includes `add_file_urls_to_models` method.
 
 [![Build Status](https://travis-ci.org/joegasewicz/flask-file-upload.svg?branch=master)](https://travis-ci.org/joegasewicz/flask-file-upload)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/72eba439b16e43a295f956fe49e1b52f)](https://www.codacy.com/manual/joegasewicz/flask-file-upload?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=joegasewicz/flask-file-upload&amp;utm_campaign=Badge_Grade)
@@ -18,10 +17,16 @@ files on your server & in your database
 Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/latest/)
 
 ## Installation
-Please install the latest release candidate:
+Please install the latest stable release candidate:
 ```bash
 pip install flask-file-upload==0.1.0-rc.4
 ```
+
+The latest release is:
+```python
+pip install flask-file-upload==0.1.0-rc.6
+```
+
 
 Flask File Upload
 
@@ -164,7 +169,7 @@ Example for getting file urls from many objects:
         setattr(blog, "blog_image", blog_image_url)
 ```
 
-#### Set file paths to multiple objects - *Available in `v0.1.0`*
+#### Set file paths to multiple objects - *Available in `0.1.0-rc.4` & `v0.1.0`*
 The majority of requests will require many entities to be returned
 & these entities may have SQLAlchemy `backrefs` with
 relationships that may also contain Flask-File-Upload (FFU) modified SQLAlchemy
