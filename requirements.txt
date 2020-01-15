@@ -8,7 +8,6 @@ Click==7.0
 coverage==5.0.3
 docutils==0.15.2
 Flask==1.1.1
--e git+https://github.com/joegasewicz/Flask-File-Upload.git@97b8dc0d5d1669406ecdeb5eaaf8ca5f56fec03a#egg=flask_file_upload
 Flask-SQLAlchemy==2.4.1
 idna==2.8
 imagesize==1.2.0
