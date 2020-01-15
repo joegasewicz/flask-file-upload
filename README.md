@@ -1,5 +1,5 @@
 Update: A stable version -  `v0.1.0` of Flask-File-Upload will be released 
-soon. The release `0.1.0-rc.4` includes `add_file_urls_to_models` method.
+soon. The release `0.1.0-rc.6` includes `add_file_urls_to_models` method.
 
 [![Build Status](https://travis-ci.org/joegasewicz/flask-file-upload.svg?branch=master)](https://travis-ci.org/joegasewicz/flask-file-upload)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/72eba439b16e43a295f956fe49e1b52f)](https://www.codacy.com/manual/joegasewicz/flask-file-upload?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=joegasewicz/flask-file-upload&amp;utm_campaign=Badge_Grade)
