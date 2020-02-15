@@ -199,7 +199,7 @@ each SQLAlchemy object. For example::
     blogs = add_file_urls_to_models(blogs, filenames="blog_image")
 
     # Notice that we can get the file path `blog_image` + `_url`
-    assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image.png"
+    assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image_url.png"
 ```
 
 To set filename attributes to multiple SQLAlchemy parent models with backrefs
