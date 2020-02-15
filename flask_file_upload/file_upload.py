@@ -216,17 +216,24 @@ class FileUpload:
             _models = models.all()
         except:
             _models = models
-        for model in _models:
-            for filename in filenames:
-                model_img_url = self.get_file_url(model, filename=filename)
-                setattr(model, f"{filename}_url", model_img_url)
-                backref_models = getattr(model, backref_name)
-                for backref_filename in backref_filenames:
-                    if backref and backref_models:
-                        for br_model in backref_models:
-                            br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
-                            setattr(br_model, f"{backref_filename}_url", br_model_img_url)
-        return _models
+        if not backref:
+            for model in _models:
+                for filename in filenames:
+                    model_img_url = self.get_file_url(model, filename=filename)
+                    setattr(model, f"{filename}_url", model_img_url)
+            return _models
+        else:
+            for model in _models:
+                for filename in filenames:
+                    model_img_url = self.get_file_url(model, filename=filename)
+                    setattr(model, f"{filename}_url", model_img_url)
+                    backref_models = getattr(model, backref_name)
+                    for backref_filename in backref_filenames:
+                        if backref and backref_models:
+                            for br_model in backref_models:
+                                br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
+                                setattr(br_model, f"{backref_filename}_url", br_model_img_url)
+            return _models
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
