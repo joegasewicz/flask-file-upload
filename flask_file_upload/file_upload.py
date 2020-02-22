@@ -640,7 +640,14 @@ class FileUpload:
         for f in original_file_names:
             primary_key = _ModelUtils.get_primary_key(model)
             model_id = getattr(model, primary_key, None)
-            os.remove(f"{self.file_utils.get_stream_path(model_id)}/{f}")
+            # If the model is updated later with file attributes the file path
+            # then has not yet been created, so we do not have to remove the old
+            # files etc:
+            try:
+                os.remove(f"{self.file_utils.get_stream_path(model_id)}/{f}")
+            except FileNotFoundError:
+                pass
+
         return _ModelUtils.commit_session(self.db, model, commit)
 
     @property
