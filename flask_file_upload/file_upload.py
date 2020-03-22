@@ -287,7 +287,7 @@ class FileUpload:
             - ``model`` will update the model but not attempt to remove the files
                 from the server.
 
-        Example::`
+        Example::
 
             # To clean up files on your server pass in the args as follows:
             file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
