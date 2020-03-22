@@ -401,7 +401,12 @@ class FileUpload:
             if url_root[-1] == "/":
                 url_root = url_root[:-1]
 
-            image_path = url_for('static', filename=file_path).replace("//", "/")
+            upload_folder_list = self.config.upload_folder.split("static")
+            if len(upload_folder_list) == 2:
+                upload_folder = f"static{upload_folder_list[1]}"
+                image_path = f"{upload_folder}{file_path}".replace("//", "/")
+            else:
+                image_path = url_for("static", filename=file_path).replace("//", "/")
             if image_path[0] == "/":
                 image_path = image_path[1:]
             if filename:
