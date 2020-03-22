@@ -287,7 +287,6 @@ class FileUpload:
 
         The root directory (*The directory containing the files*) which is named after the model
         id, is never deleted. Only the files within this directory are removed from the server.
-
         :return: SqlAlchemy model object
         """
         try:
