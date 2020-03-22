@@ -130,11 +130,11 @@ for more details
     # We pass the blog & files
     blog = file_upload.delete_files(blog_result, files=["my_video"])
     
-    # As the `db` arg has not been passed to this method,
-    # the changes would need persisting to the database:
-    db.session.add(blog)
-    db.session.commit()
-    
+    # If parent kwarg is set to True then the root primary directory & all its contents will be removed.
+    # The model will also get cleaned up by default unless set to `False`.
+    blog_result = file_upload.delete_files(blog_result, parent=True, files=["my_video"])
+
+
     # If the kwarg `commit` is not set or set to True then the updates are persisted.
     # to the session. And therefore the session has been commited.
     blog = file_upload.delete_files(blog_result, files=["my_video"])
