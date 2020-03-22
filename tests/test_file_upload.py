@@ -49,6 +49,10 @@ class TestFileUploads:
     def setup_method(self):
         # Copy files from asset dir to test dir here:
         app.config["UPLOAD_FOLDER"] = "tests/test_path"
+        blog_path = "tests/test_path/blogs/1"
+        if not os.path.exists(blog_path):
+            os.mkdir(blog_path)
+
         copyfile("tests/assets/my_video.mp4", "tests/test_path/blogs/1/my_video.mp4")
 
     def teardown_method(self):
@@ -287,6 +291,34 @@ class TestFileUploads:
         assert getattr(result, "my_video__file_name") is None
         assert getattr(result, "my_video__mime_type") is None
         assert getattr(result, "my_video__file_type") is None
+
+    def test_delete_with_parent_true(self, create_app, mock_blog_model):
+        assert "my_video.mp4" in os.listdir("tests/test_path/blogs/1")
+        m = mock_blog_model(
+            name="hello",
+            my_video__file_name="my_video.mp4",
+            my_video__mime_type="video/mpeg",
+            my_video__file_type="mp4",
+        )
+
+        db.session.add(m)
+        db.session.commit()
+
+        blog = m.get_blog()
+
+        assert getattr(blog, "my_video__file_name") == "my_video.mp4"
+        assert getattr(blog, "my_video__mime_type") == "video/mpeg"
+        assert getattr(blog, "my_video__file_type") == "mp4"
+        assert ["1", "2"] == os.listdir("tests/test_path/blogs")
+        assert blog.id == 1
+
+        file_upload.delete_files(blog, db, parent=True, files=["my_video"])
+        result = os.listdir("tests/test_path/blogs")
+
+        assert ["2"] == result
+        assert getattr(blog, "my_video__file_name") is not "my_video.mp4"
+        assert getattr(blog, "my_video__mime_type") is not "video/mpeg"
+        assert getattr(blog, "my_video__file_type") is not "mp4"
 
     def test_update_files_2(self, mock_blog_model):
 

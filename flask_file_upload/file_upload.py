@@ -3,6 +3,7 @@ FileUpload Class
 ================
 """
 import os
+import shutil
 from warnings import warn
 from flask import send_from_directory, Flask, request, url_for
 from werkzeug.utils import secure_filename
@@ -271,29 +272,33 @@ class FileUpload:
         :key files: A list of the file names declared on your model.
         :key commit: Default is set to True. If set to False then the changed to the
             model class will not be updated or commited.
+        :key parent: Default is set to False. If set to True then the root primary directory
+            & all its contents will be removed. The model will also get cleaned up by default
+            unless set to `False`.
+            ``files`` is required, see above. For example::
+
+            # This will also set ``clean_up`` to ``model``(see the ``clean_up`` kwarg below).
+            blog_result = file_upload.delete_files(blog_result, parent=True, files=["my_video"])
+
+
         :key clean_up: Default is None. There are 2 possible ``clean_up`` values
         you can pass to the ``clean_up`` kwarg:
             - ``files`` will clean up files on the server but not update the model
             - ``model`` will update the model but not attempt to remove the files
                 from the server.
 
-        Example::
+        Example::`
 
             # To clean up files on your server pass in the args as follows:
             file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
 
-            # To clean up the model pass in the args as follows:
+            # To clean up the model pass in the kargs as follows:
             file_upload.delete_files(blog_result, files=["my_video"], clean_up="model")
 
         The root directory (*The directory containing the files*) which is named after the model
         id, is never deleted. Only the files within this directory are removed from the server.
         :return: SqlAlchemy model object
         """
-        try:
-            files: List[str] = kwargs["files"]
-        except KeyError:
-            warn("'files' is a Required Argument")
-            return None
 
         if db:
             warn(
@@ -308,11 +313,20 @@ class FileUpload:
 
         clean_up = kwargs.get("clean_up")
         commit = kwargs.get("commit") or True
+        parent = kwargs.get("parent") or False
 
         primary_key = _ModelUtils.get_primary_key(model)
         model_id = getattr(model, primary_key, None)
 
-        if clean_up is None or clean_up is "files":
+        try:
+            files: List[str] = kwargs["files"]
+        except KeyError:
+            raise("'files' is a Required Argument!")
+
+        if parent:
+            file_path = self.file_utils.get_stream_path(model_id)
+            shutil.rmtree(file_path)
+        elif clean_up is None or clean_up is "files":
             for f in files:
                 original_filename = _ModelUtils.get_original_file_name(f, model)
                 file_path = f"{self.file_utils.get_stream_path(model_id)}/{original_filename}"
