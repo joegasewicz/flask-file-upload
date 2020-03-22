@@ -151,7 +151,6 @@ class TestFileUploads:
             file_upload.file_data[0]["bananas"] = "bananas"
             file_upload._set_model_attrs(mock_model)
 
-
     def test_stream_file(self, create_app):
         rv = create_app.get("/blog")
         assert "200" in rv.status
@@ -165,6 +164,11 @@ class TestFileUploads:
         with app.test_request_context():
             url = file_upload.get_file_url(m, filename="my_video")
             assert url == "http://localhost/static/blogs/1/my_video.mp4"
+
+        with app.test_request_context():
+            file_upload.config.upload_folder = "static/uploads"
+            url = file_upload.get_file_url(m, filename="my_video")
+            assert url == "http://localhost/static/uploads/blogs/1/my_video.mp4"
 
 
     def test_update_files(self, create_app, mock_blog_model):
@@ -321,3 +325,4 @@ class TestFileUploads:
         }
         rv = create_app.post("/blog", data=data, content_type="multipart/form-data")
         assert "200" in rv.status
+
