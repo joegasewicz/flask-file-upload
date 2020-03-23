@@ -98,6 +98,8 @@ class blogModel(db.Model):
 
 
 #### Save files
+Now we have the filesassigned to variables, we can start using them with flask-file-upload:
+
 ````python
     file_upload.save_files(blog_post, files={
         "my_video": my_video,
