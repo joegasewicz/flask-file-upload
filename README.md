@@ -90,7 +90,8 @@ class blogModel(db.Model):
 
 #### define files to be uploaded:
 ````python
-    # This is an example of a video with placeholder image attached
+    # A common scenario could be a video with placeholder image.
+    # So first lets grab the files from Flask's request object:
     my_video = request.files["my_video"]
     placeholder_img = request.files["placeholder_img"]
 ````
