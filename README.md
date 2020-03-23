@@ -26,12 +26,9 @@ Flask File Upload
 
 
 #### General Flask config options
+(Important: The below configuration variables need to be set  before initiating `FileUpload`)
 ````python
-    # Important: The below configuration variables need to be set  before
-    # initiating `FileUpload`
-    
-    # This is the directory that flask-file-upload saves files to:
-    # IMPORTANT: Make sure the UPLOAD_FOLDER is the same as Flasks's static_folder or a child. For example:
+    # This is the directory that flask-file-upload saves files to. Make sure the UPLOAD_FOLDER is the same as Flasks's static_folder or a child. For example:
     app.config["UPLOAD_FOLDER"] = join(dirname(realpath(__file__)), "static/uploads")
     app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
     app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024  # 1000mb
