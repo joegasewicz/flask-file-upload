@@ -98,7 +98,7 @@ class blogModel(db.Model):
 
 
 #### Save files
-Now we have the files assigned to variables, we can start using them with flask-file-upload:
+Now we have the files assigned to variables, we can start using the m with flask-file-upload:
 
 ````python
     file_upload.save_files(blog_post, files={
@@ -106,6 +106,8 @@ Now we have the files assigned to variables, we can start using them with flask-
         "placeholder_img": placeholder_img,
     })
 ````
+If you followed the setup above you will see the following structure saved to your app:
+![FlaskFileUpload](assets/dir.png?raw=true "Directory example")
 
 #### Update files
 ````python
