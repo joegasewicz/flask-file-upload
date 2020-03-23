@@ -89,8 +89,8 @@ class blogModel(db.Model):
 ````
 
 #### define files to be uploaded:
-    (This is an example of a video with placeholder image attached):
 ````python
+    # This is an example of a video with placeholder image attached
     my_video = request.files["my_video"]
     placeholder_img = request.files["placeholder_img"]
 ````
