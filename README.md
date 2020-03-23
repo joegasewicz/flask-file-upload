@@ -107,7 +107,7 @@ Now we have the files assigned to variables, we can start using the m with flask
     })
 ````
 If you followed the setup above you will see the following structure saved to your app:
-![FlaskFileUpload](assets/dir.png?raw=true "Directory example")
+![FlaskFileUpload](assets/dir1.png?raw=true "Directory example")
 
 #### Update files
 ````python
