@@ -106,7 +106,7 @@ Now we have the files assigned to variables, we can start using the m with flask
         "placeholder_img": placeholder_img,
     })
 ````
-If you followed the setup above you will see the following structure saved to your app:
+##### If you followed the setup above you will see the following structure saved to your app:
 ![FlaskFileUpload](assets/dir1.png?raw=true "Directory example")
 
 #### Update files
