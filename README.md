@@ -83,11 +83,12 @@ class blogModel(db.Model):
     __tablename__ = "blogs"
     id = db.Column(db.Integer, primary_key=True)
 
+    # Use flask-file-upload's `file_upload.Column()` to associate a file with a SQLAlchemy Model:
     my_placeholder = file_upload.Column()
     my_video = file_upload.Column()
 ````
 
-#### define files to be upload:
+#### define files to be uploaded:
     (This is an example of a video with placeholder image attached):
 ````python
     my_video = request.files["my_video"]
