@@ -197,6 +197,7 @@ class FileUpload:
         backref = kwargs.get("backref")
         backref_name = None
         backref_filenames = None
+        is_list = True
         if backref:
             try:
                 backref_name = backref["name"]
@@ -216,13 +217,20 @@ class FileUpload:
         try:
             _models = models.all()
         except:
-            _models = models
+            if isinstance(models, list):
+                _models = models
+            else:
+                is_list = False
+                _models.append(models)
         if not backref:
             for model in _models:
                 for filename in filenames:
                     model_img_url = self.get_file_url(model, filename=filename)
                     setattr(model, f"{filename}_url", model_img_url)
-            return _models
+            if not is_list:
+                return _models[0]
+            else:
+                return _models
         else:
             for model in _models:
                 for filename in filenames:
@@ -234,7 +242,10 @@ class FileUpload:
                             for br_model in backref_models:
                                 br_model_img_url = self.get_file_url(br_model, filename=backref_filename)
                                 setattr(br_model, f"{backref_filename}_url", br_model_img_url)
-            return _models
+            if not is_list:
+                return _models[0]
+            else:
+                return _models
 
     def delete_files(self, model: Any, db=None, **kwargs) -> Union[Any, None]:
         """
