@@ -315,7 +315,7 @@ class TestFileUploads:
         file_upload.delete_files(blog, db, parent=True, files=["my_video"])
         result = os.listdir("tests/test_path/blogs")
 
-        assert ["2"] == result
+        assert [] == result
         assert getattr(blog, "my_video__file_name") is not "my_video.mp4"
         assert getattr(blog, "my_video__mime_type") is not "video/mpeg"
         assert getattr(blog, "my_video__file_type") is not "mp4"
