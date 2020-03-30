@@ -368,7 +368,7 @@ class FileUpload:
         :return:
         """
         if file.filename != "" and file and FileUtils.allowed_file(file.filename, self.config):
-            filename = secure_filename(file.filename)
+            filename = file.filename
             filename_key = attr_name
             mime_type = file.content_type
             file_type = file.filename.split(".")[1]
@@ -526,6 +526,7 @@ class FileUpload:
         :return:  List[Dict[str, str]]
         """
         for k, v in file_data.get("files").items():
+            setattr(v, "filename", secure_filename(getattr(v, "filename")))
             self.files.append(v)
             self.file_data.append(self._create_file_dict(v, k))
         return self.file_data
