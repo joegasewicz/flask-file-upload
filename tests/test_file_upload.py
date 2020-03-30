@@ -5,6 +5,7 @@ from werkzeug.datastructures import FileStorage
 from shutil import copyfile
 from flask_sqlalchemy import SQLAlchemy
 import time
+import shutil
 
 from flask_file_upload._config import Config
 from flask_file_upload.file_upload import FileUpload
@@ -58,7 +59,8 @@ class TestFileUploads:
     def teardown_method(self):
         # Delete the files from the test dir here:
         try:
-            os.remove("tests/test_path/blogs/1/my_video_updated.mp4")
+            shutil.rmtree("tests/test_path/blogs/1")
+            shutil.rmtree("tests/test_path/blogs/2")
         except:
             pass
 
@@ -205,6 +207,8 @@ class TestFileUploads:
         assert "my_video.mp4" not in os.listdir("tests/test_path/blogs/1")
 
     def test_delete_files(self, create_app, mock_blog_model):
+
+
         assert "my_video.mp4" in os.listdir("tests/test_path/blogs/1")
         m = mock_blog_model(
             name="hello",

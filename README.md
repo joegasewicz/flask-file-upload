@@ -206,7 +206,7 @@ each SQLAlchemy object. For example::
     assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image_url.png"
 ```
 
-To set filename attributes to multiple SQLAlchemy parent models with backrefs
+To set filename attributes to a a single or multiple SQLAlchemy parent models with backrefs
 to multiple child SQLAlchemy models, we can assign to the optional `backref`
 kwarg the name of the backref model & a list of the file attributes we set
 with the FFU Model decorated SQLAlchemy model.
