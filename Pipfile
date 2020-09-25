@@ -8,6 +8,7 @@ pytest = "*"
 Sphinx = "*"
 flask-sqlalchemy = "*"
 twine = "*"
+wheel = "*"
 
 [packages]
 flask-file-upload = {editable = true,path = "."}
