@@ -6,6 +6,7 @@ from typing import List, Any, Dict, Tuple, ClassVar, Callable
 import inspect
 
 from .column import Column
+from ._exceptions import FlaskInstanceOrSqlalchemyIsNone
 
 
 class _ModelUtils:
@@ -63,7 +64,7 @@ class _ModelUtils:
     def get_id_value(model) -> int:
         """
         :param model:
-        :return:
+        :return:s
         """
         return getattr(model, _ModelUtils.get_primary_key(model), None)
 
@@ -83,7 +84,10 @@ class _ModelUtils:
             str_len = int(len(key)) + 1000
             if not isinstance(str_len, int):
                 str_len = 1000
-            return db.Column(db.String(str_len), key=key, name=name)
+            try:
+                return db.Column(db.String(str_len), key=key, name=name)
+            except AttributeError as err:
+                raise FlaskInstanceOrSqlalchemyIsNone(err)
         return _ModelUtils.create_keys(
             _ModelUtils.keys,
             file_name,

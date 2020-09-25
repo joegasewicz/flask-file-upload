@@ -97,9 +97,9 @@ class FileUpload:
             :key max_content_length: Limit the amount of file memory
             :key sqlalchemy_database_uri: The database URI that should be used for the connection
         """
-        self.Model = create_model(db)
         self.Column = Column
-        if app:
+        if app and db:
+            self.Model = create_model(db)
             self.init_app(app, db, **kwargs)
 
     def add_file_urls_to_models(self, models, **kwargs):
@@ -461,6 +461,7 @@ class FileUpload:
 
         db = db or self.db
         self.app = app
+        self.Model = create_model(db)
         self.config.init_config(app, **kwargs)
         self._db = db
         if db:
