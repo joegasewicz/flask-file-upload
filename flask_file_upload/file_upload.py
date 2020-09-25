@@ -690,9 +690,9 @@ class FileUpload:
                 self.app.extensions["file_upload"].get("db")
             except (AttributeError, KeyError):
                 raise(
-                    "FLASK-FILE-UPLOAD: You must pass an instance of SQLAlchemy "
-                    "to `FileUpload(app, db)` or `file_upload.init_app(app, db)` "
-                    "as a second argument."
+                    "FLASK-FILE-UPLOAD: You must pass an instance of SQLAlchemy to "
+                    "`FileUpload(app, db)` or `file_upload.init_app(app, db)` as a "
+                    "second argument."
                 )
 
     @db.setter
