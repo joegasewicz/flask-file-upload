@@ -20,11 +20,6 @@ Please install the latest stable release:
 pip install flask-file-upload
 ```
 
-
-
-Flask File Upload
-
-
 #### General Flask config options
 (Important: The below configuration variables need to be set  before initiating `FileUpload`)
 ````python
@@ -36,7 +31,6 @@ Flask File Upload
     app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024  # 1000mb
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/blog_db"
 ````
-
 
 #### Setup
 We can either pass the instance to FileUpload(app) or to the init_app(app) method:
@@ -58,8 +52,7 @@ def create_app():
     file_upload.init_app(app, db)
     
     # If you require importing your SQLAlchemy models then make sure you import
-    # your models after passing the app & db objects to FileUpload(app, db) 
-    # or file_upload.init_app(app, db)
+    # your models after calling `file_upload.init_app(app, db)` or `FileUpload(app, db)`. 
     from .model import * 
 
 # Or we can pass the Flask app instance directly & the Flask-SQLAlchemy instance:
@@ -69,20 +62,6 @@ db = SQLAlchemy(app)
 file_upload = FileUpload(app, db)
 app: Flask = None
 ````
-
-#### Running Flask-Migration After including Flask-File-Upload in your project
-the arguments below will also run if you're using vanilla Alembic.
-```bash
-    export FLASK_APP=flask_app.py # Path to your Flask app
-    
-    # with pip
-    flask db stamp head
-	flask db migrate
-
-    # with pipenv
-    pipenv run flask db stamp head
-	pipenv run flask db migrate
-```
 
 #### Decorate your SqlAlchemy models
 Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use FFU
@@ -276,3 +255,18 @@ filenames will not get set. Example::
     blog_news = db.relationship("BlogNewsModel", backref="blog", lazy="dynamic")
 
 ```
+
+### Running Flask-Migration After including Flask-File-Upload in your project
+The arguments below will also run if you're using vanilla Alembic.
+```bash
+    export FLASK_APP=flask_app.py # Path to your Flask app
+    
+    # with pip
+    flask db stamp head
+	flask db migrate
+
+    # with pipenv
+    pipenv run flask db stamp head
+	pipenv run flask db migrate
+```
+
