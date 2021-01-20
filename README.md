@@ -72,7 +72,7 @@ app: Flask = None
 
 #### Running Flask-Migration After including Flask-File-Upload in your project
 the arguments below will also run if you're using vanilla Alembic.
-```bash`
+```bash
     export FLASK_APP=flask_app.py # Path to your Flask app
     flask db stamp head
 	flask db migrate
