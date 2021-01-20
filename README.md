@@ -57,7 +57,10 @@ def create_app():
     # the SQLAlchemy object as the 2nd arg to file_upload.init_app.
     file_upload.init_app(app, db)
     
-    from .model import * # Make sure you import your models after passing the app & db objects to FileUpload(app, db) or file_upload.init_app(app, db)
+    # If you require importing your SQLAlchemy models then make sure you import
+    # your models after passing the app & db objects to FileUpload(app, db) 
+    # or file_upload.init_app(app, db)
+    from .model import * 
 
 # Or we can pass the Flask app instance directly & the Flask-SQLAlchemy instance:
 db = SQLAlchemy(app)
