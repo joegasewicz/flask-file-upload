@@ -264,9 +264,11 @@ The arguments below will also run if you're using vanilla Alembic.
     # with pip
     flask db stamp head
 	flask db migrate
+    flask db upgrade
 
     # with pipenv
     pipenv run flask db stamp head
 	pipenv run flask db migrate
+    pipenv run flask db upgrade
 ```
 
