@@ -70,7 +70,8 @@ file_upload = FileUpload(app, db)
 app: Flask = None
 ````
 
-#### Running Migrations After include Flask-File-Upload in your project
+#### Running Flask-Migration After including Flask-File-Upload in your project
+the arguments below will also run if you're using vanilla Alembic.
 ```bash`
     export FLASK_APP=flask_app.py # Path to your Flask app
     flask db stamp head
