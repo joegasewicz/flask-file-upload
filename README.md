@@ -70,6 +70,16 @@ file_upload = FileUpload(app, db)
 app: Flask = None
 ````
 
+#### Running Migrations After include Flask-File-Upload in your project
+```bash`
+    export FLASK_APP=flask_app.py # Path to your Flask app
+    flask db stamp head
+	flask db migrate
+
+    # with pipenv
+    pipenv run flask db stamp head
+	pipenv run flask db migrate
+```
 
 #### Decorate your SqlAlchemy models
 Flask-File-Upload (FFU) setup requires each SqlAlchemy model that wants to use FFU
