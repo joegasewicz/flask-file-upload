@@ -41,6 +41,9 @@ Flask File Upload
 #### Setup
 We can either pass the instance to FileUpload(app) or to the init_app(app) method:
 ````python
+from flask_jwt_router import JwtRoutes
+
+
 app = Flask(__name__, static_folder="static") # IMPORTANT: This is your root directory for serving ALL static content!
 
 db = SQLAlchemy()
@@ -53,6 +56,8 @@ def create_app():
     # Pass the Flask app instance as the 1st arg &
     # the SQLAlchemy object as the 2nd arg to file_upload.init_app.
     file_upload.init_app(app, db)
+    
+    from .model import * # Make sure you import your models after passing the app & db objects to FileUpload(app, db) or file_upload.init_app(app, db)
 
 # Or we can pass the Flask app instance directly & the Flask-SQLAlchemy instance:
 db = SQLAlchemy(app)
