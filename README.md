@@ -74,6 +74,8 @@ app: Flask = None
 the arguments below will also run if you're using vanilla Alembic.
 ```bash
     export FLASK_APP=flask_app.py # Path to your Flask app
+    
+    # with pip
     flask db stamp head
 	flask db migrate
 
