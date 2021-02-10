@@ -6,3 +6,6 @@
 
 -   Fixed bug for init_app method from regression bug  [Issue #99](https://github.com/joegasewicz/flask-file-upload/issues/99)
 -   Fixed bug for init_app method from regression bug  [Issue #97](https://github.com/joegasewicz/flask-file-upload/issues/97)
+
+**Unrelease
+-   Bump cryptography from 3.3.1 to 3.3.2 #106
