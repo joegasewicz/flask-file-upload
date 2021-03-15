@@ -13,5 +13,4 @@ wheel = "*"
 [packages]
 flask-file-upload = {editable = true,path = "."}
 
-[requires]
-python_version = "3.7"
+
