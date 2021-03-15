@@ -10,3 +10,4 @@
 **Unrelease
 -   Bump cryptography from 3.3.1 to 3.3.2 #106
 -   Add `__table_args__` to sqlalchemy_attr  [Issue #108](https://github.com/joegasewicz/flask-file-upload/issues/108)
+-   Docs need fixing [Issue #110](https://github.com/joegasewicz/flask-file-upload/issues/110)
