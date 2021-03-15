@@ -284,9 +284,9 @@ class FileUpload:
         :key commit: Default is set to True. If set to False then the changed to the
             model class will not be updated or commited.
         :key parent: Default is set to False. If set to True then the root primary directory
-            & all its contents will be removed. The model will also get cleaned up by default
-            unless set to `False`.
-            ``files`` is required, see above. For example::
+        & all its contents will be removed. The model will also get cleaned up by default
+        unless set to `False`.
+        ``files`` is required, see above. For example::
 
             # This will also set ``clean_up`` to ``model``(see the ``clean_up`` kwarg below).
             blog_result = file_upload.delete_files(blog_result, parent=True, files=["my_video"])
