@@ -16,10 +16,13 @@ class _ModelUtils:
     sqlalchemy_attr: List[str] = [
         '__table__',
         '__tablename__',
-        '_decl_class_registry',
+        '__table_args__',
+        '__mapper_args__',
+        # '_decl_class_registry',
         '_sa_class_manager',
         'metadata',
         'query',
+        '__mapper__',
     ]
 
     @staticmethod
