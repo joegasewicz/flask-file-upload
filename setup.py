@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="flask-file-upload",
-    version="0.1.5",
+    version="0.2.0-rc.1",
     description="Library that works with Flask & SqlAlchemy to store files in your database and server.",
     packages=["flask_file_upload"],
     py_modules=["flask_file_upload"],
@@ -17,6 +17,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
     ],

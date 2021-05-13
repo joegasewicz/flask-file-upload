@@ -382,11 +382,11 @@ class FileUpload:
             filename = file.filename
             filename_key = attr_name
             mime_type = file.content_type
-            file_type = file.filename.split(".")[1]
+            file_ext = file.filename.split(".")[1]
             return {
-                f"{filename_key}__{_ModelUtils.keys[0]}": filename,
-                f"{filename_key}__{_ModelUtils.keys[1]}": mime_type,
-                f"{filename_key}__{_ModelUtils.keys[2]}": file_type,
+                f"{filename_key}__{_ModelUtils.column_suffix.FILE_NAME.value}": filename,
+                f"{filename_key}__{_ModelUtils.column_suffix.MIME_TYPE.value}": mime_type,
+                f"{filename_key}__{_ModelUtils.column_suffix.EXT.value}": file_ext,
             }
         else:
             warn("Flask-File-Upload: No files were saved")
@@ -469,8 +469,61 @@ class FileUpload:
                 "db": db,
             }
 
+    def add_files(self, model, **kwargs) -> Any:
+        """
+        The file(s) must reference the attribute name(s)
+        defined in your SqlAlchemy model. For example::
+
+            @file_upload.Model
+            class ModelTest(db.Model):
+
+                my_video = file_upload.Column()
+                placeholder_img = file_upload.Column()
+
+        This example demonstrates creating a new row in your database
+        using a SqlAlchemy model which is is then pass as the first
+        argument to ``file_upload.add_files``. Normally, you will
+        access your files from Flask's ``request`` object::
+
+            from Flask import request
+
+            my_video = request.files['my_video']
+            placeholder_img = request.files['placeholder_img']
+
+        Then, we need to pass to the kwarg ``files`` a dict of keys that
+        reference the attribute name(s) defined in your SqlAlchemy
+        model & values that are your files.::
+
+            blog_post = BlogPostModel(title="Hello World Today")
+
+            file_upload.add_files(blog_post, files={
+                "my_video": my_video,
+                "placeholder_img": placeholder_img,
+            })
+
+            # Now commit the changes to your db
+            db.session.add(blog_post)
+            db.session.commit()
+
+        If you wish to let flask-file-upload handle adding & commiting to
+        the current session then use ``file_upload.save_files``
+
+        :param model: The SqlAlchemy model instance
+        :key files: A *Dict of attribute name(s) defined in your SqlAlchemy model
+        :return: The updated SqlAlchemy model instance
+        """
+        # Warning: These methods need to set members on the Model class
+        # before we instantiate FileUtils()
+        self._set_file_data(**kwargs)
+        self._set_model_attrs(model)
+        self.file_utils = FileUtils(model, self.config)
+        self._save_files_to_dir(model)
+        return model
+
     def save_files(self, model, **kwargs) -> Any:
         """
+        This method is identical to ``file_upload.add_files``
+        except it also adds & commits the changes to the db.
         The file(s) must reference the attribute name(s)
         defined in your SqlAlchemy model. For example::
 
@@ -502,7 +555,7 @@ class FileUpload:
             })
 
         :param model: The SqlAlchemy model instance
-        :key filename: The attribute name(s) defined in your SqlAlchemy model
+        :key files: A *Dict of attribute name(s) defined in your SqlAlchemy model
         :key commit_session: Default is `True` or if you have not passed in
         a SQLAlchemy instance to ``FileUpload()`` then it is also set to False.
         *If you prefer to handle the session yourself*.

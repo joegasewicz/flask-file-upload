@@ -11,3 +11,6 @@ test:
 install:
 	pipenv install
 	pipenv install --dev
+
+tox:
+	pipenv run tox

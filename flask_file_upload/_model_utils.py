@@ -4,14 +4,24 @@
 """
 from typing import List, Any, Dict, Tuple, ClassVar, Callable
 import inspect
+from warnings import warn
+from enum import Enum
 
 from .column import Column
 from ._exceptions import FlaskInstanceOrSqlalchemyIsNone
 
 
+class _ColumnSuffix(Enum):
+    MIME_TYPE = "mime_type"
+    EXT = "ext"
+    FILE_NAME = "file_name"
+
+
 class _ModelUtils:
 
-    keys: Tuple[str] = ("file_name", "file_type", "mime_type")
+    column_suffix = _ColumnSuffix
+
+    keys = [e.value for e in _ColumnSuffix]
 
     sqlalchemy_attr: List[str] = [
         '__table__',
@@ -173,8 +183,10 @@ class _ModelUtils:
                     f" instance (db) to FileUpload(). Full Error: {err}"
                 )
         else:
-            raise Warning(
-                "Flask-File-Upload: Make sure to add & commit these changes. For examples visit: "
-                "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files"
+            warn(
+                "Flask-File-Upload: Make sure to add & commit these changes. "
+                "We recommended using the file_upload.add_files method instead, For examples visit: "
+                "https://flask-file-upload.readthedocs.io/en/latest/file_upload.html"
             )
+
         return model

@@ -70,7 +70,7 @@ def blog():
             name="My Blog Post",
             my_video__file_name="my_video.mp4",
             my_video__mime_type="video/mpeg",
-            my_video__file_type="mp4",
+            my_video__ext="mp4",
         )
         file_upload = FileUpload(app, db)
         # Warning - The UPLOAD_FOLDER - only needs to be reset for testing!
@@ -91,10 +91,7 @@ def blog():
             "my_video": my_video,
             "my_placeholder": my_placeholder,
         })
-
-
-        blog_post = MockBlogModel()
-        blog_data = blog_post.get_blog()
+        blog_data = blog_post.get_blog(2)
 
         return {
             "blog": f"{blog_data}"
