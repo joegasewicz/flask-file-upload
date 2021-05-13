@@ -112,7 +112,7 @@ For Example:
     db.session.commit()
 ````
 It's always good practise to commit the changes to your db as close to the end
-of your view handlers as possible (we encourage you to you use `add_files` over the `save_files`
+of your view handlers as possible (we encourage you to use `add_files` over the `save_files`
 method for this reason).
 
 If you wish to let flask-file-upload handle adding & committing to
