@@ -97,9 +97,9 @@ class blogModel(db.Model):
 
 
 #### Save files
-To add files to the model use the  `files` to pass a dict of keys that
-reference the attribute name(s) defined in your SqlAlchemy
-model & values that are your files. For Example:
+To add files to your model, pass a dict of keys that reference the attribute
+name(s) defined in your SqlAlchemy model & values that are your files.
+For Example:
 
 ````python
     file_upload.add_files(blog_post, files={
