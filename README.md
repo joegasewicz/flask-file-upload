@@ -1,4 +1,4 @@
-
+[![Python application](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-app.yml/badge.svg)](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-app.yml)
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
