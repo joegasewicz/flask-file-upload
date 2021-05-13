@@ -17,7 +17,7 @@ Please install the latest release:
 pip install flask-file-upload==0.2.0-rc.1
 ```
 
-*If you are updating from 0.1.++ then please read the [upgrading instruction](https://github.com/joegasewicz/flask-file-upload)*
+*If you are updating from 0.1.++ then please read the [upgrading instruction](https://github.com/joegasewicz/flask-file-upload#upgrading-from-v01-to-v02)*
 
 #### General Flask config options
 (Important: The below configuration variables need to be set  before initiating `FileUpload`)
