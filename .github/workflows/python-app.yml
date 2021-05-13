@@ -22,9 +22,9 @@ jobs:
         python-version: 3.9
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip3
-        pip3 install pipenv
-        pipenv install
+        python -m pip install --upgrade pip
+        pip install pipenv
     - name: Tox
       run: |
+        pipenv install --dev
         pipenv run tox
