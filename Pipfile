@@ -9,8 +9,7 @@ Sphinx = "*"
 flask-sqlalchemy = "*"
 twine = "*"
 wheel = "*"
+tox = "*"
 
 [packages]
 flask-file-upload = {editable = true,path = "."}
-
-

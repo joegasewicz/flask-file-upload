@@ -1,7 +1,4 @@
 
-[![Build Status](https://travis-ci.org/joegasewicz/flask-file-upload.svg?branch=master)](https://travis-ci.org/joegasewicz/flask-file-upload)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/72eba439b16e43a295f956fe49e1b52f)](https://www.codacy.com/manual/joegasewicz/flask-file-upload?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=joegasewicz/flask-file-upload&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/joegasewicz/flask-file-upload/branch/master/graph/badge.svg)](https://codecov.io/gh/joegasewicz/flask-file-upload)
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
@@ -9,16 +6,18 @@
 
 ![FlaskFileUpload](assets/logo.png?raw=true "Title")
 
-Library that works with Flask & SqlAlchemy to store
+Library that works with Flask (version 1 or 2) and SqlAlchemy to store
 files on your server & in your database
 
 Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/latest/)
 
 ## Installation
-Please install the latest stable release:
+Please install the latest release:
 ```bash
-pip install flask-file-upload
+pip install flask-file-upload==0.2.0-rc.1
 ```
+
+*If you are updating from 0.1.++ then please read the [upgrading instruction](https://github.com/joegasewicz/flask-file-upload)*
 
 #### General Flask config options
 (Important: The below configuration variables need to be set  before initiating `FileUpload`)
@@ -98,14 +97,33 @@ class blogModel(db.Model):
 
 
 #### Save files
-Now we have the files assigned to variables, we can start using the m with flask-file-upload:
+To add files to the model use the  `files` to pass a dict of keys that
+reference the attribute name(s) defined in your SqlAlchemy
+model & values that are your files. For Example:
 
 ````python
+    file_upload.add_files(blog_post, files={
+        "my_video": my_video,
+        "placeholder_img": placeholder_img,
+    })
+
+    # Now commit the changes to your db
+    db.session.add(blog_post)
+    db.session.commit()
+````
+It's always good practise to commit the changes to your db at the end
+of your view handlers.
+
+If you wish to let flask-file-upload handle adding & committing to
+the current session then use `file_upload.save_files` - this method is only recommended
+if you are sure nothing else needs committing after you have added you files.
+For example:
+```python
     file_upload.save_files(blog_post, files={
         "my_video": my_video,
         "placeholder_img": placeholder_img,
     })
-````
+```
 ##### If you followed the setup above you will see the following structure saved to your app:
 ![FlaskFileUpload](assets/dir1.png?raw=true "Directory example")
 
@@ -272,3 +290,8 @@ The arguments below will also run if you're using vanilla Alembic.
     pipenv run flask db upgrade
 ```
 
+### Upgrading from v0.1 to v0.2
+You will need to create a migration script with the below column name changes:
+- `[finename]__file_type` becomes `[finename]__mime_type`
+- `[my_video]__mime_type` becomes `[my_video]__ext`
+- `[finename]__file_name` stays the same

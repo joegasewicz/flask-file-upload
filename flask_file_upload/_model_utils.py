@@ -5,14 +5,23 @@
 from typing import List, Any, Dict, Tuple, ClassVar, Callable
 import inspect
 from warnings import warn
+from enum import Enum
 
 from .column import Column
 from ._exceptions import FlaskInstanceOrSqlalchemyIsNone
 
 
+class _ColumnSuffix(Enum):
+    MIME_TYPE = "mime_type"
+    EXT = "ext"
+    FILE_NAME = "file_name"
+
+
 class _ModelUtils:
 
-    keys: Tuple[str] = ("file_name", "file_type", "mime_type")
+    column_suffix = _ColumnSuffix
+
+    keys = [e.value for e in _ColumnSuffix]
 
     sqlalchemy_attr: List[str] = [
         '__table__',
