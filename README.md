@@ -293,6 +293,6 @@ The arguments below will also run if you're using vanilla Alembic.
 
 ### Upgrading from v0.1 to v0.2
 You will need to create a migration script with the below column name changes:
-- `[finename]__file_type` becomes `[finename]__mime_type`
-- `[my_video]__mime_type` becomes `[my_video]__ext`
-- `[finename]__file_name` stays the same
+- `[you_file_name]__file_type` becomes `[you_file_name]__mime_type`
+- `[you_file_name]__mime_type` becomes `[you_file_name]__ext`
+- `[you_file_name]__file_name` stays the same
