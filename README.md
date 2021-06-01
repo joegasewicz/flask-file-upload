@@ -22,13 +22,13 @@ pip install flask-file-upload==0.2.0-rc.1
 #### General Flask config options
 (Important: The below configuration variables need to be set  before initiating `FileUpload`)
 ````python
-    # This is the directory that flask-file-upload saves files to. Make sure the UPLOAD_FOLDER is the same as Flasks's static_folder or a child. For example:
-    app.config["UPLOAD_FOLDER"] = join(dirname(realpath(__file__)), "static/uploads")
-    
-    # Other FLASK config varaibles ...
-    app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
-    app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024  # 1000mb
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/blog_db"
+# This is the directory that flask-file-upload saves files to. Make sure the UPLOAD_FOLDER is the same as Flasks's static_folder or a child. For example:
+app.config["UPLOAD_FOLDER"] = join(dirname(realpath(__file__)), "static/uploads")
+
+# Other FLASK config varaibles ...
+app.config["ALLOWED_EXTENSIONS"] = ["jpg", "png", "mov", "mp4", "mpg"]
+app.config["MAX_CONTENT_LENGTH"] = 1000 * 1024 * 1024  # 1000mb
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/blog_db"
 ````
 
 #### Setup
@@ -89,10 +89,10 @@ class blogModel(db.Model):
 
 #### define files to be uploaded:
 ````python
-    # A common scenario could be a video with placeholder image.
-    # So first lets grab the files from Flask's request object:
-    my_video = request.files["my_video"]
-    placeholder_img = request.files["placeholder_img"]
+# A common scenario could be a video with placeholder image.
+# So first lets grab the files from Flask's request object:
+my_video = request.files["my_video"]
+placeholder_img = request.files["placeholder_img"]
 ````
 
 
@@ -102,14 +102,14 @@ name(s) defined in your SqlAlchemy model & values that are your files.
 For Example:
 
 ````python
-    file_upload.add_files(blog_post, files={
-        "my_video": my_video,
-        "placeholder_img": placeholder_img,
-    })
+file_upload.add_files(blog_post, files={
+    "my_video": my_video,
+    "placeholder_img": placeholder_img,
+})
 
-    # Now commit the changes to your db
-    db.session.add(blog_post)
-    db.session.commit()
+# Now commit the changes to your db
+db.session.add(blog_post)
+db.session.commit()
 ````
 It's always good practise to commit the changes to your db as close to the end
 of your view handlers as possible (we encourage you to use `add_files` over the `save_files`
@@ -120,20 +120,20 @@ the current session then use `file_upload.save_files` - this method is only reco
 if you are sure nothing else needs committing after you have added you files.
 For example:
 ```python
-    file_upload.save_files(blog_post, files={
-        "my_video": my_video,
-        "placeholder_img": placeholder_img,
-    })
+file_upload.save_files(blog_post, files={
+    "my_video": my_video,
+    "placeholder_img": placeholder_img,
+})
 ```
 ##### If you followed the setup above you will see the following structure saved to your app:
 ![FlaskFileUpload](assets/dir1.png?raw=true "Directory example")
 
 #### Update files
 ````python
-    blog_post = file_upload.update_files(blog_post, files={
-        "my_video": new_my_video,
-        "placeholder_img": new_placeholder_img,
-    })
+blog_post = file_upload.update_files(blog_post, files={
+    "my_video": new_my_video,
+    "placeholder_img": new_placeholder_img,
+})
 ````
 
 
@@ -149,45 +149,45 @@ provide 2 types of clean up functionality:
 See [delete_files Docs](https://flask-file-upload.readthedocs.io/en/latest/file_upload.html#flask_file_upload.file_upload.FileUpload.delete_files)
 for more details
 ````python
-    # Example using a SqlAlchemy model with an appended
-    # method that fetches a single `blog`
-    blogModel = BlogModel()
-    blog_results = blogModel.get_one()
-    
-    # We pass the blog & files
-    blog = file_upload.delete_files(blog_result, files=["my_video"])
-    
-    # If parent kwarg is set to True then the root primary directory & all its contents will be removed.
-    # The model will also get cleaned up by default unless set to `False`.
-    blog_result = file_upload.delete_files(blog_result, parent=True, files=["my_video"])
+# Example using a SqlAlchemy model with an appended
+# method that fetches a single `blog`
+blogModel = BlogModel()
+blog_results = blogModel.get_one()
+
+# We pass the blog & files
+blog = file_upload.delete_files(blog_result, files=["my_video"])
+
+# If parent kwarg is set to True then the root primary directory & all its contents will be removed.
+# The model will also get cleaned up by default unless set to `False`.
+blog_result = file_upload.delete_files(blog_result, parent=True, files=["my_video"])
 
 
-    # If the kwarg `commit` is not set or set to True then the updates are persisted.
-    # to the session. And therefore the session has been commited.
-    blog = file_upload.delete_files(blog_result, files=["my_video"])
-    
-    # Example of cleaning up files but not updating the model:
-    blog = file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
+# If the kwarg `commit` is not set or set to True then the updates are persisted.
+# to the session. And therefore the session has been commited.
+blog = file_upload.delete_files(blog_result, files=["my_video"])
+
+# Example of cleaning up files but not updating the model:
+blog = file_upload.delete_files(blog_result, files=["my_video"], clean_up="files")
 ````
 
 
 #### Stream a file
 ````python
-    file_upload.stream_file(blog_post, filename="my_video")
+file_upload.stream_file(blog_post, filename="my_video")
 ````
 
 
 #### File Url paths
 ````python
-    file_upload.get_file_url(blog_post, filename="placeholder_img")
+file_upload.get_file_url(blog_post, filename="placeholder_img")
 ````
 
 Example for getting file urls from many objects:
 ```python
-    # If blogs_model are many blogs:
-    for blog in blog_models:
-        blog_image_url = file_upload.get_file_url(blog, filename="blog_image")
-        setattr(blog, "blog_image", blog_image_url)
+# If blogs_model are many blogs:
+for blog in blog_models:
+    blog_image_url = file_upload.get_file_url(blog, filename="blog_image")
+    setattr(blog, "blog_image", blog_image_url)
 ```
 
 #### Set file paths to multiple objects - *Available in `0.1.0-rc.6` & `v0.1.0`*
@@ -210,19 +210,19 @@ a `_url` tag. e.g `blog_image` becomes `blog_image_url`
 
 Example for many SQLAlchemy entity objects (*or rows in your table*)::
 ```python
-    @file_upload.Model
-    class BlogModel(db.Model):
+@file_upload.Model
+class BlogModel(db.Model):
 
-        blog_image = file_upload.Column()
+    blog_image = file_upload.Column()
 ```
 
 Now we can use the `file_upload.add_file_urls_to_models` to add file urls to
 each SQLAlchemy object. For example::
 ```python
-    blogs = add_file_urls_to_models(blogs, filenames="blog_image")
+blogs = add_file_urls_to_models(blogs, filenames="blog_image")
 
-    # Notice that we can get the file path `blog_image` + `_url`
-    assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image_url.png"
+# Notice that we can get the file path `blog_image` + `_url`
+assert  blogs[0].blog_image_url == "path/to/blogs/1/blog_image_url.png"
 ```
 
 To set filename attributes to a a single or multiple SQLAlchemy parent models with backrefs
@@ -236,59 +236,58 @@ To use backrefs we need to declare a kwarg of `backref` & pass 2 keys:
 
 For example::
 ```python
-    # Parent model
-    @file_upload.Model
-    class BlogModel(db.Model):
-        # The backref:
-        blog_news = db.relationship("BlogNewsModel", backref="blogs")
-        blog_image = file_upload.Column()
-        blog_video = file_upload.Column()
+# Parent model
+@file_upload.Model
+class BlogModel(db.Model):
+    # The backref:
+    blog_news = db.relationship("BlogNewsModel", backref="blogs")
+    blog_image = file_upload.Column()
+    blog_video = file_upload.Column()
 
-    # Model that has a foreign key back up to `BlogModel
-    @file_upload.Model
-    class BlogNewsModel(db.Model):
-        # The foreign key assigned to this model:
-        blog_id = db.Column(db.Integer, db.ForeignKey("blogs.blog_id"))
-        news_image = file_upload.Column()
-        news_video = file_upload.Column()
+# Model that has a foreign key back up to `BlogModel
+@file_upload.Model
+class BlogNewsModel(db.Model):
+    # The foreign key assigned to this model:
+    blog_id = db.Column(db.Integer, db.ForeignKey("blogs.blog_id"))
+    news_image = file_upload.Column()
+    news_video = file_upload.Column()
 ```
 
 The kwarg `backref` keys represent the backref model or entity (in the above example
 this would be the `BlogNewsModel` which we have named `blog_news`. Example::
 ```python
-    blogs = add_file_urls_to_models(blogs, filenames=["blog_image, blog_video"],
-        backref={
-            "name": "blog_news",`
-            "filenames": ["news_image", "news_video],
-    })
+blogs = add_file_urls_to_models(blogs, filenames=["blog_image, blog_video"],
+    backref={
+        "name": "blog_news",`
+        "filenames": ["news_image", "news_video],
+})
 ```
 
 WARNING: You must not set the relationship kwarg: `lazy="dynamic"`!
 If `backref` is set to *"dynamic"* then back-referenced entity's
 filenames will not get set. Example::
 ```python
-    # This will work
-    blog_news = db.relationship("BlogNewsModel", backref="blog")
+# This will work
+blog_news = db.relationship("BlogNewsModel", backref="blog")
 
-    # this will NOT set filenames on your model class
-    blog_news = db.relationship("BlogNewsModel", backref="blog", lazy="dynamic")
-
+# this will NOT set filenames on your model class
+blog_news = db.relationship("BlogNewsModel", backref="blog", lazy="dynamic")
 ```
 
 ### Running Flask-Migration After including Flask-File-Upload in your project
 The arguments below will also run if you're using vanilla Alembic.
 ```bash
-    export FLASK_APP=flask_app.py # Path to your Flask app
-    
-    # with pip
-    flask db stamp head
-	flask db migrate
-    flask db upgrade
+export FLASK_APP=flask_app.py # Path to your Flask app
 
-    # with pipenv
-    pipenv run flask db stamp head
-	pipenv run flask db migrate
-    pipenv run flask db upgrade
+# with pip
+flask db stamp head
+flask db migrate
+flask db upgrade
+
+# with pipenv
+pipenv run flask db stamp head
+pipenv run flask db migrate
+pipenv run flask db upgrade
 ```
 
 ### Upgrading from v0.1 to v0.2
