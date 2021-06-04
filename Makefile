@@ -1,5 +1,5 @@
 docs:
-	make -C docs html
+	make -C docs make html
 
 release:
 	python setup.py sdist
