@@ -14,7 +14,7 @@ Read the docs: [Documentation](https://flask-file-upload.readthedocs.io/en/lates
 ## Installation
 Please install the latest release:
 ```bash
-pip install flask-file-upload==0.2.0-rc.1
+pip install flask-file-upload
 ```
 
 *If you are updating from >=0.1 then please read the [upgrading instruction](https://github.com/joegasewicz/flask-file-upload#upgrading-from-v01-to-v02)*
