@@ -1,9 +1,8 @@
+[![Upload Python Package](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-publish.yml/badge.svg)](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-publish.yml)
 [![Python application](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-app.yml/badge.svg)](https://github.com/joegasewicz/flask-file-upload/actions/workflows/python-app.yml)
 [![Documentation Status](https://readthedocs.org/projects/flask-file-upload/badge/?version=latest)](https://flask-file-upload.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/flask-file-upload.svg)](https://badge.fury.io/py/flask-file-upload)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/flask-file-upload)
-![PyPI - License](https://img.shields.io/pypi/l/flask-file-upload?color=yellow)
-
 ![FlaskFileUpload](assets/logo.png?raw=true "Title")
 
 Library that works with Flask (version 1 or 2) and SqlAlchemy to store
