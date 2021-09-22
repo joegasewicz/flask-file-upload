@@ -21,6 +21,9 @@ pip install flask-file-upload
 #### General Flask config options
 (Important: The below configuration variables need to be set  before initiating `FileUpload`)
 ````python
+from flask_file_upload.file_upload import FileUpload
+from os.path import join, dirname, realpath
+
 # This is the directory that flask-file-upload saves files to. Make sure the UPLOAD_FOLDER is the same as Flasks's static_folder or a child. For example:
 app.config["UPLOAD_FOLDER"] = join(dirname(realpath(__file__)), "static/uploads")
 
