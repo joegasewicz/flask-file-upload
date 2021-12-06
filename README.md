@@ -36,7 +36,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/blog_db"
 #### Setup
 We can either pass the instance to FileUpload(app) or to the init_app(app) method:
 ````python
-from flask_jwt_router import JwtRoutes
+from flask_file_upload import FileUpload
 
 
 app = Flask(__name__, static_folder="static") # IMPORTANT: This is your root directory for serving ALL static content!
