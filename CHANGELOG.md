@@ -16,4 +16,6 @@
 - Fixed bug for init_app method from regression bug 🪲 [Issue #97](https://github.com/joegasewicz/flask-file-upload/issues/97)
 
 **Unrelease
+- Lazily load via checking db.Model & flask instance 🪲 [Issue #111](https://github.com/joegasewicz/flask-file-upload/issues/111)
+- Tests for Python 3.10  🎈 [Issue #124](https://github.com/joegasewicz/flask-file-upload/issues/124)
 - Updated readme for properly importing the module 🎈 [Issue #121](https://github.com/joegasewicz/flask-file-upload/issues/121)
