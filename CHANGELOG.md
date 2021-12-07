@@ -2,6 +2,10 @@
 
 ### Changed
 
+**Release 0.2.1** - 2021-12-07
+- Lazily load via_ checking db.Model & flask instance 🪲 [Issue #111](https://github.com/joegasewicz/flask-file-upload/issues/111)
+- Updated readme for properly importing the module 🎈 [Issue #121](https://github.com/joegasewicz/flask-file-upload/issues/121)
+
 **Release 0.2.0** - 2021-06-04
 - not setting commit_session should warn not throw 🪲 [Issue #113](https://github.com/joegasewicz/flask-file-upload/issues/113)
 - Let user by default commit the session 🎈 [Issue #112](https://github.com/joegasewicz/flask-file-upload/issues/112)
@@ -15,7 +19,5 @@
 - Fixed bug for init_app method from regression bug 🪲 [Issue #99](https://github.com/joegasewicz/flask-file-upload/issues/99)
 - Fixed bug for init_app method from regression bug 🪲 [Issue #97](https://github.com/joegasewicz/flask-file-upload/issues/97)
 
-**Unrelease
-- Lazily load via checking db.Model & flask instance 🪲 [Issue #111](https://github.com/joegasewicz/flask-file-upload/issues/111)
-- Tests for Python 3.10  🎈 [Issue #124](https://github.com/joegasewicz/flask-file-upload/issues/124)
-- Updated readme for properly importing the module 🎈 [Issue #121](https://github.com/joegasewicz/flask-file-upload/issues/121)
+**Unreleased
+
