@@ -16,6 +16,11 @@ from .file_utils import FileUtils
 from ._model_utils import _ModelUtils
 
 
+class _ModelStub:
+
+    def __init__(self, db=None):
+        pass
+
 class FileUpload:
     """
     :param app: The Flask application instance: ``app = Flask(__name__, static_folder="uploads")``.
@@ -82,11 +87,14 @@ class FileUpload:
     files: Any = []
 
     #: A class containing utility methods for working with files.
-    #: See :class:`flask_file_upload.file_utils` for more information.
+    #: See :class:`~flask_file_upload.file_utils` for more information.
     file_utils: FileUtils = None
 
     #: The Flask-SQLAlchemy `SQLAlchemy()` instance`
     _db = None
+
+    #: See :class:`~flask_file_upload.Model`
+    Model = _ModelStub
 
     def __init__(self, app=None, db=None, *args, **kwargs):
         """
